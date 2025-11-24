@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Collectors</h2>
+
+<p><a class="btn" href="{% url 'stwms:collector_create' %}">Create Collector</a></p>
+
+<table>
+    <thead><tr><th>Username</th><th>Contact</th><th>Status</th><th>Actions</th></tr></thead>
+    <tbody>
+    {% for collector in collectors %}
+        <tr>
+            <td>{{ collector.user.username }}</td>
+            <td>{{ collector.contact }}</td>
+            <td>{{ collector.status }}</td>
+            <td>
+                <a class="btn" href="{% url 'stwms:collector_update' collector.id %}">Edit</a>
+                <form style="display:inline" method="post" action="{% url 'stwms:collector_delete' collector.id %}">{% csrf_token %}
+                    <button class="btn btn-danger" type="submit">Delete</button>
+                </form>
+            </td>
+        </tr>
+    {% empty %}
+        <tr><td colspan="4">No collectors yet.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

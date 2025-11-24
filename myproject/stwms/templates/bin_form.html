@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% if form %}
+	<h2>{% if form.instance and form.instance.pk %}Edit Waste Bin{% else %}Create Waste Bin{% endif %}</h2>
+	<form method="post">
+		{% csrf_token %}
+		{{ form.as_p }}
+		<button class="btn" type="submit">Save</button>
+		<a class="btn" href="{% url 'stwms:bin_list' %}">Cancel</a>
+	</form>
+{% elif bin %}
+	<h2>Waste Bin Details</h2>
+	<p><strong>ID:</strong> {{ bin.WasteBin_id }}</p>
+	<p><strong>Status:</strong> {{ bin.status }}</p>
+	<p><strong>Fill Level:</strong> {{ bin.fill_level }}%</p>
+	<p><strong>Owner:</strong> {{ bin.owner.username }}</p>
+	<p><strong>Location:</strong> {{ bin.location.house }}</p>
+	<p>
+		<a class="btn" href="{% url 'stwms:bin_update' bin.WasteBin_id %}">Edit</a>
+		<form style="display:inline" method="post" action="{% url 'stwms:bin_delete' bin.WasteBin_id %}">{% csrf_token %}
+			<button class="btn btn-danger" type="submit">Delete</button>
+		</form>
+	</p>
+{% else %}
+	<p>No data.</p>
+{% endif %}
+
+{% endblock %}

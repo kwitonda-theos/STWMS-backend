@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Waste Bins</h2>
+
+<p><a class="btn" href="{% url 'stwms:bin_create' %}">Create Waste Bin</a></p>
+
+<table>
+    <thead>
+        <tr><th>ID</th><th>Status</th><th>Fill Level</th><th>Owner</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+    {% for bin in bins %}
+        <tr>
+            <td>{{ bin.WasteBin_id }}</td>
+            <td>{{ bin.status }}</td>
+            <td>{{ bin.fill_level }}</td>
+            <td>{{ bin.owner.username }}</td>
+            <td>
+                <a class="btn" href="{% url 'stwms:bin_update' bin.WasteBin_id %}">Edit</a>
+                <form style="display:inline" method="post" action="{% url 'stwms:bin_delete' bin.WasteBin_id %}">{% csrf_token %}
+                    <button class="btn btn-danger" type="submit">Delete</button>
+                </form>
+            </td>
+        </tr>
+    {% empty %}
+        <tr><td colspan="5">No bins found.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

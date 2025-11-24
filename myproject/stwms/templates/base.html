@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SWMS | Smart Waste Management System</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+</head>
+<body>
+
+<nav>
+    <a href="{% url 'stwms:users_list' %}">Users</a>
+    <a href="{% url 'stwms:users_create' %}">Create User</a>
+    <a href="{% url 'stwms:bin_list' %}">Bins</a>
+    <a href="{% url 'stwms:location_list' %}">Locations</a>
+    <a href="{% url 'stwms:collector_list' %}">Collectors</a>
+    <a href="{% url 'stwms:vehicle_list' %}">Vehicles</a>
+    <a href="{% url 'stwms:sensor_list' %}">Sensors</a>
+    <a href="{% url 'stwms:alert_list' %}">Alerts</a>
+    <a href="{% url 'stwms:report_list' %}">Reports</a>
+</nav>
+
+<div class="content">
+    {% block content %}
+    {% endblock %}
+</div>
+
+</body>
+</html>

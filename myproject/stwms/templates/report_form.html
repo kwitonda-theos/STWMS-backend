@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+{% if form %}
+	<h2>{% if form.instance and form.instance.pk %}Edit Report{% else %}Create Report{% endif %}</h2>
+	<form method="post">
+		{% csrf_token %}
+		{{ form.as_p }}
+		<button class="btn" type="submit">Save</button>
+		<a class="btn" href="{% url 'stwms:report_list' %}">Cancel</a>
+	</form>
+{% elif report %}
+	<h2>Report Details</h2>
+	<p><strong>Type:</strong> {{ report.report_type }}</p>
+	<p><strong>Date:</strong> {{ report.date }}</p>
+	<p><strong>Summary:</strong> {{ report.summary }}</p>
+	<p>
+		<a class="btn" href="{% url 'stwms:report_update' report.id %}">Edit</a>
+		<form style="display:inline" method="post" action="{% url 'stwms:report_delete' report.id %}">{% csrf_token %}
+			<button class="btn btn-danger" type="submit">Delete</button>
+		</form>
+	</p>
+{% else %}
+	<p>No data.</p>
+{% endif %}
+
+{% endblock %}

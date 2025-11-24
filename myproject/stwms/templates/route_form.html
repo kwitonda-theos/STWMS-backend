@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+{% if form %}
+	<h2>{% if form.instance and form.instance.pk %}Edit Route{% else %}Create Route{% endif %}</h2>
+	<form method="post">
+		{% csrf_token %}
+		{{ form.as_p }}
+		<button class="btn" type="submit">Save</button>
+		<a class="btn" href="{% url 'stwms:route_list' %}">Cancel</a>
+	</form>
+{% elif route %}
+	<h2>Route Details</h2>
+	<p><strong>Collector:</strong> {{ route.assigned_collector.user.username if route.assigned_collector }}</p>
+	<p><strong>Start Time:</strong> {{ route.start_time }}</p>
+	<p><strong>Completed:</strong> {{ route.completed }}</p>
+	<p><strong>Bins:</strong>
+		<ul>
+		{% for bin in route.bins.all %}
+			<li>{{ bin.WasteBin_id }}</li>
+		{% endfor %}
+		</ul>
+	</p>
+	<p>
+		<a class="btn" href="{% url 'stwms:route_update' route.id %}">Edit</a>
+		<form style="display:inline" method="post" action="{% url 'stwms:route_delete' route.id %}">{% csrf_token %}
+			<button class="btn btn-danger" type="submit">Delete</button>
+		</form>
+	</p>
+{% else %}
+	<p>No data.</p>
+{% endif %}
+
+{% endblock %}
+

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+{% if form %}
+	<h2>{% if form.instance and form.instance.pk %}Edit Alert{% else %}Create Alert{% endif %}</h2>
+	<form method="post">
+		{% csrf_token %}
+		{{ form.as_p }}
+		<button class="btn" type="submit">Save</button>
+		<a class="btn" href="{% url 'stwms:alert_list' %}">Cancel</a>
+	</form>
+{% elif alert %}
+	<h2>Alert Details</h2>
+	<p><strong>Type:</strong> {{ alert.alert_type }}</p>
+	<p><strong>Bin:</strong> {{ alert.bin.WasteBin_id }}</p>
+	<p><strong>Timestamp:</strong> {{ alert.timestamp }}</p>
+	<p>
+		<a class="btn" href="{% url 'stwms:alert_update' alert.id %}">Edit</a>
+		<form style="display:inline" method="post" action="{% url 'stwms:alert_delete' alert.id %}">{% csrf_token %}
+			<button class="btn btn-danger" type="submit">Delete</button>
+		</form>
+	</p>
+{% else %}
+	<p>No data.</p>
+{% endif %}
+
+{% endblock %}

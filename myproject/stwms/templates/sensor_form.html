@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+{% if form %}
+	<h2>{% if form.instance and form.instance.pk %}Edit Sensor{% else %}Create Sensor{% endif %}</h2>
+	<form method="post">
+		{% csrf_token %}
+		{{ form.as_p }}
+		<button class="btn" type="submit">Save</button>
+		<a class="btn" href="{% url 'stwms:sensor_list' %}">Cancel</a>
+	</form>
+{% elif sensor %}
+	<h2>Sensor Details</h2>
+	<p><strong>Status:</strong> {{ sensor.status }}</p>
+	<p><strong>Waste Bin:</strong> {{ sensor.waste_bin.WasteBin_id }}</p>
+	<p><strong>Last Reading:</strong> {{ sensor.last_reading }}</p>
+	<p>
+		<a class="btn" href="{% url 'stwms:sensor_update' sensor.id %}">Edit</a>
+		<form style="display:inline" method="post" action="{% url 'stwms:sensor_delete' sensor.id %}">{% csrf_token %}
+			<button class="btn btn-danger" type="submit">Delete</button>
+		</form>
+	</p>
+{% else %}
+	<p>No data.</p>
+{% endif %}
+
+{% endblock %}

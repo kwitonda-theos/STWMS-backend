@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+{% if form %}
+	<h2>{% if form.instance and form.instance.pk %}Edit Location{% else %}Create Location{% endif %}</h2>
+	<form method="post">
+		{% csrf_token %}
+		{{ form.as_p }}
+		<button class="btn" type="submit">Save</button>
+		<a class="btn" href="{% url 'stwms:location_list' %}">Cancel</a>
+	</form>
+{% elif location %}
+	<h2>Location Details</h2>
+	<p><strong>House:</strong> {{ location.house }}</p>
+	<p><strong>Sector:</strong> {{ location.sector }}</p>
+	<p><strong>District:</strong> {{ location.district }}</p>
+	<p><strong>Cell:</strong> {{ location.cell }}</p>
+	<p>
+		<a class="btn" href="{% url 'stwms:location_update' location.house %}">Edit</a>
+		<form style="display:inline" method="post" action="{% url 'stwms:location_delete' location.house %}">{% csrf_token %}
+			<button class="btn btn-danger" type="submit">Delete</button>
+		</form>
+	</p>
+{% else %}
+	<p>No data available.</p>
+{% endif %}
+
+{% endblock %}

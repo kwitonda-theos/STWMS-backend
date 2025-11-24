@@ -1,0 +1,99 @@
+/* Global layout */
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f5f7fa;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+nav {
+  background: #2c3e50;
+  padding: 12px 16px;
+}
+nav a {
+  color: #fff;
+  text-decoration: none;
+  margin-right: 12px;
+}
+.content {
+  max-width: 1100px;
+  margin: 24px auto;
+  padding: 0 16px;
+}
+
+/* Table styling (borders added) */
+table {
+  width: 100%;
+  border-collapse: collapse; /* collapse borders so they appear as single lines */
+  background: #fff;
+  margin-top: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+
+thead th {
+  background: #34495e;
+  color: #fff;
+  text-align: left;
+  padding: 12px;
+  border: 1px solid #dcdcdc; /* border for header cells */
+}
+
+tbody td {
+  padding: 10px 12px;
+  border: 1px solid #dcdcdc; /* border for data cells */
+  vertical-align: middle;
+}
+
+tr:hover td {
+  background: #fbfbfb;
+}
+
+/* Buttons used in templates */
+.btn {
+  display: inline-block;
+  padding: 8px 12px;
+  background: #3498db;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.btn:hover { background: #2980b9; }
+
+.btn-danger {
+  background: #e74c3c;
+}
+
+.btn-danger:hover { background: #c0392b; }
+
+/* Simple forms */
+form {
+  background: #fff;
+  padding: 16px;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+input, textarea, select {
+  width: 100%;
+  padding: 8px 10px;
+  margin: 8px 0 14px 0;
+  border: 1px solid #dcdcdc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+label { font-weight: 600; color: #2c3e50; }
+
+/* Small utilities */
+.table-actions { white-space: nowrap; }
+
+/* Responsive */
+@media (max-width: 720px) {
+  .content { padding: 0 10px; }
+  thead th { font-size: 0.9rem; }
+  tbody td { font-size: 0.95rem; }
+}
