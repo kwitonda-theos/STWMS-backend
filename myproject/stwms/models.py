@@ -16,7 +16,11 @@ class Users(models.Model):
     ]
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     role = models.CharField(max_length=20, choices=ROLE_CHOICES)
-
+    username = models.CharField(max_length=150)
+    email = models.EmailField(max_length=254)
+    password = models.CharField(max_length=128)
+    address = models.CharField(max_length=255)
+    phone = models.CharField(max_length=20)
 
 class Location(models.Model):
     house= models.CharField(max_length=10, primary_key=True)
@@ -29,7 +33,7 @@ class Location(models.Model):
 
 class WasteBin(models.Model):
     status_choices = [
-        ('full','Full'),('intermediate','Intermediate'), ('empty', 'Empty')
+        ('full','Full'),('intermediate','Intermediate'), ('empty', 'Empty'),('maintenance','Maintenance')
     ]
 
     WasteBin_id = models.CharField(max_length=10, primary_key=True)
