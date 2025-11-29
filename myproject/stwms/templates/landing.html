@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>STWMS Landing Page</title>
+
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/landing.css' %}">
+
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="nav">
+      <h1 class="text-green">STWMS</h1>
+      <nav>
+        <a href="#features">Features</a>
+        <a href="#contact">Contact us</a>
+      </nav>
+      <div class="head-btns">
+        <a class="btn" href="#">Login</a>
+        <a class="btn1" href="#">Sign up</a>
+      </div>
+    </div>
+  </header>
+
+  >
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-content container">
+        <h1 class="hero-title">Smart Toilet Waste Management For A<br><span class="highlight">Cleaner Rwanda</span></h1>
+        <p class="lead">Driving efficiency through smart technology, ensuring land optimization and proper hygiene in every community. Building a sustainable future for Rwanda.</p>
+
+        <div class="cta-row">
+          <a class="btn-primary" href="#">Get started</a>
+        </div>
+
+        <div class="trust">
+          <span class="dots"><span class="dot green"></span><span class="dot yellow"></span><span class="dot white"></span></span>
+          <span class="trusted">Trusted by 10,000+ residents</span>
+          <span class="stat">100% Efficiency in Toilet waste collection</span>
+        </div>
+      </div>
+    </section>
+
+  <!-- ABOUT -->
+  <section id="about" class="about about-hero">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-media">
+          <img src="{% static 'images/waste.png' %}" alt="Waste illustration">
+        </div>
+        <div class="about-copy">
+          <h2 class="text-green" style="font-size:34px; margin-top:0;">About STWMS</h2>
+          <p>STWMS integrates a smart Web Dashboard for monitoring, a Mobile App for citizen engagement, AI for predictive waste collection, and IoT-enabled Smart toilets for toilet-level tracking — creating a cleaner, more efficient, and sustainable waste ecosystem.</p>
+        </div>
+      </div>
+    </div>
+    
+  </section>
+
+  <!-- FEATURES -->
+  <section id="features" class="features">
+    <div class="container text-center">
+      <h3 style="font-size: 28px; color: white; margin-bottom: 8px;">We Provide Key Features for Professional Management</h3>
+      <p style="color: rgba(255,255,255,0.95); font-size: 16px; margin-bottom: 40px;">Which are:</p>
+
+      <div class="grid-4">
+        <div class="feature-box">
+          <div class="feature-icon">📊</div>
+          <h4>Dashboard</h4>
+          <p>Comprehensive dashboard with real-time monitoring, historical data, and detailed analytics for informed decision-making.</p>
+        </div>
+
+        <div class="feature-box">
+          <div class="feature-icon">🚀</div>
+          <h4>Smart Tanks</h4>
+          <p>Equipped with ultrasonic sensors to measure fill level, GPS module to send location data, Low-power IoT chip to transmit data to central server.</p>
+        </div>
+
+        <div class="feature-box">
+          <div class="feature-icon">⚙️</div>
+          <h4>Automation(AI)</h4>
+          <p>Use AI to suggest the shortest and most fuel-efficient routes for waste trucks. And toiletry waste collection statistics.</p>
+        </div>
+
+        <div class="feature-box">
+          <div class="feature-icon">📱</div>
+          <h4>Mobile app</h4>
+          <p>Request to be scheduled for collection. Receive notifications of collection schedules, Get your toilet hygien statistics.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMMUNITY -->
+  <section id="community">
+    <div class="container text-center">
+      <h3 class="text-green" style="font-size: 28px;">Want to join our community?</h3>
+
+      <div class="grid-3">
+        <div class="community-box">
+          <div class="community-icon">👤</div>
+          <h4>Citizen</h4>
+          <p>Request toilet waste collection, and earn rewards for sustainable practices.</p>
+          <a class="btn-green" href="#">Register</a>
+          <a class="btn-green" href="#">Login</a>
+        </div>
+
+        <div class="community-box">
+          <div class="community-icon">🚚</div>
+          <h4>Driver</h4>
+          <p>Manage collection routes efficiently, update pickup status, and optimize schedules.</p>
+          <a class="btn-green" href="#">Register</a>
+          <a class="btn-green" href="#">Login</a>
+        </div>
+
+        <div class="community-box">
+          <div class="community-icon">💼</div>
+          <h4>Company</h4>
+          <p>Oversee collection operations, manage drivers, disposal and waste collection analytics.</p>
+          <a class="btn-green" href="#">Register</a>
+          <a class="btn-green" href="#">Log in</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BENEFITS -->
+  <section id="benefits">
+    <div class="container">
+      <div class="benefits-grid">
+        <div class="benefits-title">
+          <h2 style="font-size: 36px; margin: 0;">Benefits of using<br><span style="color: #006325;">STWMS</span></h2>
+        </div>
+        
+        <div class="benefits-content">
+          <div class="benefit-item">
+            <h4>For Residents</h4>
+            <p>Enjoy cleaner neighborhoods, healthier living spaces, and earn rewards for recycling responsibly.</p>
+          </div>
+
+          <div class="benefit-item">
+            <h4>Waste companies</h4>
+            <p>Cut operational costs with optimized collection routes and boost efficiency through smart scheduling.</p>
+          </div>
+
+          <div class="benefit-item">
+            <h4>Government</h4>
+            <p>Access real-time data for informed decision-making, improve urban cleanliness, and strengthen Rwanda's green image.</p>
+          </div>
+
+          <div class="benefit-item">
+            <h4>Businesses</h4>
+            <p>Benefit from reliable, timely waste collection that enhances workplace hygiene and corporate sustainability.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="container">
+      <div class="contact-section-title">
+        <h2 style="font-size: 32px; margin: 0 0 12px; text-align: center;">For more information</h2>
+        <p style="text-align: center; color: #666; margin: 0 0 60px;">Have questions about <span class="text-green">STWMS</span>? We're here to help you clean your neighborhood.</p>
+      </div>
+
+      <div class="contact-grid">
+        <div class="contact-info">
+          <h3 style="font-size: 24px; margin: 0 0 30px;">Contact information</h3>
+          
+          <div class="contact-item">
+            <div class="contact-icon">📞</div>
+            <div>
+              <h5 style="margin: 0; font-size: 16px; color: #333; font-weight: 600;">Phone</h5>
+              <p style="margin: 4px 0 0; color: #666;">0712345678</p>
+            </div>
+          </div>
+
+          <div class="contact-item">
+            <div class="contact-icon">✉️</div>
+            <div>
+              <h5 style="margin: 0; font-size: 16px; color: #333; font-weight: 600;">Email</h5>
+              <p style="margin: 4px 0 0; color: #666;">support@STWMS.com</p>
+            </div>
+          </div>
+
+          <div class="contact-item">
+            <div class="contact-icon">📍</div>
+            <div>
+              <h5 style="margin: 0; font-size: 16px; color: #333; font-weight: 600;">Address</h5>
+              <p style="margin: 4px 0 0; color: #666;">Kigali, Rwanda</p>
+            </div>
+          </div>
+
+          <div style="margin-top: 40px;">
+            <h5 style="margin: 0 0 12px; font-size: 14px; color: #333; font-weight: 600;">Support hours</h5>
+            <p style="margin: 6px 0; color: #666; font-size: 14px;">Monday-Friday <span style="float: right;">8:00 AM - 17:00 PM</span></p>
+            <p style="margin: 6px 0; color: #666; font-size: 14px;">Saturday <span style="float: right;">10:00 AM - 15:00 PM</span></p>
+            <p style="margin: 6px 0; color: #666; font-size: 14px;">Sunday <span style="float: right;">Closed</span></p>
+          </div>
+        </div>
+
+        <div class="contact-form-box">
+          <h4 style="color: white; font-size: 20px; margin: 0 0 30px;">For further inquires</h4>
+          
+          <div class="form-row">
+            <input type="text" placeholder="Enter your name here" />
+            <input type="email" placeholder="your-email@gmail.com" />
+          </div>
+
+          <select >
+            <option>Select a subject</option>
+            <option>General Inquiry</option>
+            <option>Technical Support</option>
+            <option>Partnership</option>
+          </select>
+
+          <label style="color: white; display: block; margin: 8px; font-size: 14px; font-weight: 600;">Message</label>
+          <textarea placeholder="Briefly describe your inquiry" ></textarea>
+
+          <button class="button">Submit</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA BAND -->
+  <section class="site-cta">
+    <div class="container">
+      <div class="cta-band">
+        <h3 class="cta-title">Ready to transform your neighborhood?</h3>
+        <p class="cta-lead">Join thousands of residents who have already improved their communities using STWMS's smart sanitation platform.</p>
+        <a class="cta-button" href="#">Get started</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2025 STWMS. All Rights Reserved.</p>
+  </footer>
+
+</body>
+</html>

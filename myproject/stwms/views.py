@@ -44,6 +44,9 @@ def location_list(request):
 
 def vw(request):
     
+    return render(request, "landing.html")
+
+def base(request):
     return render(request, "base.html")
 
 
