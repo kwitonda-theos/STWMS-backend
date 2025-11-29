@@ -11,7 +11,7 @@
         <tr>
             <td>{{ report.report_type }}</td>
             <td>{{ report.date }}</td>
-            <td>{{ report.generated_by.username if report.generated_by }}</td>
+            <td>{% if report.generated_by %}{{ report.generated_by.username }}{% endif %}</td>
             <td>
                 <a class="btn" href="{% url 'stwms:report_update' report.id %}">Edit</a>
                 <form style="display:inline" method="post" action="{% url 'stwms:report_delete' report.id %}">{% csrf_token %}

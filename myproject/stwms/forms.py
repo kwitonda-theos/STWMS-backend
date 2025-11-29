@@ -14,9 +14,9 @@ class UsersForm(forms.ModelForm):
         widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter username'})
     )
     email = forms.EmailField(
-        required=False,
+        required=True,
         label="Email",
-        widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Enter email (optional)'})
+        widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Enter email '})
     )
     role = forms.ChoiceField(
         choices=Users.ROLE_CHOICES,
@@ -24,7 +24,21 @@ class UsersForm(forms.ModelForm):
         label="Role",
         widget=forms.Select(attrs={'class': 'form-control'})
     )
-    
+    password = forms.CharField(
+        required=True,
+        label="Password",
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Enter password '})
+    )
+    phone = forms.CharField(
+        required=True, 
+        label="Phone",
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter phone number '})
+    )
+    address = forms.CharField(
+        required=True,
+        label="Address",
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter address '})
+    )
     class Meta:
         model = Users
         fields = ['role']
@@ -34,6 +48,9 @@ class UsersForm(forms.ModelForm):
         username = self.cleaned_data.get('username')
         email = self.cleaned_data.get('email', '')
         role = self.cleaned_data.get('role')
+        password = self.cleaned_data.get('password', '')
+        phone = self.cleaned_data.get('phone', '')
+        address = self.cleaned_data.get('address', '')
         
         # For update: use existing user, for create: check if user exists or create new
         if self.instance.pk and self.instance.user:
@@ -49,6 +66,9 @@ class UsersForm(forms.ModelForm):
         # Update user fields
         user.username = username
         user.email = email
+        user.set_password(password)
+        user.phone = phone
+        user.address = address
         user.save()
         
         # Now save the Users profile

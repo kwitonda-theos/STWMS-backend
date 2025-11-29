@@ -15,12 +15,12 @@ class Users(models.Model):
         ('resident', 'Resident'),
     ]
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
-    role = models.CharField(max_length=20, choices=ROLE_CHOICES)
-    username = models.CharField(max_length=150)
-    email = models.EmailField(max_length=254)
-    password = models.CharField(max_length=128)
-    address = models.CharField(max_length=255)
-    phone = models.CharField(max_length=20)
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='resident')
+    username = models.CharField(max_length=150, default="")
+    email = models.EmailField(max_length=254, default="")
+    password = models.CharField(max_length=128, default="")
+    address = models.CharField(max_length=255, default="")
+    phone = models.CharField(max_length=20, default="")
 
 class Location(models.Model):
     house= models.CharField(max_length=10, primary_key=True)

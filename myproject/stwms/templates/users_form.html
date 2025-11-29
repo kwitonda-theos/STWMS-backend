@@ -6,7 +6,8 @@
 <form method="POST">
     {% csrf_token %}
     {{ form.as_p }}
-    <button class="btn" type="submit">Save</button>
+    
+    <button class="btn" type="submit" href="{% url 'stwms:users_list' %}">Save</button>
     <a class="btn" href="{% url 'stwms:users_list' %}">Cancel</a>
 </form>
 {% elif user %}
