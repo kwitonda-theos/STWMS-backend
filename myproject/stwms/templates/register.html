@@ -4,13 +4,18 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Create Account</title>
-<link rel="stylesheet" href="register.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/register.css' %}">
 </head>
 <body>
 
 <div class="container">
 
-    <a href="#">← Click here to go back</a>
+    <a href="{% url 'stwms:home' %}">← Click here to go back</a>
 
     <h2>Create account</h2>
     <p class="subtitle">Join our smart waste management platform.</p>
@@ -31,28 +36,33 @@
 
         <label class="role-title">Select your role</label>
 
-        <div class="role-option">
-            <img src="https://img.icons8.com/ios-filled/50/user.png">
-            <div>
-                <div class="role-text">Citizen</div>
-                <div class="role-desc">Report waste issues and track collection</div>
-            </div>
-        </div>
+        <div class="role-group">
+            <label class="role-option">
+                <input type="radio" name="role" value="citizen">
+                <img src="https://img.icons8.com/ios-filled/50/user.png" alt="Citizen">
+                <div>
+                    <div class="role-text">Citizen</div>
+                    <div class="role-desc">Report waste issues and track collection</div>
+                </div>
+            </label>
 
-        <div class="role-option">
-            <img src="https://img.icons8.com/ios-filled/50/truck.png">
-            <div>
-                <div class="role-text">Driver</div>
-                <div class="role-desc">Manage collection routes and schedules</div>
-            </div>
-        </div>
+            <label class="role-option">
+                <input type="radio" name="role" value="driver">
+                <img src="https://img.icons8.com/ios-filled/50/truck.png" alt="Driver">
+                <div>
+                    <div class="role-text">Driver</div>
+                    <div class="role-desc">Manage collection routes and schedules</div>
+                </div>
+            </label>
 
-        <div class="role-option">
-            <img src="https://img.icons8.com/ios-filled/50/company.png">
-            <div>
-                <div class="role-text">Company</div>
-                <div class="role-desc">Oversee operations and overall system</div>
-            </div>
+            <label class="role-option">
+                <input type="radio" name="role" value="company">
+                <img src="https://img.icons8.com/ios-filled/50/company.png" alt="Company">
+                <div>
+                    <div class="role-text">Company</div>
+                    <div class="role-desc">Oversee operations and overall system</div>
+                </div>
+            </label>
         </div>
 
         <label>Create Password</label>

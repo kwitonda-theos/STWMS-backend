@@ -6,6 +6,7 @@ app_name = 'stwms'
 urlpatterns = [
     path('', views.vw, name='home'),
     path('base/', views.base, name='base'),
+    path('register/', views.register, name='register'),
 
     path('users/', views.users_list, name='users_list'),
     path('users/create/', views.users_create, name='users_create'),

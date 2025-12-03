@@ -266,3 +266,13 @@ def report_delete(request, pk):
     report = get_object_or_404(Report, pk=pk)
     report.delete()
     return redirect("stwms:report_list")
+
+def register(request):
+    # if request.method == 'POST':
+    #     form = UsersForm(request.POST)
+    #     if form.is_valid():
+    #         form.save()
+    #         return redirect('stwms:users_list')
+    #else:
+    # form = UsersForm()
+    return render(request, "register.html")
