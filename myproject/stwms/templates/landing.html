@@ -25,8 +25,8 @@
         <a href="#contact">Contact us</a>
       </nav>
       <div class="head-btns">
-        <a class="btn" href="#">Login</a>
-        <a class="btn1" href="#">Sign up</a>
+        <a class="btn" href="{% url 'stwms:log_in' %}">Login</a>
+        <a class="btn1" href="{% url 'stwms:register' %}">Sign up</a>
       </div>
     </div>
   </header>
@@ -39,7 +39,7 @@
         <p class="lead">Driving efficiency through smart technology, ensuring land optimization and proper hygiene in every community. Building a sustainable future for Rwanda.</p>
 
         <div class="cta-row">
-          <a class="btn-primary" href="#">Get started</a>
+          <a class="btn-primary" href="{% url 'stwms:register' %}">Get started</a>
         </div>
 
         <div class="trust">
@@ -110,24 +110,24 @@
           <div class="community-icon">👤</div>
           <h4>Citizen</h4>
           <p>Request toilet waste collection, and earn rewards for sustainable practices.</p>
-          <a class="btn-green" href="#">Register</a>
-          <a class="btn-green" href="#">Login</a>
+          <a class="btn-green" href="{% url 'stwms:register' %}">Register</a>
+          <a class="btn-green" href="{% url 'stwms:log_in' %}">Login</a>
         </div>
 
         <div class="community-box">
           <div class="community-icon">🚚</div>
           <h4>Driver</h4>
           <p>Manage collection routes efficiently, update pickup status, and optimize schedules.</p>
-          <a class="btn-green" href="#">Register</a>
-          <a class="btn-green" href="#">Login</a>
+          <a class="btn-green" href="{% url 'stwms:register' %}">Register</a>
+          <a class="btn-green" href="{% url 'stwms:log_in' %}">Login</a>
         </div>
 
         <div class="community-box">
           <div class="community-icon">💼</div>
           <h4>Company</h4>
           <p>Oversee collection operations, manage drivers, disposal and waste collection analytics.</p>
-          <a class="btn-green" href="#">Register</a>
-          <a class="btn-green" href="#">Log in</a>
+          <a class="btn-green" href="{% url 'stwms:register' %}">Register</a>
+          <a class="btn-green" href="{% url 'stwms:log_in' %}">Log in</a>
         </div>
       </div>
     </div>
@@ -240,7 +240,7 @@
       <div class="cta-band">
         <h3 class="cta-title">Ready to transform your neighborhood?</h3>
         <p class="cta-lead">Join thousands of residents who have already improved their communities using STWMS's smart sanitation platform.</p>
-        <a class="cta-button" href="#">Get started</a>
+        <a class="cta-button" href="{% url 'stwms:register' %}">Get started</a>
       </div>
     </div>
   </section>

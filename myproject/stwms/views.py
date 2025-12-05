@@ -12,7 +12,7 @@ from .forms import (
 # users views
 def users_list(request):
     users = Users.objects.all()
-    return render(request, "users_list.html", {"users": users})
+    return render(request, "users/users_list.html", {"users": users})
 
 
 def users_create(request):
@@ -20,7 +20,7 @@ def users_create(request):
     if form.is_valid():
         form.save()
         return redirect("stwms:users_list")
-    return render(request, "users_form.html", {"form": form})
+    return render(request, "users/users_form.html", {"form": form})
 
 
 def users_update(request, pk):
@@ -29,7 +29,7 @@ def users_update(request, pk):
     if form.is_valid():
         form.save()
         return redirect("stwms:users_list")
-    return render(request, "users_form.html", {"form": form})
+    return render(request, "users/users_form.html", {"form": form})
 
 
 def users_delete(request, pk):
@@ -40,7 +40,7 @@ def users_delete(request, pk):
 # location views
 def location_list(request):
     locations = Location.objects.all()
-    return render(request, "location_list.html", {"locations": locations})
+    return render(request, "location/location_list.html", {"locations": locations})
 
 def vw(request):
     
@@ -55,7 +55,7 @@ def location_create(request):
     if form.is_valid():
         form.save()
         return redirect("stwms:location_list")
-    return render(request, "location_form.html", {"form": form})
+    return render(request, "location/location_form.html", {"form": form})
 
 
 def location_update(request, pk):
@@ -64,7 +64,7 @@ def location_update(request, pk):
     if form.is_valid():
         form.save()
         return redirect("stwms:location_list")
-    return render(request, "location_form.html", {"form": form})
+    return render(request, "location/location_form.html", {"form": form})
 
 
 def location_delete(request, pk):
@@ -75,7 +75,7 @@ def location_delete(request, pk):
 # waste bin views
 def bin_list(request):
     bins = WasteBin.objects.all()
-    return render(request, "bin_list.html", {"bins": bins})
+    return render(request, "bin/bin_list.html", {"bins": bins})
 
 
 def bin_create(request):
@@ -83,7 +83,7 @@ def bin_create(request):
     if form.is_valid():
         form.save()
         return redirect("stwms:bin_list")
-    return render(request, "bin_form.html", {"form": form})
+    return render(request, "bin/bin_form.html", {"form": form})
 
 
 def bin_update(request, pk):
@@ -92,7 +92,7 @@ def bin_update(request, pk):
     if form.is_valid():
         form.save()
         return redirect("stwms:bin_list")
-    return render(request, "bin_form.html", {"form": form})
+    return render(request, "bin/bin_form.html", {"form": form})
 
 
 def bin_delete(request, pk):
@@ -102,7 +102,7 @@ def bin_delete(request, pk):
 # sensor views
 def sensor_list(request):
     sensors = Sensor.objects.all()
-    return render(request, "sensor_list.html", {"sensors": sensors})
+    return render(request, "sensor/sensor_list.html", {"sensors": sensors})
 
 
 def sensor_create(request):
@@ -110,7 +110,7 @@ def sensor_create(request):
     if form.is_valid():
         form.save()
         return redirect("stwms:sensor_list")
-    return render(request, "sensor_form.html", {"form": form})
+    return render(request, "sensor/sensor_form.html", {"form": form})
 
 
 def sensor_update(request, pk):
@@ -119,7 +119,7 @@ def sensor_update(request, pk):
     if form.is_valid():
         form.save()
         return redirect("stwms:sensor_list")
-    return render(request, "sensor_form.html", {"form": form})
+    return render(request, "sensor/sensor_form.html", {"form": form})
 
 
 def sensor_delete(request, pk):
@@ -130,7 +130,7 @@ def sensor_delete(request, pk):
 # collector views
 def collector_list(request):
     collectors = Collector.objects.all()
-    return render(request, "collector_list.html", {"collectors": collectors})
+    return render(request, "collector/collector_list.html", {"collectors": collectors})
 
 
 def collector_create(request):
@@ -138,7 +138,7 @@ def collector_create(request):
     if form.is_valid():
         form.save()
         return redirect("stwms:collector_list")
-    return render(request, "collector_form.html", {"form": form})
+    return render(request, "collector/collector_form.html", {"form": form})
 
 
 def collector_update(request, pk):
@@ -147,7 +147,7 @@ def collector_update(request, pk):
     if form.is_valid():
         form.save()
         return redirect("stwms:collector_list")
-    return render(request, "collector_form.html", {"form": form})
+    return render(request, "collector/collector_form.html", {"form": form})
 
 
 def collector_delete(request, pk):
@@ -158,7 +158,7 @@ def collector_delete(request, pk):
 # vehicle views
 def vehicle_list(request):
     vehicles = Vehicle.objects.all()
-    return render(request, "vehicle_list.html", {"vehicles": vehicles})
+    return render(request, "vehicles/vehicle_list.html", {"vehicles": vehicles})
 
 
 def vehicle_create(request):
@@ -166,7 +166,7 @@ def vehicle_create(request):
     if form.is_valid():
         form.save()
         return redirect("stwms:vehicle_list")
-    return render(request, "vehicle_form.html", {"form": form})
+    return render(request, "vehicles/vehicle_form.html", {"form": form})
 
 
 def vehicle_update(request, pk):
@@ -175,7 +175,7 @@ def vehicle_update(request, pk):
     if form.is_valid():
         form.save()
         return redirect("stwms:vehicle_list")
-    return render(request, "vehicle_form.html", {"form": form})
+    return render(request, "vehicles/vehicle_form.html", {"form": form})
 
 
 def vehicle_delete(request, pk):
@@ -186,7 +186,7 @@ def vehicle_delete(request, pk):
 # collection route views
 def route_list(request):
     routes = CollectionRoute.objects.all()
-    return render(request, "route_list.html", {"routes": routes})
+    return render(request, "route/route_list.html", {"routes": routes})
 
 
 def route_create(request):
@@ -194,7 +194,7 @@ def route_create(request):
     if form.is_valid():
         form.save()
         return redirect("stwms:route_list")
-    return render(request, "route_form.html", {"form": form})
+    return render(request, "route/route_form.html", {"form": form})
 
 
 def route_update(request, pk):
@@ -203,7 +203,7 @@ def route_update(request, pk):
     if form.is_valid():
         form.save()
         return redirect("stwms:route_list")
-    return render(request, "route_form.html", {"form": form})
+    return render(request, "route/route_form.html", {"form": form})
 
 
 def route_delete(request, pk):
@@ -214,7 +214,7 @@ def route_delete(request, pk):
 # alert views
 def alert_list(request):
     alerts = Alert.objects.all()
-    return render(request, "alert_list.html", {"alerts": alerts})
+    return render(request, "alert/alert_list.html", {"alerts": alerts})
 
 
 def alert_create(request):
@@ -222,7 +222,7 @@ def alert_create(request):
     if form.is_valid():
         form.save()
         return redirect("stwms:alert_list")
-    return render(request, "alert_form.html", {"form": form})
+    return render(request, "alert/alert_form.html", {"form": form})
 
 
 def alert_update(request, pk):
@@ -231,7 +231,7 @@ def alert_update(request, pk):
     if form.is_valid():
         form.save()
         return redirect("stwms:alert_list")
-    return render(request, "alert_form.html", {"form": form})
+    return render(request, "alert/alert_form.html", {"form": form})
 
 
 def alert_delete(request, pk):
@@ -242,7 +242,7 @@ def alert_delete(request, pk):
 # report views
 def report_list(request):
     reports = Report.objects.all()
-    return render(request, "report_list.html", {"reports": reports})
+    return render(request, "report/report_list.html", {"reports": reports})
 
 
 def report_create(request):
@@ -250,7 +250,7 @@ def report_create(request):
     if form.is_valid():
         form.save()
         return redirect("stwms:report_list")
-    return render(request, "report_form.html", {"form": form})
+    return render(request, "report/report_form.html", {"form": form})
 
 
 def report_update(request, pk):
@@ -259,10 +259,21 @@ def report_update(request, pk):
     if form.is_valid():
         form.save()
         return redirect("stwms:report_list")
-    return render(request, "report_form.html", {"form": form})
+    return render(request, "report/report_form.html", {"form": form})
 
 
 def report_delete(request, pk):
     report = get_object_or_404(Report, pk=pk)
     report.delete()
     return redirect("stwms:report_list")
+
+# authentication views
+
+def register(request):
+    return render(request, "authentication/register.html")
+
+def log_in(request):
+    return render(request, "authentication/log_in.html")
+
+def forgot_password(request):
+    return render(request, "authentication/forgot_password.html")
