@@ -277,3 +277,17 @@ def log_in(request):
 
 def forgot_password(request):
     return render(request, "authentication/forgot_password.html")
+
+# company info view
+def company_dashboard(request):
+    return render(request, "company/company.html")
+
+
+def overview(request):
+    return render(request, "company/overview.html")
+def tank_status(request):
+    return render(request, "company/tank_status.html")
+def analytics(request):
+    return render(request, "company/analytics.html")
+def settings(request):
+    return render(request, "company/settings.html")

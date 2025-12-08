@@ -10,6 +10,15 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('forgot_password/', views.forgot_password, name='forgot_password'),
 
+    # company dashboard
+    path('company_dashboard/', views.company_dashboard, name='company_dashboard'),
+    path('overview/', views.overview, name='overview'),
+    path('tank_status/', views.tank_status, name='tank_status'),
+    path('analytics/', views.analytics, name='analytics'),
+    path('settings/', views.settings, name='settings'),
+
+    # users views
+
     path('users/', views.users_list, name='users_list'),
     path('users/create/', views.users_create, name='users_create'),
     path('users/<int:pk>/edit/', views.users_update, name='users_update'),
