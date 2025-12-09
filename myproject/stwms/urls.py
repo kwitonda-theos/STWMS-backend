@@ -6,7 +6,21 @@ app_name = 'stwms'
 urlpatterns = [
     path('', views.vw, name='home'),
     path('base/', views.base, name='base'),
+    path('log_in/', views.log_in, name='log_in'),
     path('register/', views.register, name='register'),
+    path('forgot_password/', views.forgot_password, name='forgot_password'),
+
+    # driver home view
+    path('driver_home/', views.driver_home, name='driver_home'),
+
+    # company dashboard
+    path('company_dashboard/', views.company_dashboard, name='company_dashboard'),
+    path('overview/', views.overview, name='overview'),
+    path('tank_status/', views.tank_status, name='tank_status'),
+    path('analytics/', views.analytics, name='analytics'),
+    path('settings/', views.settings, name='settings'),
+
+    # users views
 
     path('users/', views.users_list, name='users_list'),
     path('users/create/', views.users_create, name='users_create'),

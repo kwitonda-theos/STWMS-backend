@@ -29,7 +29,7 @@ a:hover {
 h2 {
     margin-top: 0;
     color: #006325;
-    font-size: 36px;
+    font-size: 28px;
 }
 
 .subtitle {
@@ -83,7 +83,7 @@ input:focus {
     display: none;
 }
 .role-option:hover {
-    border-color: #0e5b2f;
+    border-color: #006325;
     background: #f5fff8;
 }
 .role-option:has(input[type="radio"]:checked) {
@@ -98,7 +98,7 @@ input:focus {
 .role-text {
     font-size: 15px;
     font-weight: bold;
-    color: #0e5b2f;
+    color: #006325;
 }
 
 .role-desc {
@@ -107,8 +107,8 @@ input:focus {
 }
 
 button {
-    width: 111%;
-    padding: 15px;
+    width: 100%;
+    padding: 14px;
     background: #006325;
     border: none;
     color: #fff;
