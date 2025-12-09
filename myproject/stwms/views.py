@@ -291,3 +291,7 @@ def analytics(request):
     return render(request, "company/analytics.html")
 def settings(request):
     return render(request, "company/settings.html")
+
+# driver home view
+def driver_home(request):
+    return render(request, "Driver/home.html")
