@@ -1,0 +1,96 @@
+<div class="container">
+    <div class="headersection">
+        <div class="header-text">
+            <h1>Settings</h1>
+            <p>Configure the waste management platform</p>
+        </div>
+        <div class="logo">🌍</div>
+    </div>
+
+    <div class="card">
+        <div class="section-title">
+            <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+            <span>Notifications</span>
+        </div>
+
+        <div class="setting-item">
+            <div class="setting-info">
+                <h3>Bin overflow alerts</h3>
+                <p>Get notified when bins reach 90% capacity</p>
+            </div>
+            <div class="toggle active" onclick="this.classList.toggle('active')"></div>
+        </div>
+
+        <div class="setting-item">
+            <div class="setting-info">
+                <h3>Route optimization updates</h3>
+                <p>Receive AI-generated route suggestions</p>
+            </div>
+            <div class="toggle active" onclick="this.classList.toggle('active')"></div>
+        </div>
+
+        <div class="setting-item">
+            <div class="setting-info">
+                <h3>Maintenance reminders</h3>
+                <p>Alert for scheduled maintenance</p>
+            </div>
+            <div class="toggle active" onclick="this.classList.toggle('active')"></div>
+        </div>
+
+        <div class="setting-item">
+            <div class="setting-info">
+                <h3>Daily reports</h3>
+                <p>Automated daily summary via email</p>
+            </div>
+            <div class="toggle" onclick="this.classList.toggle('active')"></div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="section-title">
+            <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M12 1v6m0 6v6m5.2-13.2-4.2 4.2m0 6-4.2 4.2M1 12h6m6 0h6m-13.2 5.2 4.2-4.2m6 0 4.2 4.2"></path>
+            </svg>
+            <span>System preferences</span>
+        </div>
+
+        <div class="form-group">
+            <label>Theme</label>
+            <div class="select-wrapper">
+                <select>
+                    <option>Light</option>
+                    <option>Dark</option>
+                    <option>Auto</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Language</label>
+            <div class="select-wrapper">
+                <select>
+                    <option>english</option>
+                    <option>español</option>
+                    <option>français</option>
+                    <option>deutsch</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Auto refresh interval</label>
+            <div class="select-wrapper">
+                <select>
+                    <option>30 s</option>
+                    <option>60 s</option>
+                    <option>120 s</option>
+                    <option>300 s</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>

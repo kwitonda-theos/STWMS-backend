@@ -17,7 +17,7 @@ section { padding: 60px 20px; }
 /* HEADER  */
 header { font-weight: 600; position: fixed; top: 0; width: 100%; background: white; box-shadow: 0 2px 6px rgba(0,0,0,0.1); z-index: 1000; }
 
-header .nav { display: flex; justify-content: space-between; align-items: center; padding: 0px 25px; }
+header .nav { display: flex; justify-content: space-between; align-items: center; padding: 0px 20px; }
 
 header nav {
   display: flex;
@@ -26,18 +26,19 @@ header nav {
   align-items: center;
 }
 
+
 header nav a:hover {
     color: #006325;
 }
 
-.btn1 { background: #006325; color: white; padding: 10px 50px; border-radius: 10px;border: #006325 2px solid; display: inline-block; }
+.btn1 { background: #006325; color: white; padding: 10px 50px; border-radius: 10px;border: #006325 2px solid; display: inline-block; transition: 0.3 ease-in; }
 .btn1:hover { background: #00531f; }
 .btn { background: white; color: #006325; padding: 10px 50px; border-radius: 10px;border: #006325 2px solid; display: inline-block; }
 .btn:hover { background: #e6ffe6;  }
 
 
 
-/* -------------------- HERO -------------------- */
+/*  HERO  */
 .hero {
     
     position: relative;

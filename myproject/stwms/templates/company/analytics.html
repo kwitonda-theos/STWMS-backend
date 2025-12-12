@@ -1,0 +1,62 @@
+<div class="content-header analytics-header">
+    <div class="header-text">
+        <h2>Analytics & Reports</h2>
+        <p class="subtitle">Insights and trends for waste management optimization</p>
+    </div>
+</div>
+
+<div class="analytics-container">
+
+    <div class="chart-card">
+        <h3>Collection Trends (Completed Routes)</h3>
+        
+        <div class="chart-wrapper">
+            <div class="y-axis">
+                <span>{{ max_y }}</span>
+                <span>{{ max_y|add:"-20" }}</span> <span>0</span>
+            </div>
+
+            <div class="bar-chart-area">
+                <div class="grid-lines">
+                    <div class="line"></div>
+                    <div class="line"></div>
+                    <div class="line"></div>
+                </div>
+
+                {% for label, data in chart_data %}
+                <div class="bar-group">
+                    <div class="bar" 
+                        style="height: {{ data.height }}%;" 
+                        title="{{ data.value }} Collections">
+                    </div>
+                    <span class="x-label">{{ label }}</span>
+                </div>
+                {% empty %}
+                <div style="position:absolute; width:100%; text-align:center; color:#999; top:40%;">
+                    No collection data available yet.
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="chart-card">
+        <h3>Bin Distribution by District</h3>
+        
+        <div class="pie-chart-wrapper">
+            <div class="pie-chart" style=" {{ pie_style }}"></div>
+
+            <div class="chart-labels-list" style="margin-left: 40px; display: flex; flex-direction: column; justify-content: center; gap: 10px;">
+                {% for item in legend_data %}
+                <div class="label-item" style="display: flex; align-items: center; gap: 8px;">
+                    <span style="width: 12px; height: 12px; border-radius: 50%; background-color: {{ item.color }}; display: inline-block;"></span>
+                    <span style="font-weight: 500; color: #374151;">{{ item.label }}: {{ item.percent }}%</span>
+                </div>
+                {% empty %}
+                <p style="color:#999;">No bin location data found.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+</div>

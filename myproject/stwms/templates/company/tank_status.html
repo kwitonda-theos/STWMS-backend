@@ -1,0 +1,125 @@
+<div class="content-header">
+    <div class="header-text">
+        <h2>Tank status</h2>
+        <p class="subtitle">Real-time monitoring of waste bin levels</p>
+    </div>
+    <button class="btn btn-outline" onclick="location.reload()">
+        <i class="fas fa-sync-alt"></i> Refresh
+    </button>
+    
+</div>
+<button class="btn create-tank btn-outline">
+    +  Create New Tank 
+</button>
+
+<div class="panel-controls">
+    <div class="search-bar">
+        <input type="text" id="tankSearch" placeholder="Search by Bin ID or Sector..." onkeyup="filterTanks()">
+    </div>
+    <div class="filter-group">
+        <select class="form-select" onchange="filterStatus(this.value)">
+            <option value="all">All Statuses ▼</option>
+            <option value="full">Full</option>
+            <option value="intermediate">Intermediate</option>
+            <option value="empty">Empty</option>
+            <option value="maintenance">Maintenance</option>
+        </select>
+    </div>
+</div>
+
+<div class="analytics-grid" id="tankGrid">
+    {% for bin in bins %}
+    <div class="stat-card tank-card" 
+        data-status="{{ bin.status }}" 
+        data-search="{{ bin.WasteBin_id }} {% if bin.location %}{{ bin.location.sector }}{% endif %}">
+        
+        <div class="tank-header">
+            <div class="tank-id">
+                
+                <span>{{ bin.WasteBin_id }}</span>
+            </div>
+            
+            {% if bin.status == 'full' %}
+                <span class="status-badge status-inactive">Full</span>
+            {% elif bin.status == 'maintenance' %}
+                <span class="status-badge status-maintenance">Maintenance</span>
+            {% elif bin.status == 'empty' %}
+                <span class="status-badge status-active">Empty</span>
+            {% else %}
+                <span class="status-badge status-on-leave">{{ bin.status|title }}</span>
+            {% endif %}
+        </div>
+
+        <div class="tank-location">
+            <p><i class="fas fa-map-marker-alt"></i> 
+                {% if bin.location %}
+                    {{ bin.location.sector }}, {{ bin.location.cell }}
+                {% else %}
+                    <span style="color: #999; font-style: italic;">Unassigned</span>
+                {% endif %}
+            </p>
+            <small>
+                {% if bin.location %}
+                    House: {{ bin.location.house }}
+                {% endif %}
+            </small>
+        </div>
+
+        <div class="fill-level-container">
+            <div class="fill-info">
+                <span>Fill Level</span><br>
+                <strong>{{ bin.fill_level|default:0}}%</strong>
+            </div>
+            <div class="progress-bg">
+                <div class="progress-fill
+                    {% if bin.status == 'full' %}fill-critical
+                    {% elif bin.status == 'maintenance' %}fill-maintenance
+                    {% elif bin.status == 'empty' %}fill-safe
+                    {% else %}fill-warning{% endif %}"
+                    style="width: {{ bin.fill_level|default:0 }}%;">
+                </div>
+            </div>
+        </div>
+
+        <div class="tank-footer">
+            <span>Last updated: {{ bin.last_updated|timesince }} ago</span>
+            <button class="delete-btn" onclick="deleteTank('{{ bin.WasteBin_id }}')" title="Delete Tank" style="background: none; border: none; color: #717171; cursor: pointer; float: right; margin-left: 30px;width: 24px;">
+                <i class="fas fa-trash"></i>
+            </button>
+        </div>
+    </div>
+    {% empty %}
+    <div class="no-data">
+        <p>No waste bins found in the database.</p>
+    </div>
+    {% endfor %}
+</div>
+<script>
+function filterTanks() {
+    let input = document.getElementById('tankSearch').value.toLowerCase();
+    let cards = document.querySelectorAll('.tank-card');
+    
+    cards.forEach(card => {
+        let text = card.getAttribute('data-search').toLowerCase();
+        if (text.includes(input)) {
+            card.style.display = "";
+        } else {
+            card.style.display = "none";
+        }
+    });
+}
+
+function filterStatus(status) {
+    let cards = document.querySelectorAll('.tank-card');
+    cards.forEach(card => {
+        let cardStatus = card.getAttribute('data-status');
+        if (status === 'all' || cardStatus === status) {
+            card.style.display = "";
+        } else {
+            card.style.display = "none";
+        }
+    });
+}
+
+
+</script>

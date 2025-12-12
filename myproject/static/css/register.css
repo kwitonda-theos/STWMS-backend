@@ -1,7 +1,7 @@
 body {
     margin: 0;
-    font-family: Arial, Helvetica, sans-serif;
-    background: #0e5b2f;
+    font-family: "Jost", Helvetica, sans-serif;
+    background: #006325;
     display: flex;
     justify-content: center;
     padding: 40px 0;
@@ -9,8 +9,8 @@ body {
 
 .container {
     background: #ffffff;
-    width: 420px;
-    padding: 40px 35px;
+    
+    padding: 40px 90px 40px 60px;
     border-radius: 8px;
 }
 
@@ -20,35 +20,45 @@ a {
     color: #000;
     display: inline-block;
     margin-bottom: 15px;
+    transition: 0.3s ease;
+}
+a:hover {
+    color: #006325;
 }
 
 h2 {
     margin-top: 0;
-    color: #0e5b2f;
+    color: #006325;
     font-size: 28px;
 }
 
 .subtitle {
-    margin-top: -8px;
-    color: #555;
-    font-size: 14px;
+    margin-top: -30px;
+    color: #040404;
+    font-size: 16px;
     margin-bottom: 30px;
+    font-weight: 400;
 }
 
 label {
-    font-size: 14px;
-    color: #333;
+    font-size: 16px;
+    color: #080808;
     display: block;
+    font-weight: 400;
     margin-bottom: 6px;
 }
 
 input {
     width: 100%;
-    padding: 12px;
+    padding: 15px;
     border: 1px solid #ccc;
     border-radius: 5px;
     margin-bottom: 20px;
     font-size: 14px;
+}
+input:focus {
+    border-color: #006325;
+    outline: none;
 }
 
 .role-title {
@@ -65,14 +75,21 @@ input {
     align-items: center;
     cursor: pointer;
     margin-bottom: 12px;
-    transition: 0.2s;
-}
+    transition: 0.2s ease;
+    width: 100%;
 
+}
+.role-option input[type="radio"] {
+    display: none;
+}
 .role-option:hover {
-    border-color: #0e5b2f;
+    border-color: #006325;
     background: #f5fff8;
 }
-
+.role-option:has(input[type="radio"]:checked) {
+    border-color: #006325;
+    background: #e5fbeb;
+}
 .role-option img {
     width: 30px;
     margin-right: 12px;
@@ -81,7 +98,7 @@ input {
 .role-text {
     font-size: 15px;
     font-weight: bold;
-    color: #0e5b2f;
+    color: #006325;
 }
 
 .role-desc {
@@ -92,16 +109,39 @@ input {
 button {
     width: 100%;
     padding: 14px;
-    background: #0e5b2f;
+    background: #006325;
     border: none;
     color: #fff;
     font-size: 16px;
     border-radius: 6px;
     cursor: pointer;
     margin-top: 10px;
-    transition: 0.2s;
+    transition: 0.2s ease;
 }
 
 button:hover {
     background: #0b4b27;
+}
+
+.messages {
+    margin-bottom: 20px;
+}
+
+.message {
+    padding: 12px 15px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.message.error {
+    background-color: #fee;
+    color: #dc3545;
+    border: 1px solid #fcc;
+}
+
+.message.success {
+    background-color: #e8f5e9;
+    color: #006325;
+    border: 1px solid #c8e6c9;
 }
