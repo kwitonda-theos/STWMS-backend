@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.db import IntegrityError
+from django.http import JsonResponse, HttpResponse
 from .models import (
     Users, Location, WasteBin, Sensor,
     Collector, Vehicle, CollectionRoute,
@@ -60,8 +61,23 @@ def base(request):
 def location_create(request):
     form = LocationForm(request.POST or None)
     if form.is_valid():
-        form.save()
+        location = form.save()
+        # If it's an AJAX request, return JSON response with location data
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({
+                'success': True, 
+                'location_id': location.house,
+                'location_display': f"{location.sector}, {location.cell}",
+                'redirect_to': 'bin_create'
+            })
         return redirect("stwms:location_list")
+    
+    # If it's an AJAX request, return just the form HTML
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        from django.template.loader import render_to_string
+        html = render_to_string('location/location_form_content.html', {'form': form}, request=request)
+        return HttpResponse(html)
+    
     return render(request, "location/location_form.html", {"form": form})
 
 
@@ -89,7 +105,17 @@ def bin_create(request):
     form = WasteBinForm(request.POST or None)
     if form.is_valid():
         form.save()
+        # If it's an AJAX request, return JSON response
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'success': True, 'redirect': '/tank_status/'})
         return redirect("stwms:bin_list")
+    
+    # If it's an AJAX request, return just the form HTML
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        from django.template.loader import render_to_string
+        html = render_to_string('bin/bin_form_content.html', {'form': form}, request=request)
+        return HttpResponse(html)
+    
     return render(request, "bin/bin_form.html", {"form": form})
 
 
@@ -273,6 +299,8 @@ def report_delete(request, pk):
     report = get_object_or_404(Report, pk=pk)
     report.delete()
     return redirect("stwms:report_list")
+
+
 
 # authentication views
 

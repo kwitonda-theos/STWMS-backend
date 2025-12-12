@@ -14,8 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
         'tank_status': '/tank_status/',
         'analytics': '/analytics/',
         'settings': '/settings/',
-        'bin_create': '/bins/create/',
-        // Add more routes as needed
+        
 
         
     };
@@ -33,7 +32,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Function to load content dynamically
     function loadContent(url) {
-        fetch(url)
+        fetch(url, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Failed to load content');
@@ -42,6 +45,17 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .then(html => {
                 mainContent.innerHTML = html;
+                
+                // Execute any scripts in the loaded HTML
+                const scripts = mainContent.querySelectorAll('script');
+                scripts.forEach(function(oldScript) {
+                    const newScript = document.createElement('script');
+                    Array.from(oldScript.attributes).forEach(attr => {
+                        newScript.setAttribute(attr.name, attr.value);
+                    });
+                    newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+                    oldScript.parentNode.replaceChild(newScript, oldScript);
+                });
             })
             .catch(error => {
                 console.error('Error loading content:', error);
@@ -93,11 +107,27 @@ document.addEventListener('DOMContentLoaded', function() {
     if (mainContent.innerHTML.trim() === '') {
         loadContent(contentRoutes['overview']);
     }
-    // Create Bin link
-    if (createBinLink) {
-        createBinLink.addEventListener('click', function(event) {
-            event.preventDefault();
-            console.log('Create Bin link clicked');
+    // Create Bin link - use event delegation for dynamically added buttons
+    if (mainContent) {
+        mainContent.addEventListener('click', function(event) {
+            const createBinBtn = event.target.closest('.create-tank');
+            if (createBinBtn) {
+                event.preventDefault();
+                loadContent('/bins/create/');
+            }
         });
     }
+
+    // Define global functions for form navigation (available even before scripts execute)
+    window.loadBinForm = function() {
+        loadContent('/bins/create/');
+    };
+
+    window.loadLocationForm = function() {
+        loadContent('/locations/create/');
+    };
+
+    window.loadTankStatus = function() {
+        loadContent('/tank_status/');
+    };
 });

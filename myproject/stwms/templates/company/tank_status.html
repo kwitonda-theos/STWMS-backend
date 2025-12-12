@@ -6,7 +6,11 @@
     <button class="btn btn-outline" onclick="location.reload()">
         <i class="fas fa-sync-alt"></i> Refresh
     </button>
+    
 </div>
+<button class="btn create-tank btn-outline">
+    +  Create New Tank 
+</button>
 
 <div class="panel-controls">
     <div class="search-bar">
@@ -14,7 +18,7 @@
     </div>
     <div class="filter-group">
         <select class="form-select" onchange="filterStatus(this.value)">
-            <option value="all">All Statuses</option>
+            <option value="all">All Statuses ▼</option>
             <option value="full">Full</option>
             <option value="intermediate">Intermediate</option>
             <option value="empty">Empty</option>
