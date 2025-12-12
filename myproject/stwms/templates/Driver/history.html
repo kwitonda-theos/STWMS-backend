@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STWMS - History</title>
+    <link rel="stylesheet" href="driver.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <h2 class="logo">STWMS</h2>
+            <p class="subtitle">Management platform</p>
+            <nav class="menu">
+                <a href="index.html"><i class="icon">🏠</i> Home</a>
+                <a href="routes.html"><i class="icon">🗺️</i> Routes</a>
+                <a class="active" href="history.html"><i class="icon">⏳</i> History</a>
+                <a href="notification.html"><i class="icon">🔔</i> Notification</a>
+            </nav>
+            <button class="signout">Sign out</button>
+        </aside>
+
+        <main class="main-content">
+            <header class="main-header">
+                <div class="welcome-section">
+                    <h1>Welcome, **Driver!**</h1>
+                    <p>Ready for today's collections</p>
+                </div>
+                <div class="header-icons">
+                    <span class="notification-badge">4</span>
+                    <i class="icon bell-icon">🔔</i>
+                    <img src="placeholder-avatar.png" alt="Driver Avatar" class="avatar">
+                </div>
+            </header>
+            
+            <section class="history-page">
+                <div class="tab-navigation">
+                    <button class="tab-btn active">Today</button>
+                    <button class="tab-btn">This Week</button>
+                    <button class="tab-btn">Monthly stats</button>
+                    <button class="tab-btn">Waste Analytics</button>
+                </div>
+
+                <div class="today-collections-section">
+                    <div class="section-header">
+                        <i class="icon calendar-icon">🗓️</i>
+                        <h2>Today's **Collections**</h2>
+                    </div>
+
+                    <div class="collection-list">
+                        <div class="collection-item">
+                            <div class="item-main">
+                                <div class="status-dot completed-dot"></div>
+                                <span class="location">KN 15 Ave, Nyarugenge</span>
+                                <span class="details type">Recycling</span>
+                                <span class="details time">07:30 AM</span>
+                            </div>
+                            <div class="item-stats">
+                                <span class="stat-value">45 kg</span>
+                                <span class="stat-value quality good">excellent</span>
+                                <button class="details-btn">Details</button>
+                            </div>
+                            <div class="item-id">ID: COL-2024-09-28-001</div>
+                        </div>
+
+                        <div class="collection-item">
+                            <div class="item-main">
+                                <div class="status-dot completed-dot"></div>
+                                <span class="location">Remera Sector, Gasabo</span>
+                                <span class="details type">General Waste</span>
+                                <span class="details time">08:00 AM</span>
+                            </div>
+                            <div class="item-stats">
+                                <span class="stat-value">78 kg</span>
+                                <span class="stat-value quality average">good</span>
+                                <button class="details-btn">Details</button>
+                            </div>
+                            <div class="item-id">ID: COL-2024-09-28-002</div>
+                        </div>
+
+                        <div class="collection-item">
+                            <div class="item-main">
+                                <div class="status-dot completed-dot"></div>
+                                <span class="location">Kimisagara Quarter</span>
+                                <span class="details type">Recycling</span>
+                                <span class="details time">09:00 AM</span>
+                            </div>
+                            <div class="item-stats">
+                                <span class="stat-value">67 kg</span>
+                                <span class="stat-value quality average">good</span>
+                                <button class="details-btn">Details</button>
+                            </div>
+                            <div class="item-id">ID: COL-2024-09-28-004</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="performance-summary-section">
+                    <h2>Performance Summary</h2>
+                    <p class="summary-subtitle">Today's collection metrics</p>
+
+                    <div class="metric-item">
+                        <span class="metric-label">Collection Rate</span>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar green-progress" style="width: 100%;"></div>
+                        </div>
+                        <span class="metric-value">100%</span>
+                    </div>
+
+                    <div class="metric-item">
+                        <span class="metric-label">Quality Score</span>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar green-progress" style="width: 94%;"></div>
+                        </div>
+                        <span class="metric-value">4.7/5</span>
+                    </div>
+
+                    <div class="metric-item">
+                        <span class="metric-label">Efficiency</span>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar green-progress" style="width: 96%;"></div>
+                        </div>
+                        <span class="metric-value">96%</span>
+                    </div>
+                </div>
+
+                <div class="areas-covered-section">
+                    <h2>Areas Covered</h2>
+                    <ul class="area-list">
+                        <li><i class="icon location-pin">📍</i> Nyarugenge District</li>
+                        <li><i class="icon location-pin">📍</i> Gasabo Sector</li>
+                        <li><i class="icon location-pin">📍</i> Kicukiro Area</li>
+                    </ul>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

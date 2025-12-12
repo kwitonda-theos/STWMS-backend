@@ -1,0 +1,608 @@
+/* ======================================= */
+/* 1. GLOBAL & RESET STYLES */
+/* ======================================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    /* Using Poppins, but fallback to a standard system font like Arial if not loaded */
+    font-family: 'Poppins', 'Arial', sans-serif; 
+}
+
+body {
+    background: #f6f6f6;
+    color: #333;
+}
+
+.dashboard-container, .container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Base Green Color */
+:root {
+    --deep-green: #005f2f; /* Used in previous examples */
+    --bright-green: #5ac838; /* Used in previous examples for highlights */
+    --dark-green: #036b2e; /* Used in the Home example */
+    --text-color: #333;
+}
+
+/* --- Main Content --- */
+.main, .main-content {
+    flex-grow: 1;
+    padding: 30px;
+    overflow-y: auto;
+}
+
+/* ======================================= */
+/* 2. SIDEBAR STYLES */
+/* ======================================= */
+.sidebar {
+    width: 250px;
+    background-color: var(--dark-green);
+    color: white;
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-header {
+    text-align: center;
+    padding: 0 20px 30px;
+}
+
+.logo, .sidebar-header .platform-name {
+    font-size: 1.5em;
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+}
+
+.subtitle, .sidebar-header .platform-subtitle {
+    font-size: 0.8em;
+    opacity: 0.8;
+    margin-bottom: 30px;
+}
+
+/* Navigation Links (Menu) */
+.menu, .sidebar-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.menu a, .nav-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+    color: white;
+    text-decoration: none;
+    font-size: 1em;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.menu a.active, .nav-item.active {
+    font-weight: 700;
+    background-color: var(--bright-green);
+    /* For consistency, applying the sidebar highlight to all active items */
+    box-shadow: 4px 0 0 var(--bright-green) inset; 
+    padding-left: 10px; 
+}
+
+.nav-item .icon {
+    margin-right: 10px;
+    font-size: 1.2em;
+}
+
+/* Sign Out Button */
+.signout, .signout-btn {
+    width: 100%;
+    background: white;
+    color: var(--dark-green);
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    margin-top: 20px;
+    transition: background-color 0.2s;
+}
+
+/* ======================================= */
+/* 3. HEADER & WELCOME STYLES */
+/* ======================================= */
+.top, .main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.top h1, .welcome-section h1 {
+    margin: 0;
+    font-size: 1.8em;
+    font-weight: 400;
+    color: var(--dark-green);
+}
+
+.welcome-section h1 strong {
+    font-weight: 700;
+}
+
+.top p, .welcome-section p {
+    margin: 0;
+    color: #777;
+    font-size: 0.9em;
+}
+
+.header-icons {
+    display: flex;
+    align-items: center;
+}
+
+.notification-badge {
+    background-color: var(--bright-green); 
+    color: #fff;
+    border-radius: 50%;
+    padding: 2px 7px;
+    font-size: 0.8em;
+    font-weight: 600;
+    position: relative;
+    right: -10px;
+    top: -10px;
+    z-index: 10;
+}
+
+.bell-icon {
+    font-size: 1.5em;
+    margin-right: 15px;
+    cursor: pointer;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #ccc;
+    margin-left: 5px;
+}
+
+/* ======================================= */
+/* 4. HOME PAGE (STATS & LAYOUT) STYLES */
+/* ======================================= */
+.stats {
+    margin: 25px 0;
+    display: flex;
+    gap: 20px;
+}
+
+.box {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    flex: 1;
+    border: 1px solid #e4e4e4;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.03);
+}
+
+.box .num {
+    font-size: 32px;
+    color: var(--dark-green);
+    font-weight: 600;
+}
+
+.content {
+    display: flex;
+    gap: 25px;
+}
+
+.route, .notifications {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    flex: 1;
+    border: 1px solid #e4e4e4;
+}
+
+.route h2, .notifications h2 {
+    font-size: 1.5em;
+    font-weight: 600;
+    color: var(--dark-green);
+}
+
+/* Google Map */
+.map, .map-container iframe {
+    width: 100%;
+    height: 260px;
+    border-radius: 10px;
+    border: none;
+    margin: 20px 0 10px 0;
+}
+
+/* Stops List (Home Page) */
+.stop {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px dashed #eee;
+}
+
+.stop:last-of-type {
+    border-bottom: none;
+}
+
+.stop p {
+    margin: 0;
+    font-size: 0.95em;
+}
+
+.pending { color: #c62828; font-weight: 600; }
+.completed { color: #1b8a42; font-weight: 600; }
+
+.btn-green {
+    background: var(--dark-green);
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 15px;
+    width: 100%;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+/* Notifications (Home Widget) */
+.note-title {
+    margin: 10px 0 15px;
+    color: #444;
+}
+
+.note {
+    margin: 15px 0;
+    padding-bottom: 5px;
+    border-bottom: 1px dashed #eee;
+}
+
+.note p {
+    margin: 0;
+    font-size: 0.9em;
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.note .badge {
+    padding: 4px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    color: white;
+    float: right;
+    margin-left: 10px;
+}
+
+.high { background: #d32f2f; }
+.medium { background: #f9a825; }
+.low { background: #1b8a42; }
+
+.note small {
+    color: #777;
+    display: block;
+    margin-top: 4px;
+    font-size: 0.8em;
+}
+
+
+/* ======================================= */
+/* 5. ROUTES PAGE STYLES */
+/* ======================================= */
+
+.route-section {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    padding: 25px;
+    margin-bottom: 30px;
+}
+
+.route-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.route-status {
+    display: flex;
+    align-items: center;
+}
+
+.map-pin-icon {
+    font-size: 1.5em;
+    color: var(--bright-green);
+    margin-right: 10px;
+}
+
+.route-status h2 {
+    margin: 0;
+    font-size: 1.5em;
+    font-weight: 400;
+}
+
+.route-status h2 strong {
+    font-weight: 600;
+}
+
+.route-status p {
+    margin: 0;
+    color: #777;
+    font-size: 0.9em;
+    margin-left: 10px;
+}
+
+.optimize-btn {
+    padding: 10px 20px;
+    background-color: var(--bright-green);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+
+.data-summary {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 30px;
+}
+
+.collection-stops-card, .stats-card {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    padding: 25px;
+}
+
+.stop-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.stop-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.stop-item.pending .status {
+    color: #ff9800; /* Orange/Amber for Pending */
+}
+
+.stop-item.completed .status {
+    color: var(--bright-green); /* Green for Completed */
+}
+
+/* Stats Card */
+.stat-item {
+    display: flex;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.stat-item .icon {
+    font-size: 1.5em;
+    color: var(--bright-green);
+    margin-right: 15px;
+}
+
+.stat-label {
+    flex-grow: 1;
+    font-size: 1em;
+    color: #555;
+}
+
+.stat-value {
+    font-size: 1.1em;
+    font-weight: 600;
+    color: #333;
+}
+
+.stat-value.progress {
+    color: var(--bright-green);
+}
+
+
+/* ======================================= */
+/* 6. HISTORY PAGE STYLES */
+/* ======================================= */
+
+.tab-navigation {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1px;
+    margin-bottom: 30px;
+    background-color: #fff;
+    padding: 5px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.tab-btn {
+    padding: 8px 15px;
+    border: none;
+    background-color: transparent;
+    color: #777;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: all 0.2s;
+}
+
+.tab-btn.active {
+    background-color: var(--bright-green);
+    color: #fff;
+    font-weight: 600;
+}
+
+.today-collections-section, .performance-summary-section, .areas-covered-section {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    padding: 25px;
+    margin-bottom: 30px;
+}
+
+.calendar-icon {
+    font-size: 1.5em;
+    color: var(--bright-green);
+    margin-right: 10px;
+}
+
+.collection-item {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    display: grid;
+    grid-template-areas: 
+        "main stats"
+        "id id";
+    grid-template-columns: 2fr 1fr;
+    gap: 5px;
+}
+
+.item-main {
+    grid-area: main;
+    display: flex;
+    align-items: center;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--bright-green);
+    margin-right: 10px;
+}
+
+.item-stats {
+    grid-area: stats;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 20px;
+}
+
+/* Progress Bars */
+.metric-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+}
+
+.progress-bar-container {
+    flex-grow: 1;
+    height: 6px;
+    background-color: #e0e0e0;
+    border-radius: 3px;
+    margin: 0 15px;
+}
+
+.progress-bar {
+    height: 100%;
+    border-radius: 3px;
+}
+
+.green-progress {
+    background-color: var(--bright-green);
+}
+
+.metric-value {
+    font-weight: 600;
+    color: var(--bright-green);
+}
+
+.location-pin {
+    color: var(--bright-green);
+    margin-right: 10px;
+}
+
+/* ======================================= */
+/* 7. NOTIFICATION PAGE STYLES */
+/* ======================================= */
+
+.notification-page {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    padding: 25px;
+}
+
+.notification-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+}
+
+.notification-status {
+    display: flex;
+    align-items: center;
+}
+
+.large-bell {
+    font-size: 1.5em;
+    color: var(--bright-green);
+    margin-right: 10px;
+}
+
+.action-btn-link {
+    background: none;
+    border: none;
+    color: var(--bright-green);
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.9em;
+    display: flex;
+    align-items: center;
+}
+
+.notification-card {
+    display: flex;
+    align-items: center;
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #eee;
+}
+
+.notification-card.urgent {
+    background-color: #fef0f0; 
+    border-left: 5px solid #ff4d4f; /* Red urgency stripe */
+}
+
+.notification-card.medium {
+    background-color: #f5fcf0; 
+    border-left: 5px solid var(--bright-green);
+}
+
+.urgent .alert-icon { color: #ff4d4f; }
+.medium .info-icon { color: var(--bright-green); }
+
+.priority.high {
+    background-color: #ff4d4f;
+    color: #fff;
+}
+
+.priority.medium-p {
+    background-color: #e6f7d5;
+    color: var(--bright-green);
+}

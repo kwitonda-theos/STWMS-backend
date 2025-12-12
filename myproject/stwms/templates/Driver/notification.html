@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STWMS - Notifications</title>
+    <link rel="stylesheet" href="driver.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <h2 class="logo">STWMS</h2>
+            <p class="subtitle">Management platform</p>
+            <nav class="menu">
+                <a href="index.html"><i class="icon">🏠</i> Home</a>
+                <a href="routes.html"><i class="icon">🗺️</i> Routes</a>
+                <a href="history.html"><i class="icon">⏳</i> History</a>
+                <a class="active" href="notification.html"><i class="icon">🔔</i> Notification</a>
+            </nav>
+            <button class="signout">Sign out</button>
+        </aside>
+
+        <main class="main-content">
+            <header class="main-header">
+                <div class="welcome-section">
+                    <h1>Welcome, **Driver!**</h1>
+                    <p>Ready for today's collections</p>
+                </div>
+                <div class="header-icons">
+                    <span class="notification-badge">4</span>
+                    <i class="icon bell-icon">🔔</i>
+                    <img src="placeholder-avatar.png" alt="Driver Avatar" class="avatar">
+                </div>
+            </header>
+            
+            <section class="notification-page">
+                <div class="notification-actions">
+                    <div class="notification-status">
+                        <i class="icon large-bell">🔔</i>
+                        <h2>Recent **Notification**</h2>
+                        <p>4 unread notifications</p>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="action-btn-link"><i class="icon">☑️</i> Mark All as read</button>
+                        <button class="action-btn-link"><i class="icon">🗑️</i> Clear All</button>
+                    </div>
+                </div>
+
+                <div class="notification-list">
+                    
+                    <div class="notification-card urgent">
+                        <div class="icon-section"><i class="icon alert-icon">⚠️</i></div>
+                        <div class="content-section">
+                            <div class="notification-title">Urgent: Full toilet</div>
+                            <div class="notification-body">Toilet at Kg24 Av is 95% full and requires immediate collection</div>
+                            <div class="notification-footer">
+                                <span class="time">2 minutes ago</span>
+                                <i class="icon delete-icon">🗑️</i>
+                            </div>
+                        </div>
+                        <div class="priority high">High</div>
+                    </div>
+                    
+                    <div class="notification-card medium">
+                        <div class="icon-section"><i class="icon info-icon">ℹ️</i></div>
+                        <div class="content-section">
+                            <div class="notification-title">Route optimization Complete</div>
+                            <div class="notification-body">Your route from downtown to Gisozí has been Optimized. check the updated route.</div>
+                            <div class="notification-footer">
+                                <span class="time">15 minutes ago</span>
+                                <i class="icon delete-icon">🗑️</i>
+                            </div>
+                        </div>
+                        <div class="priority medium-p">Medium</div>
+                    </div>
+                    
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
