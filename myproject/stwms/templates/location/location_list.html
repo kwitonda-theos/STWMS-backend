@@ -16,8 +16,8 @@
             <td>{{ location.district }}</td>
             <td>{{ location.cell }}</td>
             <td>
-                <a class="btn" href="{% url 'stwms:location_update' location.house %}">Edit</a>
-                <form style="display:inline" method="post" action="{% url 'stwms:location_delete' location.house %}">{% csrf_token %}
+                <a class="btn" href="{% url 'stwms:location_update' location.pk %}">Edit</a>
+                <form style="display:inline" method="post" action="{% url 'stwms:location_delete' location.pk %}">{% csrf_token %}
                     <button class="btn btn-danger" type="submit">Delete</button>
                 </form>
             </td>

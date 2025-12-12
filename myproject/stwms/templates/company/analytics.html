@@ -3,24 +3,17 @@
         <h2>Analytics & Reports</h2>
         <p class="subtitle">Insights and trends for waste management optimization</p>
     </div>
-    <div class="user-profile">
-        <div class="avatar-circle">
-            <img src="https://ui-avatars.com/api/?name=Admin+User&background=random" alt="User">
-        </div>
-    </div>
 </div>
 
 <div class="analytics-container">
 
     <div class="chart-card">
-        <h3>Collection Trends & Efficiency</h3>
+        <h3>Collection Trends (Completed Routes)</h3>
         
         <div class="chart-wrapper">
             <div class="y-axis">
-                <span>800</span>
-                <span>600</span>
-                <span>400</span>
-                <span>0</span>
+                <span>{{ max_y }}</span>
+                <span>{{ max_y|add:"-20" }}</span> <span>0</span>
             </div>
 
             <div class="bar-chart-area">
@@ -30,52 +23,38 @@
                     <div class="line"></div>
                 </div>
 
+                {% for label, data in chart_data %}
                 <div class="bar-group">
-                    <div class="bar" style="height: 55%;" data-value="420"></div>
-                    <span class="x-label">Jan</span>
+                    <div class="bar" 
+                        style="height: {{ data.height }}%;" 
+                        title="{{ data.value }} Collections">
+                    </div>
+                    <span class="x-label">{{ label }}</span>
                 </div>
-                <div class="bar-group">
-                    <div class="bar" style="height: 60%;" data-value="480"></div>
-                    <span class="x-label">Feb</span>
+                {% empty %}
+                <div style="position:absolute; width:100%; text-align:center; color:#999; top:40%;">
+                    No collection data available yet.
                 </div>
-                <div class="bar-group">
-                    <div class="bar" style="height: 65%;" data-value="520"></div>
-                    <span class="x-label">Mar</span>
-                </div>
-                <div class="bar-group">
-                    <div class="bar" style="height: 60%;" data-value="480"></div>
-                    <span class="x-label">Apr</span>
-                </div>
-                <div class="bar-group">
-                    <div class="bar" style="height: 75%;" data-value="600"></div>
-                    <span class="x-label">May</span>
-                </div>
-                <div class="bar-group">
-                    <div class="bar" style="height: 82%;" data-value="650"></div>
-                    <span class="x-label">Jun</span>
-                </div>
+                {% endfor %}
             </div>
         </div>
     </div>
 
     <div class="chart-card">
-        <h3>Waste Type Distribution</h3>
+        <h3>Bin Distribution by District</h3>
         
         <div class="pie-chart-wrapper">
-            <div class="pie-chart" style="
-                background: conic-gradient(
-                    #10B981 0% 45%,   /* Organic 45% */
-                    #F59E0B 45% 63%,  /* Paper 18% */
-                    #EF4444 63% 72%,  /* Metal 9% */
-                    #3B82F6 72% 100%  /* Plastic 28% */
-                );">
-            </div>
+            <div class="pie-chart" style=" {{ pie_style }}"></div>
 
-            <div class="chart-labels">
-                <span class="label-tag organic" style="top: 10%; right: 10%;">Organic: 45%</span>
-                <span class="label-tag paper" style="bottom: 15%; right: 20%;">Paper: 18%</span>
-                <span class="label-tag metal" style="bottom: 30%; right: 5%;">Metal: 9%</span>
-                <span class="label-tag plastic" style="bottom: 20%; left: 10%;">Plastic: 28%</span>
+            <div class="chart-labels-list" style="margin-left: 40px; display: flex; flex-direction: column; justify-content: center; gap: 10px;">
+                {% for item in legend_data %}
+                <div class="label-item" style="display: flex; align-items: center; gap: 8px;">
+                    <span style="width: 12px; height: 12px; border-radius: 50%; background-color: {{ item.color }}; display: inline-block;"></span>
+                    <span style="font-weight: 500; color: #374151;">{{ item.label }}: {{ item.percent }}%</span>
+                </div>
+                {% empty %}
+                <p style="color:#999;">No bin location data found.</p>
+                {% endfor %}
             </div>
         </div>
     </div>

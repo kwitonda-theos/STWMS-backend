@@ -1,242 +1,116 @@
-<div class="header">
-    <div class="header-left">
-        <h1>Tank status</h1>
-        <p>Real-time monitoring of all tanks across the city</p>
+<div class="content-header">
+    <div class="header-text">
+        <h2>Tank Status</h2>
+        <p class="subtitle">Real-time monitoring of waste bin levels</p>
     </div>
-    <div class="profile-icon">👤</div>
+    <button class="btn btn-outline" onclick="location.reload()">
+        <i class="fas fa-sync-alt"></i> Refresh
+    </button>
 </div>
 
-<div class="status-cards">
-    <div class="statu-card">
-        <div class="statu-card-content">
-            <h3>Total tanks</h3>
-            <div class="value">500</div>
-        </div>
-        <div class="statu-indicator indicator-blue"></div>
+<div class="panel-controls">
+    <div class="search-bar">
+        <input type="text" id="tankSearch" placeholder="Search by Bin ID or Sector..." onkeyup="filterTanks()">
     </div>
-
-    <div class="statu-card">
-        <div class="statu-card-content">
-            <h3>Attention</h3>
-            <div class="value">120</div>
-        </div>
-        <div class="statu-indicator indicator-red"></div>
-    </div>
-
-    <div class="statu-card">
-        <div class="statu-card-content">
-            <h3>Almost full</h3>
-            <div class="value">80</div>
-        </div>
-        <div class="statu-indicator indicator-yellow"></div>
-    </div>
-
-    <div class="statu-card">
-        <div class="statu-card-content">
-            <h3>Normal</h3>
-            <div class="value">300</div>
-        </div>
-        <div class="statu-indicator indicator-green"></div>
+    <div class="filter-group">
+        <select class="form-select" onchange="filterStatus(this.value)">
+            <option value="all">All Statuses</option>
+            <option value="full">Full</option>
+            <option value="intermediate">Intermediate</option>
+            <option value="empty">Empty</option>
+            <option value="maintenance">Maintenance</option>
+        </select>
     </div>
 </div>
 
-<div class="filter-section">
-    <div class="filters">
-        <div class="filter-group">
-            <label>Search</label>
-            <input type="text" placeholder="🔍 Search">
+<div class="analytics-grid" id="tankGrid">
+    {% for bin in bins %}
+    <div class="stat-card tank-card" 
+         data-status="{{ bin.status }}" 
+         data-search="{{ bin.WasteBin_id }} {% if bin.location %}{{ bin.location.sector }}{% endif %}">
+        
+        <div class="tank-header">
+            <div class="tank-id">
+                <i class="fas fa-trash-alt"></i>
+                <span>{{ bin.WasteBin_id }}</span>
+            </div>
+            
+            {% if bin.status == 'full' %}
+                <span class="status-badge status-inactive">Full</span>
+            {% elif bin.status == 'maintenance' %}
+                <span class="status-badge status-maintenance">Maintenance</span>
+            {% elif bin.status == 'empty' %}
+                <span class="status-badge status-active">Empty</span>
+            {% else %}
+                <span class="status-badge status-on-leave">{{ bin.status|title }}</span>
+            {% endif %}
         </div>
 
-        <div class="filter-group">
-            <label>Status</label>
-            <select>
-                <option>All statuses</option>
-                <option>Full</option>
-                <option>Almost full</option>
-                <option>Normal</option>
-                <option>Maintenance</option>
-            </select>
+        <div class="tank-location">
+            <p><i class="fas fa-map-marker-alt"></i> 
+                {% if bin.location %}
+                    {{ bin.location.sector }}, {{ bin.location.cell }}
+                {% else %}
+                    <span style="color: #999; font-style: italic;">Unassigned</span>
+                {% endif %}
+            </p>
+            <small>
+                {% if bin.location %}
+                    House: {{ bin.location.house }}
+                {% endif %}
+            </small>
         </div>
 
-        <div class="filter-group">
-            <label>District</label>
-            <select>
-                <option>All districts</option>
-                <option>Kicukiro</option>
-                <option>Nyarugenge</option>
-                <option>Gasabo</option>
-            </select>
+        <div class="fill-level-container">
+            <div class="fill-info">
+                <span>Fill Level</span>
+                <strong>{{ bin.fill_level|default:0}}%</strong>
+            </div>
+            <div class="progress-bg">
+                <div class="progress-fill
+                    {% if bin.fill_level >= 90 %}fill-critical
+                    {% elif bin.fill_level >= 50 %}fill-warning
+                    {% else %}fill-safe{% endif %}"
+                    style="width: {{ bin.fill_level|default:0 }}%;">
+                </div>
+            </div>
         </div>
 
-        <div class="filter-group">
-            <label>Sort by</label>
-            <select>
-                <option>House no</option>
-                <option>Fill level</option>
-                <option>Last collection</option>
-            </select>
+        <div class="tank-footer">
+            <span>Last updated: {{ bin.last_updated|timesince }} ago</span>
+            <a href="#" class="details-link">View Details <i class="fas fa-arrow-right"></i></a>
         </div>
-
-        <button class="reset-btn">🔄 Reset</button>
     </div>
-</div>
-
-<div class="showing-text">Showing 1-9 of 500 bins</div>
-
-<div class="table-container">
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Location</th>
-                <th>Status</th>
-                <th>Fill level</th>
-                <th></th>
-                <th>Last collection</th>
-                <th>District</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>1</td>
-                <td>kg 308 st 18</td>
-                <td><span class="status-badge status-full">Full</span></td>
-                <td>
-                    <div class="fill-bar">
-                        <div class="fill-progress fill-red" style="width: 95%"></div>
-                    </div>
-                </td>
-                <td>95%</td>
-                <td>8 weeks ago</td>
-                <td>Kicukiro</td>
-                <td><button class="action-btn action-schedule">Schedule collection</button></td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td>kg 145 st 48</td>
-                <td><span class="status-badge status-normal">Normal</span></td>
-                <td>
-                    <div class="fill-bar">
-                        <div class="fill-progress fill-green" style="width: 25%"></div>
-                    </div>
-                </td>
-                <td>25%</td>
-                <td>1 days ago</td>
-                <td>Kicukiro</td>
-                <td><button class="action-btn action-none">No action</button></td>
-            </tr>
-            <tr>
-                <td>3</td>
-                <td>kg 207 st 1</td>
-                <td><span class="status-badge status-full">Full</span></td>
-                <td>
-                    <div class="fill-bar">
-                        <div class="fill-progress fill-red" style="width: 100%"></div>
-                    </div>
-                </td>
-                <td>100%</td>
-                <td>10 weeks ago</td>
-                <td>Kicukiro</td>
-                <td><button class="action-btn action-schedule">Schedule collection</button></td>
-            </tr>
-            <tr>
-                <td>4</td>
-                <td>kg 308 st 8</td>
-                <td><span class="status-badge status-normal">Normal</span></td>
-                <td>
-                    <div class="fill-bar">
-                        <div class="fill-progress fill-green" style="width: 40%"></div>
-                    </div>
-                </td>
-                <td>40%</td>
-                <td>4week ago</td>
-                <td>Kicukiro</td>
-                <td><button class="action-btn action-none">No action</button></td>
-            </tr>
-            <tr>
-                <td>5</td>
-                <td>kg 438 st 10</td>
-                <td><span class="status-badge status-maintenance">Maintenance</span></td>
-                <td>
-                    <div class="fill-bar">
-                        <div class="fill-progress fill-gray" style="width: 0%"></div>
-                    </div>
-                </td>
-                <td>0%</td>
-                <td>Not available</td>
-                <td>Kicukiro</td>
-                <td><button class="action-btn action-maintenance">Schedule maintenance</button></td>
-            </tr>
-            <tr>
-                <td>6</td>
-                <td>kg 123 st 5</td>
-                <td><span class="status-badge status-almost">Almost</span></td>
-                <td>
-                    <div class="fill-bar">
-                        <div class="fill-progress fill-yellow" style="width: 75%"></div>
-                    </div>
-                </td>
-                <td>75%</td>
-                <td>6 weeks ago</td>
-                <td>Kicukiro</td>
-                <td><button class="action-btn action-none">No action</button></td>
-            </tr>
-            <tr>
-                <td>7</td>
-                <td>kg 409 st 30</td>
-                <td><span class="status-badge status-normal">Normal</span></td>
-                <td>
-                    <div class="fill-bar">
-                        <div class="fill-progress fill-gray" style="width: 15%"></div>
-                    </div>
-                </td>
-                <td>15%</td>
-                <td>2 weeks ago</td>
-                <td>Kicukiro</td>
-                <td><button class="action-btn action-none">No action</button></td>
-            </tr>
-            <tr>
-                <td>8</td>
-                <td>kg 345 st 65</td>
-                <td><span class="status-badge status-full">Full</span></td>
-                <td>
-                    <div class="fill-bar">
-                        <div class="fill-progress fill-red" style="width: 99%"></div>
-                    </div>
-                </td>
-                <td>99%</td>
-                <td>9 weeks ago</td>
-                <td>Kicukiro</td>
-                <td><button class="action-btn action-schedule">Schedule collection</button></td>
-            </tr>
-            <tr>
-                <td>9</td>
-                <td>kg 437 st 20</td>
-                <td><span class="status-badge status-full">Full</span></td>
-                <td>
-                    <div class="fill-bar">
-                        <div class="fill-progress fill-red" style="width: 95%"></div>
-                    </div>
-                </td>
-                <td>95%</td>
-                <td>8 weeks ago</td>
-                <td>Kicukiro</td>
-                <td><button class="action-btn action-schedule">Schedule collection</button></td>
-            </tr>
-        </tbody>
-    </table>
-
-    <div class="pagination">
-        <button>< previous</button>
-        <span class="active">1</span>
-        <button>2</button>
-        <button>3</button>
-        <button>4</button>
-        <button>5</button>
-        <button>6</button>
-        <span class="dots">...</span>
-        <button>56</button>
-        <button>Next ></button>
+    {% empty %}
+    <div class="no-data">
+        <p>No waste bins found in the database.</p>
     </div>
+    {% endfor %}
 </div>
+<script>
+function filterTanks() {
+    let input = document.getElementById('tankSearch').value.toLowerCase();
+    let cards = document.querySelectorAll('.tank-card');
+    
+    cards.forEach(card => {
+        let text = card.getAttribute('data-search').toLowerCase();
+        if (text.includes(input)) {
+            card.style.display = "";
+        } else {
+            card.style.display = "none";
+        }
+    });
+}
+
+function filterStatus(status) {
+    let cards = document.querySelectorAll('.tank-card');
+    cards.forEach(card => {
+        let cardStatus = card.getAttribute('data-status');
+        if (status === 'all' || cardStatus === status) {
+            card.style.display = "";
+        } else {
+            card.style.display = "none";
+        }
+    });
+}
+</script>

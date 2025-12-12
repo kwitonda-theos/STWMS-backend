@@ -4,6 +4,10 @@ from .models import (
     Collector, Vehicle, CollectionRoute,
     Alert, Report
 )
+
+from django.db.models import Count
+from django.db.models.functions import TruncMonth
+
 from .forms import (
     UsersForm, LocationForm, WasteBinForm, SensorForm,
     CollectorForm, VehicleForm, RouteForm,
@@ -284,14 +288,129 @@ def company_dashboard(request):
 
 
 def overview(request):
-    return render(request, "company/overview.html")
+    # 1. Fetch Basic Counts
+    total_bins = WasteBin.objects.count()
+    total_trucks = Vehicle.objects.count()
+    
+    # 2. Urgent Collections: Count bins where status is 'full'
+    urgent_collections = WasteBin.objects.filter(status='full').count()
+    
+    # 3. Efficiency Score Logic (Example: % of bins that are NOT full/defective)
+    # If total_bins is 0, avoid division by zero error
+    if total_bins > 0:
+        working_bins = WasteBin.objects.filter(status='empty').count()
+        efficiency = int((working_bins / total_bins) * 100)
+    else:
+        efficiency = 0
+
+    # 4. Recent Alerts: Get the 3 newest alerts
+    recent_alerts = Alert.objects.order_by('-timestamp')[:3]
+
+    context = {
+        "total_bins": total_bins,
+        "total_trucks": total_trucks,
+        "urgent_collections": urgent_collections,
+        "efficiency": efficiency,
+        "recent_alerts": recent_alerts
+    }
+
+    return render(request, "company/overview.html", context)
 def tank_status(request):
-    return render(request, "company/tank_status.html")
+    # Fetch all bins and 'select_related' to get location data efficiently in one query
+    bins = WasteBin.objects.select_related('location').all()
+    
+    context = {
+        "bins": bins
+    }
+    return render(request, "company/tank_status.html", context)
+
 def analytics(request):
-    return render(request, "company/analytics.html")
+# 1. Bar Chart: Completed Collections per Month
+    monthly_stats = CollectionRoute.objects.filter(completed=True) \
+        .annotate(month=TruncMonth('start_time')) \
+        .values('month') \
+        .annotate(count=Count('id')) \
+        .order_by('month')
+    
+    # Prepare data lists for the template
+    months = []
+    collections = []
+    max_count = 0
+    
+    for entry in monthly_stats:
+        if entry['month']:
+            months.append(entry['month'].strftime('%b')) # Jan, Feb...
+            count = entry['count']
+            collections.append(count)
+            if count > max_count:
+                max_count = count
+            
+    # Normalize bar heights (percentage relative to max value)
+    bar_data = []
+    for count in collections:
+        height = (count / max_count * 100) if max_count > 0 else 0
+        bar_data.append({'height': height, 'value': count})
+        
+    # Zip months and data together for easier looping in template
+    chart_data = zip(months, bar_data)
+
+    # 2. Pie Chart: Bin Distribution by District
+    # We count how many bins are in each district
+    district_stats = Location.objects.values('district') \
+        .annotate(bin_count=Count('wastebin')) \
+        .order_by('-bin_count')
+
+    total_bins_count = sum(item['bin_count'] for item in district_stats)
+    
+    # Colors for the chart segments
+    colors = ['#10B981', '#F59E0B', '#EF4444', '#3B82F6', '#8B5CF6']
+    
+    pie_segments = []
+    current_angle = 0
+    legend_data = []
+
+    if total_bins_count > 0:
+        for i, item in enumerate(district_stats):
+            count = item['bin_count']
+            percent = (count / total_bins_count) * 100
+            end_angle = current_angle + percent
+            color = colors[i % len(colors)]
+            
+            # Create CSS gradient string: "color start% end%"
+            pie_segments.append(f"{color} {current_angle}% {end_angle}%")
+            
+            legend_data.append({
+                'label': item['district'],
+                'percent': round(percent, 1),
+                'color': color
+            })
+            current_angle = end_angle
+
+    # Join segments for the CSS 'conic-gradient' property
+    pie_style = f"background: conic-gradient({', '.join(pie_segments)});" if pie_segments else "background: #E5E7EB;"
+
+    context = {
+        "chart_data": chart_data,
+        "pie_style": pie_style,
+        "legend_data": legend_data,
+        "max_y": max_count + 10 if max_count else 100 # Y-axis top limit
+    }
+    return render(request, "company/analytics.html", context)
+
 def settings(request):
-    return render(request, "company/settings.html")
+# You can pass the logged-in user's profile if you want to display their name/role
+    user_profile = None
+    if hasattr(request.user, 'profile'):
+        user_profile = request.user.profile
+        
+    context = {
+        'user': request.user,
+        'profile': user_profile
+    }
+    return render(request, "company/settings.html", context)
 
 # driver home view
 def driver_home(request):
     return render(request, "Driver/home.html")
+
+

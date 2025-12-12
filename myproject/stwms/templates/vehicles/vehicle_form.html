@@ -12,7 +12,13 @@
 	<h2>Vehicle Details</h2>
 	<p><strong>Plate Number:</strong> {{ vehicle.plate_number }}</p>
 	<p><strong>Capacity:</strong> {{ vehicle.capacity }}</p>
-	<p><strong>Assigned Collector:</strong> {{ vehicle.assigned_collector.user.username if vehicle.assigned_collector }}</p>
+	<p><strong>Assigned Collector:</strong> 
+		{% if vehicle.assigned_collector %}
+			{{ vehicle.assigned_collector.user.username }}
+		{% else %}
+			Unassigned
+		{% endif %}
+	</p>	
 	<p>
 		<a class="btn" href="{% url 'stwms:vehicle_update' vehicle.id %}">Edit</a>
 		<form style="display:inline" method="post" action="{% url 'stwms:vehicle_delete' vehicle.id %}">{% csrf_token %}

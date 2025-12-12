@@ -6,13 +6,17 @@ document.addEventListener('DOMContentLoaded', function() {
     let settingsLink = document.querySelector('.menu-item-settings');
     let signOutBtn = document.querySelector('.sign-out');
     let mainContent = document.querySelector('.main-content');
+    let createBinLink = document.querySelector('.create-tank');
 
     // Define content routes
     const contentRoutes = {
         'overview': '/overview/',
         'tank_status': '/tank_status/',
         'analytics': '/analytics/',
-        'settings': '/settings/'
+        'settings': '/settings/',
+        'bin_create': '/bins/create/',
+        // Add more routes as needed
+
         
     };
 
@@ -88,5 +92,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Load overview content on page load
     if (mainContent.innerHTML.trim() === '') {
         loadContent(contentRoutes['overview']);
+    }
+    // Create Bin link
+    if (createBinLink) {
+        createBinLink.addEventListener('click', function(event) {
+            event.preventDefault();
+            console.log('Create Bin link clicked');
+        });
     }
 });

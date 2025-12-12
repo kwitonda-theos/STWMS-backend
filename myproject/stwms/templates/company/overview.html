@@ -1,5 +1,4 @@
-
-<div class="header">
+<div class="headers">
     <h1>Dashboard Overview</h1>
     <p>Monitor your waste management operations in real-time</p>
 </div>
@@ -8,8 +7,8 @@
     <div class="stat-card">
         <div class="stat-content">
             <h3>Total tanks</h3>
-            <div class="stat-value">1,500</div>
-            <div class="stat-change positive">+13</div>
+            <div class="stat-value">{{ total_bins }}</div>
+            <div class="stat-change positive">Active</div>
         </div>
         <div class="stat-icon">
             <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -21,8 +20,8 @@
     <div class="stat-card">
         <div class="stat-content">
             <h3>Total trucks</h3>
-            <div class="stat-value">20</div>
-            <div class="stat-change negative">-13</div>
+            <div class="stat-value">{{ total_trucks }}</div>
+            <div class="stat-change positive">Fleet</div>
         </div>
         <div class="stat-icon">
             <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -34,8 +33,8 @@
     <div class="stat-card">
         <div class="stat-content">
             <h3>Urgent collections</h3>
-            <div class="stat-value">10</div>
-            <div class="stat-change positive">+5</div>
+            <div class="stat-value">{{ urgent_collections }}</div>
+            <div class="stat-change negative">Full Tanks</div>
         </div>
         <div class="stat-icon">
             <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -47,8 +46,8 @@
     <div class="stat-card">
         <div class="stat-content">
             <h3>Efficiency score</h3>
-            <div class="stat-value">95%</div>
-            <div class="stat-change positive">+3%</div>
+            <div class="stat-value">{{ efficiency }}%</div>
+            <div class="stat-change positive">Based on empty bins</div>
         </div>
         <div class="stat-icon">
             <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -61,36 +60,25 @@
 <div class="alerts-section">
     <h2>Recent Alerts</h2>
     
-    <div class="alert-item">
-        <div class="alert-left">
-            <div class="alert-icon error">⚠</div>
-            <div class="alert-info">
-                <h4>kg 308 st 18</h4>
-                <p>Full</p>
+    {% if recent_alerts %}
+        {% for alert in recent_alerts %}
+        <div class="alert-item">
+            <div class="alert-left">
+                {% if alert.resolved %}
+                    <div class="alert-icon success">✓</div>
+                {% else %}
+                    <div class="alert-icon error">⚠</div>
+                {% endif %}
+                
+                <div class="alert-info">
+                    <h4>Bin: {{ alert.bin.WasteBin_id }}</h4>
+                    <p>{{ alert.get_alert_type_display }}</p>
+                </div>
             </div>
+            <div class="alert-time">{{ alert.timestamp|timesince }} ago</div>
         </div>
-        <div class="alert-time">5 min ago</div>
-    </div>
-
-    <div class="alert-item">
-        <div class="alert-left">
-            <div class="alert-icon error">⚠</div>
-            <div class="alert-info">
-                <h4>kg 287 st 23</h4>
-                <p>Maintenance</p>
-            </div>
-        </div>
-        <div class="alert-time">30 min ago</div>
-    </div>
-
-    <div class="alert-item">
-        <div class="alert-left">
-            <div class="alert-icon success">✓</div>
-            <div class="alert-info">
-                <h4>kg 287 st 23</h4>
-                <p>pick up</p>
-            </div>
-        </div>
-        <div class="alert-time">30 min ago</div>
-    </div>
+        {% endfor %}
+    {% else %}
+        <p style="color: #888; margin-top: 10px;">No recent alerts.</p>
+    {% endif %}
 </div>
