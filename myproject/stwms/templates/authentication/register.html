@@ -20,56 +20,67 @@
     <h2>Create account</h2>
     <p class="subtitle">Join our smart waste management platform.</p>
 
-    <form>
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
 
-        <label>Full name</label>
-        <input type="text" placeholder="Enter your fullname">
+    <form method="post" action="{% url 'stwms:register' %}">
+        {% csrf_token %}
 
-        <label>E-mail</label>
-        <input type="email" placeholder="Enter your e-mail">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" placeholder="Enter your username" value="{{ username|default:'' }}" required>
 
-        <label>Phone number</label>
-        <input type="text" placeholder="Enter your phone number">
+        <label for="email">E-mail</label>
+        <input type="email" id="email" name="email" placeholder="Enter your e-mail" value="{{ email|default:'' }}" required>
 
-        <label>Address</label>
-        <input type="text" placeholder="Enter your address">
+        <label for="phone">Phone number</label>
+        <input type="text" id="phone" name="phone" placeholder="Enter your phone number" value="{{ phone|default:'' }}" required>
+
+        <label for="address">Address</label>
+        <input type="text" id="address" name="address" placeholder="Enter your address" value="{{ address|default:'' }}" required>
 
         <label class="role-title">Select your role</label>
 
         <div class="role-group">
             <label class="role-option">
-                <input type="radio" name="role" value="citizen">
-                <img src="https://img.icons8.com/ios-filled/50/user.png" alt="Citizen">
+                <input type="radio" name="role" value="resident" {% if role == 'resident' %}checked{% endif %} required>
+                <img src="https://img.icons8.com/ios-filled/50/user.png" alt="Resident">
                 <div>
-                    <div class="role-text">Citizen</div>
+                    <div class="role-text">Resident</div>
                     <div class="role-desc">Report waste issues and track collection</div>
                 </div>
             </label>
 
             <label class="role-option">
-                <input type="radio" name="role" value="driver">
-                <img src="https://img.icons8.com/ios-filled/50/truck.png" alt="Driver">
+                <input type="radio" name="role" value="collector" {% if role == 'collector' %}checked{% endif %} required>
+                <img src="https://img.icons8.com/ios-filled/50/truck.png" alt="Collector">
                 <div>
-                    <div class="role-text">Driver</div>
+                    <div class="role-text">Collector</div>
                     <div class="role-desc">Manage collection routes and schedules</div>
                 </div>
             </label>
 
             <label class="role-option">
-                <input type="radio" name="role" value="company">
-                <img src="https://img.icons8.com/ios-filled/50/company.png" alt="Company">
+                <input type="radio" name="role" value="admin" {% if role == 'admin' %}checked{% endif %} required>
+                <img src="https://img.icons8.com/ios-filled/50/company.png" alt="Admin">
                 <div>
-                    <div class="role-text">Company</div>
+                    <div class="role-text">Admin</div>
                     <div class="role-desc">Oversee operations and overall system</div>
                 </div>
             </label>
         </div>
 
-        <label>Create Password</label>
-        <input type="password" placeholder="Enter your password">
+        <label for="password">Create Password</label>
+        <input type="password" id="password" name="password" placeholder="Enter your password" required>
 
-        <label>Confirm Password</label>
-        <input type="password" placeholder="Re-enter your password">
+        <label for="confirm_password">Confirm Password</label>
+        <input type="password" id="confirm_password" name="confirm_password" placeholder="Re-enter your password" required>
 
         <button type="submit">Register</button>
     </form>

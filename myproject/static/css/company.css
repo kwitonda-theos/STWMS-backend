@@ -469,6 +469,21 @@ tbody tr:hover {
     color: #1a1a1a;
 }
 
+.status-active {
+    background-color: #10B981;
+    color: white;
+}
+
+.status-inactive {
+    background-color: #dc3545;
+    color: white;
+}
+
+.status-on-leave {
+    background-color: #F59E0B;
+    color: white;
+}
+
 .fill-bar {
     width: 120px;
     height: 6px;
@@ -880,12 +895,78 @@ select {
 
 /* --- Tank Status Styles --- */
 
+.content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.header-text h2 {
+    font-size: 28px;
+    color: #1a1a1a;
+    
+}
+
+.header-text .subtitle {
+    font-size: 16px;
+    color: #666;
+    margin: 0;
+}
+
+.panel-controls {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+    align-items: flex-end;
+}
+
+.search-bar {
+    flex: 1;
+}
+
+.search-bar input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: #fafafa;
+    color: #1a1a1a;
+}
+
+.search-bar input::placeholder {
+    color: #999;
+}
+
+.filter-group {
+    min-width: 200px;
+}
+
+.form-select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: #fafafa;
+    color: #1a1a1a;
+    cursor: pointer;
+    
+}
+
+.analytics-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
 .tank-card {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     min-height: 200px;
-    border: 1px solid #E5E7EB;
+    border: 1px solid #a2a2a4;
     transition: transform 0.2s, box-shadow 0.2s;
 }
 
@@ -898,7 +979,37 @@ select {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
+    gap: 10px;
+}
+.status-badge {
+    margin-bottom: 0;
+    border-radius: 5px;
+}
+
+.btn-outline {
+    padding: 12px 24px;
+    background-color: #006325;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, box-shadow 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-outline:hover {
+    background-color: #00531f;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.btn-outline i {
+    font-size: 14px;
 }
 
 .tank-id {
@@ -914,24 +1025,26 @@ select {
 
 .tank-location p {
     margin: 0;
-    color: #4B5563;
+    color: #060707;
     font-weight: 500;
 }
 
 .tank-location small {
-    color: #9CA3AF;
+    color: #383838;
     font-size: 0.85rem;
 }
 
 /* Fill Level Progress Bar */
 .fill-level-container {
     margin: 20px 0;
+    
 }
 
 .fill-info {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 6px;
+    margin-bottom:3px;
+    gap: 10px;
     font-size: 0.9rem;
     color: #374151;
 }
@@ -950,10 +1063,11 @@ select {
     transition: width 0.5s ease;
 }
 
-/* Colors for fill levels */
-.fill-safe { background-color: #10B981; }      /* Green */
-.fill-warning { background-color: #F59E0B; }   /* Orange */
-.fill-critical { background-color: #EF4444; }  /* Red */
+/* Colors for fill levels - matching status badge colors */
+.fill-safe { background-color: #10B981; }      /* Green - matches status-active */
+.fill-warning { background-color: #F59E0B; }   /* Orange - matches status-on-leave */
+.fill-critical { background-color: #dc3545; }  /* Red - matches status-inactive */
+.fill-maintenance { background-color: #e0e0e0; } /* Grey - matches status-maintenance */
 
 .tank-footer {
     display: flex;
@@ -963,7 +1077,7 @@ select {
     padding-top: 15px;
     margin-top: auto;
     font-size: 0.85rem;
-    color: #9CA3AF;
+    color: #272727;
 }
 
 .details-link {

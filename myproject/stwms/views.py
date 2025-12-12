@@ -1,4 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.models import User
+from django.contrib import messages
+from django.db import IntegrityError
 from .models import (
     Users, Location, WasteBin, Sensor,
     Collector, Vehicle, CollectionRoute,
@@ -274,6 +277,95 @@ def report_delete(request, pk):
 # authentication views
 
 def register(request):
+    if request.method == 'POST':
+        # Get and strip whitespace from form fields
+        username = request.POST.get('username', '').strip()
+        email = request.POST.get('email', '').strip()
+        phone = request.POST.get('phone', '').strip()
+        address = request.POST.get('address', '').strip()
+        role = request.POST.get('role', '').strip()
+        password = request.POST.get('password', '')
+        confirm_password = request.POST.get('confirm_password', '')
+        
+        # Validation
+        errors = []
+        
+        # Check if all fields are provided
+        if not all([username, email, phone, address, role, password, confirm_password]):
+            errors.append("All fields are required.")
+        
+        # Check if passwords match
+        if password and confirm_password and password != confirm_password:
+            errors.append("Passwords do not match.")
+        
+        # Check password length
+        if password and len(password) < 8:
+            errors.append("Password must be at least 8 characters long.")
+        
+        # Check if username already exists
+        if username and User.objects.filter(username=username).exists():
+            errors.append("Username already exists. Please choose a different username.")
+        
+        # Check if email already exists
+        if email and User.objects.filter(email=email).exists():
+            errors.append("Email already exists. Please use a different email.")
+        
+        # If there are errors, display them and re-render form
+        if errors:
+            for error in errors:
+                messages.error(request, error)
+            return render(request, "authentication/register.html", {
+                'username': username,
+                'email': email,
+                'phone': phone,
+                'address': address,
+                'role': role,
+            })
+        
+        # Create the Django User and Users profile
+        try:
+            # Create the Django User (this handles password hashing)
+            user = User.objects.create_user(
+                username=username,
+                email=email,
+                password=password
+            )
+            
+            # Create the Users profile linked to the User
+            user_profile = Users.objects.create(
+                user=user,
+                username=username,
+                email=email,
+                phone=phone,
+                address=address,
+                role=role,
+                password=""  # Don't store plain password - it's securely stored in User model
+            )
+            
+            messages.success(request, "Account created successfully! You can now log in.")
+            return redirect('stwms:log_in')
+            
+        except IntegrityError:
+            messages.error(request, "An error occurred while creating your account. The username or email may already be taken.")
+            return render(request, "authentication/register.html", {
+                'username': username,
+                'email': email,
+                'phone': phone,
+                'address': address,
+                'role': role,
+            })
+        except Exception as e:
+            messages.error(request, f"An unexpected error occurred. Please try again.")
+            # Log the error in production (you can use logging module)
+            return render(request, "authentication/register.html", {
+                'username': username,
+                'email': email,
+                'phone': phone,
+                'address': address,
+                'role': role,
+            })
+    
+    # GET request - show the registration form
     return render(request, "authentication/register.html")
 
 def log_in(request):

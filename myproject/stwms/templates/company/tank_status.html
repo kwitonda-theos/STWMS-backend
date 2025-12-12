@@ -1,6 +1,6 @@
 <div class="content-header">
     <div class="header-text">
-        <h2>Tank Status</h2>
+        <h2>Tank status</h2>
         <p class="subtitle">Real-time monitoring of waste bin levels</p>
     </div>
     <button class="btn btn-outline" onclick="location.reload()">
@@ -26,12 +26,12 @@
 <div class="analytics-grid" id="tankGrid">
     {% for bin in bins %}
     <div class="stat-card tank-card" 
-         data-status="{{ bin.status }}" 
-         data-search="{{ bin.WasteBin_id }} {% if bin.location %}{{ bin.location.sector }}{% endif %}">
+        data-status="{{ bin.status }}" 
+        data-search="{{ bin.WasteBin_id }} {% if bin.location %}{{ bin.location.sector }}{% endif %}">
         
         <div class="tank-header">
             <div class="tank-id">
-                <i class="fas fa-trash-alt"></i>
+                
                 <span>{{ bin.WasteBin_id }}</span>
             </div>
             
@@ -63,14 +63,15 @@
 
         <div class="fill-level-container">
             <div class="fill-info">
-                <span>Fill Level</span>
+                <span>Fill Level</span><br>
                 <strong>{{ bin.fill_level|default:0}}%</strong>
             </div>
             <div class="progress-bg">
                 <div class="progress-fill
-                    {% if bin.fill_level >= 90 %}fill-critical
-                    {% elif bin.fill_level >= 50 %}fill-warning
-                    {% else %}fill-safe{% endif %}"
+                    {% if bin.status == 'full' %}fill-critical
+                    {% elif bin.status == 'maintenance' %}fill-maintenance
+                    {% elif bin.status == 'empty' %}fill-safe
+                    {% else %}fill-warning{% endif %}"
                     style="width: {{ bin.fill_level|default:0 }}%;">
                 </div>
             </div>
