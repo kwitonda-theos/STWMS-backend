@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STWMS - Routes</title>
+    <link rel="stylesheet" href="driver.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <h2 class="logo">STWMS</h2>
+            <p class="subtitle">Management platform</p>
+            <nav class="menu">
+                <a href="index.html"><i class="icon">🏠</i> Home</a>
+                <a class="active" href="routes.html"><i class="icon">🗺️</i> Routes</a>
+                <a href="history.html"><i class="icon">⏳</i> History</a>
+                <a href="notification.html"><i class="icon">🔔</i> Notification</a>
+            </nav>
+            <button class="signout">Sign out</button>
+        </aside>
+
+        <main class="main-content">
+            <header class="main-header">
+                <div class="welcome-section">
+                    <h1>Welcome, **Driver!**</h1>
+                    <p>Ready for today's collections</p>
+                </div>
+                <div class="header-icons">
+                    <span class="notification-badge">4</span>
+                    <i class="icon bell-icon">🔔</i>
+                    <img src="placeholder-avatar.png" alt="Driver Avatar" class="avatar">
+                </div>
+            </header>
+
+            <section class="route-section">
+                <div class="route-header">
+                    <div class="route-status">
+                        <i class="icon map-pin-icon">📍</i>
+                        <h2>Today's **Route**</h2>
+                        <p>Remaining 5 stops</p>
+                    </div>
+                    <button class="optimize-btn">Optimize route</button>
+                </div>
+                
+                <div class="map-container">
+                    <iframe
+                        class="map"
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15949.626297380848!2d30.08819865!3d-1.94723145!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x19dca4210d7a22a3%3A0x676b738e4a7707e4!2sKigali%20Convention%20Centre!5e0!3m2!1sen!2srw!4v1678893456789!5m2!1sen!2srw"
+                        height="450"
+                        style="border:0;"
+                        allowfullscreen=""
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
+            </section>
+
+            <section class="data-summary">
+                <div class="collection-stops-card">
+                    <h3>Collection stops</h3>
+                    <p>7 of 12 stops completed</p>
+                    <ul class="stop-list">
+                        <li class="stop-item pending">
+                            <span>KN 15 Ave, Nyarugenge</span>
+                            <span class="status">Pending</span>
+                            <span class="subtext">Up next</span>
+                        </li>
+                        <li class="stop-item pending">
+                            <span>Remera Sector, Gasabo</span>
+                            <span class="status">Pending</span>
+                        </li>
+                        <li class="stop-item completed">
+                            <span>Kimisagara Quarter</span>
+                            <span class="status">Completed</span>
+                        </li>
+                        <li class="stop-item completed">
+                            <span>Kinyinya Sector, Gasabo</span>
+                            <span class="status">Completed</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="stats-card">
+                    <div class="stat-item">
+                        <i class="icon">📈</i>
+                        <span class="stat-label">Route progress</span>
+                        <span class="stat-value progress">85%</span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="icon">⏳</i>
+                        <span class="stat-label">Remaining time</span>
+                        <span class="stat-value time">2h 30m</span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="icon">📍</i>
+                        <span class="stat-label">Distance</span>
+                        <span class="stat-value distance">24.5 km</span>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

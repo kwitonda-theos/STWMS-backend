@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>STWMS Dashboard - Home</title>
+    <link rel="stylesheet" href="driver.css" />
+</head>
+
+<body>
+<div class="container">
+
+    <aside class="sidebar">
+        <h2 class="logo">STWMS</h2>
+        <p class="subtitle">Management platform</p>
+
+        <nav class="menu">
+            <a class="active" href="index.html"><i class="icon">🏠</i> Home</a>
+            <a href="routes.html"><i class="icon">🗺️</i> Routes</a>
+            <a href="history.html"><i class="icon">⏳</i> History</a>
+            <a href="notification.html"><i class="icon">🔔</i> Notification</a>
+        </nav>
+
+        <button class="signout">Sign out</button>
+    </aside>
+
+    <main class="main">
+
+        <header class="top main-header">
+            <div class="welcome-section">
+                <h1>Welcome, **Driver!**</h1>
+                <p>Ready for today's collections</p>
+            </div>
+            <div class="header-icons">
+                <span class="notification-badge">4</span>
+                <i class="icon bell-icon">🔔</i>
+                <img src="placeholder-avatar.png" alt="Driver Avatar" class="avatar">
+            </div>
+        </header>
+
+        <div class="stats">
+            <div class="box">
+                <h3>Pending Collection</h3>
+                <p class="num">5</p>
+                <span>Bins waiting for collection</span>
+            </div>
+
+            <div class="box">
+                <h3>Completed Today</h3>
+                <p class="num">17</p>
+                <span>Bins collected successfully</span>
+            </div>
+
+            <div class="box">
+                <h3>Routing progress</h3>
+                <p class="num">85%</p>
+                <span>Completed stops today</span>
+            </div>
+        </div>
+
+        <div class="content">
+
+            <section class="route">
+                <h2>Today's Route</h2>
+
+                <iframe
+                    class="map"
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d9934.376985528458!2d30.0600407!3d-1.9440723!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x19dca4258922f7b7%3A0x9febf3c0c8fade35!2sKigali%20City%20Center!5e0!3m2!1sen!2srw!4v1700000000000!5m2!1sen!2srw"
+                    height="260"
+                    allowfullscreen=""
+                    loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+
+                <div class="stops">
+                    <h3>Collection stops</h3>
+
+                    <div class="stop">
+                        <p><strong>KN 15 Ave, Nyarugenge</strong> — Up next</p>
+                        <span class="pending">Pending</span>
+                    </div>
+
+                    <div class="stop">
+                        <p><strong>Remera Sector, Gasabo</strong></p>
+                        <span class="completed">Completed</span>
+                    </div>
+
+                    <div class="stop">
+                        <p><strong>Kimisagara Quarter</strong></p>
+                        <span class="pending">Pending</span>
+                    </div>
+
+                    <button class="btn-green">View routes</button>
+                </div>
+            </section>
+
+            <section class="notifications">
+                <h2>Notifications</h2>
+                <p class="note-title">Recent alerts and updates</p>
+
+                <div class="note">
+                    <span class="badge high">High</span>
+                    <p><strong>New full bin assigned:</strong> Kicukiro Sector</p>
+                    <small>5 minutes ago</small>
+                </div>
+
+                <div class="note">
+                    <span class="badge medium">Medium</span>
+                    <p><strong>Route optimization updated</strong></p>
+                    <small>15 minutes ago</small>
+                </div>
+
+                <div class="note">
+                    <span class="badge low">Low</span>
+                    <p><strong>Collection completed:</strong> Gasabo District</p>
+                    <small>30 minutes ago</small>
+                </div>
+
+                <button class="btn-green">View all notifications</button>
+            </section>
+        </div>
+
+    </main>
+
+</div>
+</body>
+</html>
