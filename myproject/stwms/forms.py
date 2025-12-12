@@ -91,6 +91,22 @@ class WasteBinForm(forms.ModelForm):
     class Meta:
         model = WasteBin
         fields = "__all__"
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        fill_level = cleaned_data.get('fill_level')
+        status = cleaned_data.get('status')
+        
+        # Only auto-set status if it's not maintenance (maintenance should stay as is)
+        if fill_level is not None and status != 'maintenance':
+            if fill_level >= 90:
+                cleaned_data['status'] = 'full'
+            elif fill_level >= 50:
+                cleaned_data['status'] = 'intermediate'
+            else:
+                cleaned_data['status'] = 'empty'
+        
+        return cleaned_data
 
 
 class SensorForm(forms.ModelForm):
