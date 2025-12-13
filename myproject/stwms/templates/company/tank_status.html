@@ -81,11 +81,18 @@
             </div>
         </div>
 
-        <div class="tank-footer">
+        <div class="tank-footer" >
             <span>Last updated: {{ bin.last_updated|timesince }} ago</span>
-            <button class="delete-btn" onclick="deleteTank('{{ bin.WasteBin_id }}')" title="Delete Tank" style="background: none; border: none; color: #717171; cursor: pointer; float: right; margin-left: 30px;width: 24px;">
-                <i class="fas fa-trash"></i>
-            </button>
+            <form method="post" action="{% url 'stwms:bin_delete' bin.pk %}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this tank?');">
+                    <div class="stat-icon">
+                        <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                        </svg>
+                    </div>
+                </button>
+            </form>
         </div>
     </div>
     {% empty %}

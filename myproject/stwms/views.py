@@ -131,7 +131,7 @@ def bin_update(request, pk):
 def bin_delete(request, pk):
     bin = get_object_or_404(WasteBin, pk=pk)
     bin.delete()
-    return redirect("stwms:bin_list")
+    return redirect("stwms:tank_status")
 # sensor views
 def sensor_list(request):
     sensors = Sensor.objects.all()
