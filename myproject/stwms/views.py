@@ -533,4 +533,12 @@ def settings(request):
 def driver_home(request):
     return render(request, "Driver/home.html")
 
+def history(request):
+    return render(request, "Driver/history.html")
+
+def notifications(request):
+    return render(request, "Driver/notification.html")
+def route_details(request):
+    return render(request, "Driver/routes.html")
+
 

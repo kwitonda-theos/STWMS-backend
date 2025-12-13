@@ -10,8 +10,12 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('forgot_password/', views.forgot_password, name='forgot_password'),
 
-    # driver home view
+    # driver view
     path('driver_home/', views.driver_home, name='driver_home'),
+    path('driver_history/', views.history, name='driver_history'),
+    path('driver_notifications/', views.notifications, name='driver_notifications'),
+    path('driver_routes/', views.route_details, name='driver_routes'),
+
 
     # company dashboard
     path('company_dashboard/', views.company_dashboard, name='company_dashboard'),

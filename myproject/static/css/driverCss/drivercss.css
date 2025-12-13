@@ -6,7 +6,7 @@
     padding: 0;
     box-sizing: border-box;
     /* Using Poppins, but fallback to a standard system font like Arial if not loaded */
-    font-family: 'Poppins', 'Arial', sans-serif; 
+    font-family: 'Jost', 'Arial', sans-serif; 
 }
 
 body {
