@@ -28,6 +28,8 @@ class Location(models.Model):
     district = models.CharField(max_length=20)   
     cell = models.CharField(max_length=20)
     
+    def __str__ (self):
+        return self.house
     
 
 
@@ -56,26 +58,42 @@ class Sensor(models.Model):
 
 
 class Collector(models.Model):
-    collector_status_choices = [
-        ('Active', 'Active'),
-        ('Inactive', 'Inactive'),
-    ]
+    collector_status_choices = [('Active', 'Active'),('Inactive', 'Inactive'),]
     # limit_choices_to should reference the related profile's role field
-    user = models.OneToOneField(
-        User,
-        on_delete=models.CASCADE,
-        limit_choices_to={'profile__role': 'collector'}
-    )
+    user = models.OneToOneField(User,on_delete=models.CASCADE,limit_choices_to={'profile__role': 'collector'})
     contact = models.CharField(max_length=20)
     status = models.CharField(max_length=20, choices=collector_status_choices, default='Active')
 
+    def __str__(self):
+        return self.user.username
 
+class Admin(models.Model):
+    admin_status_choices = [('Active', 'Active'),('Inactive', 'Inactive'),]
+    # limit_choices_to should reference the related profile's role field
+    user = models.OneToOneField(User,on_delete=models.CASCADE,limit_choices_to={'profile__role': 'admin'})
+    contact = models.CharField(max_length=20)
+    status = models.CharField(max_length=20, choices=admin_status_choices, default='Active')
+    
+    def __str__(self):
+        return self.user.username
+    
+class Resident(models.Model):
+    resident_status_choices = [('Active', 'Active'),('Inactive', 'Inactive'),]
+    # limit_choices_to should reference the related profile's role field
+    user = models.OneToOneField(User,on_delete=models.CASCADE,limit_choices_to={'profile__role': 'resident'})
+    contact = models.CharField(max_length=20)
+    status = models.CharField(max_length=20, choices=resident_status_choices, default='Active')
+    def __str__(self):
+        return self.user.username
+    
 class Vehicle(models.Model):
     plate_number = models.CharField(max_length=20)
     capacity = models.DecimalField(max_digits=7, decimal_places=2)
     current_location = models.ForeignKey(Location, on_delete=models.SET_NULL, null=True)
     assigned_collector = models.ForeignKey(Collector, on_delete=models.SET_NULL, null=True, blank=True)
-
+    
+    def __str__(self):
+        return self.plate_number
 
 class CollectionRoute(models.Model):
     assigned_collector = models.ForeignKey(Collector, on_delete=models.SET_NULL, null=True)

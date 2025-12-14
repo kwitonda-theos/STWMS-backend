@@ -6,7 +6,7 @@ from django.http import JsonResponse, HttpResponse
 from .models import (
     Users, Location, WasteBin, Sensor,
     Collector, Vehicle, CollectionRoute,
-    Alert, Report
+    Alert, Report,Admin,Resident
 )
 
 from django.db.models import Count
@@ -379,7 +379,7 @@ def register(request):
             )
             
 
-            # If the role is collector, also create a Collector entry
+            # connect role-specific models
             if role.lower() == "collector":
                 from .models import Collector
                 Collector.objects.create(
@@ -387,6 +387,21 @@ def register(request):
                     contact=phone,
                     status="Active"
                 )
+            elif role.lower() == "admin":
+                from .models import Admin
+                Admin.objects.create(
+                    user=user,
+                    contact=phone,
+                    status ="Active"
+                )
+            elif role.lower() == "resident":
+                from .models import Resident
+                Resident.objects.create(
+                    user=user,
+                    contact=phone,
+                    status ="Active"
+                )
+            
 
             messages.success(request, "Account created successfully! You can now log in.")
             return redirect('stwms:log_in')

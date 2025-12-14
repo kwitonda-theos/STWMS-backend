@@ -2,7 +2,9 @@
 {% block content %}
 
 <h2>Vehicles</h2>
-<p><a class="btn create-vehicle" href="#">Create Vehicle</a></p>
+<p class="subtitle">Add a new vehicle to the system</p>
+
+<p><a class="btn create-vehicle" href="#">+ Create Vehicle</a></p>
 
 <div class="vehicle-cards-grid">
     {% for vehicle in vehicles %}
@@ -14,9 +16,9 @@
             <div><strong>Collector:</strong> {% if vehicle.assigned_collector %}{{ vehicle.assigned_collector.user.username }}{% else %}N/A{% endif %}</div>
         </div>
         <div class="stat-actions" style="margin-top: 16px; display: flex; gap: 8px;">
-            <a class="btn" href="{% url 'stwms:vehicle_update' vehicle.id %}">Edit</a>
+            <a class="btn edit-btn" href="{% url 'stwms:vehicle_update' vehicle.id %}" >Edit</a>
             <form style="display:inline" method="post" action="{% url 'stwms:vehicle_delete' vehicle.id %}">{% csrf_token %}
-                <button class="btn btn-danger" type="submit">Delete</button>
+                <button class="btn btn-danger" type="submit" >Delete</button>
             </form>
         </div>
     </div>
@@ -26,6 +28,26 @@
 </div>
 
 <style>
+.subtitle {
+    color: #555;
+    margin-bottom: 20px;
+}   
+.edit-btn{
+    
+    font-size: 14px;
+    border-radius: 6px;
+    text-decoration: none;
+    
+}
+.create-vehicle {
+    background-color: #006325;
+    color: white;
+    padding: 10px 50px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 600;
+}
 .vehicle-cards-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
@@ -36,7 +58,7 @@
     background: #fff;
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-    border: 1px solid #e0e0e0;
+    border: 1px solid #696969;
     padding: 24px 20px 16px 20px;
     display: flex;
     flex-direction: column;
@@ -61,6 +83,7 @@
     background: #dc3545;
     color: #fff;
     border: none;
+    padding: 20px 20px;
 }
 </style>
 

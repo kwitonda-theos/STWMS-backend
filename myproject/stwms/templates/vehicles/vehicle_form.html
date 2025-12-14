@@ -1,11 +1,13 @@
-
-
 {% if form %}
-	<h2>{% if form.instance and form.instance.pk %}Edit Vehicle{% else %}Create Vehicle{% endif %}</h2>
-	<form method="post" id="vehicle-create-form" action="{% url 'stwms:vehicle_create' %}">
+	<h2>{% if form.instance.pk %}Edit Vehicle{% else %}Create Vehicle{% endif %}</h2>
+	
+    {# DYNAMIC ACTION: Checks if we are editing (have a PK) or creating #}
+    <form method="post" id="vehicle-create-form" 
+        action="{% if form.instance.pk %}{% url 'stwms:vehicle_update' form.instance.pk %}{% else %}{% url 'stwms:vehicle_create' %}{% endif %}">
 		{% csrf_token %}
 		{{ form.as_p }}
-		<button class="btn" type="submit" onclick="loadVehicleList()">Save</button>
+		
+		<button class="btn" type="submit">Save</button>
 		<button class="btn btn-cancel" type="button" onclick="loadVehicleList()">Cancel</button>
 	</form>
 	
@@ -23,7 +25,7 @@
 	<p>
 		<a class="btn" href="{% url 'stwms:vehicle_update' vehicle.id %}">Edit</a>
 		<form style="display:inline" method="post" action="{% url 'stwms:vehicle_delete' vehicle.id %}">{% csrf_token %}
-			<button class="btn btn-danger" type="submit" onclick="loadVehicleList()">Delete</button>
+			<button class="btn btn-danger" type="submit">Delete</button>
 		</form>
 	</p>
 {% else %}
@@ -82,6 +84,14 @@
 	}
 
 	#vehicle-create-form a.btn:hover {
+		background-color: #e0e0e0;
+	}
+	#vehicle-create-form button.btn-cancel {
+		background-color: #f5f5f5;
+		color: #333;
+		border: 1px solid #747373;
+	}
+	#vehicle-create-form button.btn-cancel:hover {
 		background-color: #e0e0e0;
 	}
 </style>
