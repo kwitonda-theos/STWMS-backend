@@ -1,3 +1,4 @@
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib import messages
@@ -574,4 +575,5 @@ def notifications(request):
 def route_details(request):
     return render(request, "Driver/routes.html")
 
-
+def driver_dashboard(request):
+    return render(request, "Driver/driver.html")

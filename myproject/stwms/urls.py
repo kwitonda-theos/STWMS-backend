@@ -1,3 +1,4 @@
+
 from django.urls import path
 from . import views
 
@@ -11,6 +12,7 @@ urlpatterns = [
     path('forgot_password/', views.forgot_password, name='forgot_password'),
 
     # driver view
+    path('driver_dashboard/', views.driver_dashboard, name='driver_dashboard'),
     path('driver_home/', views.driver_home, name='driver_home'),
     path('driver_history/', views.history, name='driver_history'),
     path('driver_notifications/', views.notifications, name='driver_notifications'),
@@ -87,3 +89,4 @@ urlpatterns = [
     path('reports/<int:pk>/edit/', views.report_update, name='report_update'),
     path('reports/<int:pk>/delete/', views.report_delete, name='report_delete'),
 ]
+
