@@ -1,29 +1,67 @@
-{% extends "base.html" %}
+
 {% block content %}
+
 <h2>Vehicles</h2>
+<p><a class="btn create-vehicle" href="#">Create Vehicle</a></p>
 
-<p><a class="btn" href="{% url 'stwms:vehicle_create' %}">Create Vehicle</a></p>
-
-<table>
-    <thead><tr><th>Plate</th><th>Capacity</th><th>Location</th><th>Collector</th><th>Actions</th></tr></thead>
-    <tbody>
+<div class="vehicle-cards-grid">
     {% for vehicle in vehicles %}
-        <tr>
-            <td>{{ vehicle.plate_number }}</td>
-            <td>{{ vehicle.capacity }}</td>
-            <td>{% if vehicle.current_location %}{{ vehicle.current_location.house }}{% else %}N/A{% endif %}</td>
-            <td>{% if vehicle.assigned_collector %}{{ vehicle.assigned_collector.user.username }}{% else %}N/A{% endif %}</td>
-            <td>
-                <a class="btn" href="{% url 'stwms:vehicle_update' vehicle.id %}">Edit</a>
-                <form style="display:inline" method="post" action="{% url 'stwms:vehicle_delete' vehicle.id %}">{% csrf_token %}
-                    <button class="btn btn-danger" type="submit">Delete</button>
-                </form>
-            </td>
-        </tr>
+    <div class="stat-card vehicle-card">
+        <div class="stat-content">
+            <h3>{{ vehicle.plate_number }}</h3>
+            <div><strong>Capacity:</strong> {{ vehicle.capacity }}</div>
+            <div><strong>Location:</strong> {% if vehicle.current_location %}{{ vehicle.current_location.house }}{% else %}N/A{% endif %}</div>
+            <div><strong>Collector:</strong> {% if vehicle.assigned_collector %}{{ vehicle.assigned_collector.user.username }}{% else %}N/A{% endif %}</div>
+        </div>
+        <div class="stat-actions" style="margin-top: 16px; display: flex; gap: 8px;">
+            <a class="btn" href="{% url 'stwms:vehicle_update' vehicle.id %}">Edit</a>
+            <form style="display:inline" method="post" action="{% url 'stwms:vehicle_delete' vehicle.id %}">{% csrf_token %}
+                <button class="btn btn-danger" type="submit">Delete</button>
+            </form>
+        </div>
+    </div>
     {% empty %}
-        <tr><td colspan="5">No vehicles found.</td></tr>
+    <div style="color: #888; margin-top: 20px;">No vehicles found.</div>
     {% endfor %}
-    </tbody>
-</table>
+</div>
+
+<style>
+.vehicle-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+    gap: 24px;
+    margin-top: 24px;
+}
+.vehicle-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    border: 1px solid #e0e0e0;
+    padding: 24px 20px 16px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 180px;
+}
+.vehicle-card h3 {
+    margin: 0 0 10px 0;
+    font-size: 1.2rem;
+    color: #006325;
+}
+.vehicle-card .stat-content > div {
+    margin-bottom: 6px;
+    font-size: 15px;
+}
+.vehicle-card .stat-actions .btn {
+    font-size: 14px;
+    padding: 6px 16px;
+    border-radius: 6px;
+}
+.vehicle-card .btn-danger {
+    background: #dc3545;
+    color: #fff;
+    border: none;
+}
+</style>
 
 {% endblock %}

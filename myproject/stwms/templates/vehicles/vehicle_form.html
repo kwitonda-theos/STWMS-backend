@@ -1,13 +1,14 @@
-{% extends "base.html" %}
-{% block content %}
+
+
 {% if form %}
 	<h2>{% if form.instance and form.instance.pk %}Edit Vehicle{% else %}Create Vehicle{% endif %}</h2>
-	<form method="post">
+	<form method="post" id="vehicle-create-form" action="{% url 'stwms:vehicle_create' %}">
 		{% csrf_token %}
 		{{ form.as_p }}
-		<button class="btn" type="submit">Save</button>
-		<a class="btn" href="{% url 'stwms:vehicle_list' %}">Cancel</a>
+		<button class="btn" type="submit" onclick="loadVehicleList()">Save</button>
+		<button class="btn btn-cancel" type="button" onclick="loadVehicleList()">Cancel</button>
 	</form>
+	
 {% elif vehicle %}
 	<h2>Vehicle Details</h2>
 	<p><strong>Plate Number:</strong> {{ vehicle.plate_number }}</p>
@@ -22,11 +23,65 @@
 	<p>
 		<a class="btn" href="{% url 'stwms:vehicle_update' vehicle.id %}">Edit</a>
 		<form style="display:inline" method="post" action="{% url 'stwms:vehicle_delete' vehicle.id %}">{% csrf_token %}
-			<button class="btn btn-danger" type="submit">Delete</button>
+			<button class="btn btn-danger" type="submit" onclick="loadVehicleList()">Delete</button>
 		</form>
 	</p>
 {% else %}
 	<p>No data.</p>
 {% endif %}
 
-{% endblock %}
+<style>
+	#vehicle-create-form {
+		background: white;
+		border-radius: 12px;
+		padding: 30px;
+		border: 1px solid #747373;
+		max-width: 600px;
+		margin: 20px 0;
+	}
+	#vehicle-create-form input,
+	#vehicle-create-form select,
+	#vehicle-create-form textarea {
+		width: 100%;
+		padding: 12px 15px;
+		border: 1px solid #e0e0e0;
+		border-radius: 8px;
+		font-size: 14px;
+	}
+	#vehicle-create-form input:focus,
+	#vehicle-create-form select:focus,
+	#vehicle-create-form textarea:focus {
+		border-color: #006325;
+		outline: none;
+	}
+
+	#vehicle-create-form button,
+	#vehicle-create-form a.btn {
+		margin-top: 20px;
+		padding: 10px 40px;
+		font-size: 16px;
+		border-radius: 8px;
+		text-decoration: none;
+	}
+
+	#vehicle-create-form button.btn {
+		background-color: #006325;
+		color: white;
+		border: none;
+		transition: background-color 0.3s;
+	}
+
+	#vehicle-create-form button.btn:hover {
+		background-color: #00590f;
+	}
+
+	#vehicle-create-form a.btn {
+		background-color: #f5f5f5;
+		color: #333;
+		border: 1px solid #ccc;
+	}
+
+	#vehicle-create-form a.btn:hover {
+		background-color: #e0e0e0;
+	}
+</style>

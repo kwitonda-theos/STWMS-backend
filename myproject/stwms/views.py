@@ -198,7 +198,15 @@ def vehicle_create(request):
     form = VehicleForm(request.POST or None)
     if form.is_valid():
         form.save()
+        # If it's an AJAX request, return JSON response
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'success': True, 'redirect': '/overview/'})
         return redirect("stwms:vehicle_list")
+    # If it's an AJAX request, return just the form HTML
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        from django.template.loader import render_to_string
+        html = render_to_string('vehicles/vehicle_form.html', {'form': form}, request=request)
+        return HttpResponse(html)
     return render(request, "vehicles/vehicle_form.html", {"form": form})
 
 
@@ -370,6 +378,16 @@ def register(request):
                 password=""  # Don't store plain password - it's securely stored in User model
             )
             
+
+            # If the role is collector, also create a Collector entry
+            if role.lower() == "collector":
+                from .models import Collector
+                Collector.objects.create(
+                    user=user,
+                    contact=phone,
+                    status="Active"
+                )
+
             messages.success(request, "Account created successfully! You can now log in.")
             return redirect('stwms:log_in')
             

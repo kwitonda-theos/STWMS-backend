@@ -2,11 +2,19 @@
 document.addEventListener('DOMContentLoaded', function() {
     let overviewLink = document.querySelector('.menu-item-overview');
     let tankStatusLink = document.querySelector('.menu-item-tank_status');
+    let vehiclesLink = document.querySelector('.menu-item-vehicles');
     let analyticsLink = document.querySelector('.menu-item-analytics');
     let settingsLink = document.querySelector('.menu-item-settings');
     let signOutBtn = document.querySelector('.sign-out');
     let mainContent = document.querySelector('.main-content');
-    let createBinLink = document.querySelector('.create-tank');
+    
+    if (vehiclesLink) {
+        vehiclesLink.addEventListener('click', function(event) {
+            event.preventDefault();
+            setActiveMenuItem('vehicles');
+            loadContent('/vehicles/');
+        });
+    }
 
     // Define content routes
     const contentRoutes = {
@@ -14,9 +22,6 @@ document.addEventListener('DOMContentLoaded', function() {
         'tank_status': '/tank_status/',
         'analytics': '/analytics/',
         'settings': '/settings/',
-        
-
-        
     };
 
     // Function to set active menu item
@@ -98,7 +103,6 @@ document.addEventListener('DOMContentLoaded', function() {
     if (signOutBtn) {
         signOutBtn.addEventListener('click', function(event) {
             event.preventDefault();
-            // Add logout logic here or redirect to login page
             window.location.href = '/log_in/';
         });
     }
@@ -107,17 +111,25 @@ document.addEventListener('DOMContentLoaded', function() {
     if (mainContent.innerHTML.trim() === '') {
         loadContent(contentRoutes['overview']);
     }
-    // Create Bin link - use event delegation for dynamically added buttons
+    // Create Bin and Create Vehicle links - use event delegation for dynamically added buttons
     if (mainContent) {
         mainContent.addEventListener('click', function(event) {
             const createBinBtn = event.target.closest('.create-tank');
             if (createBinBtn) {
                 event.preventDefault();
                 loadContent('/bins/create/');
+                return;
+            }
+            const createVehicleBtn = event.target.closest('.create-vehicle');
+            if (createVehicleBtn) {
+                event.preventDefault();
+                loadContent('/vehicles/create/');
+                return;
             }
         });
     }
 
+    
     // Define global functions for form navigation (available even before scripts execute)
     window.loadBinForm = function() {
         loadContent('/bins/create/');
@@ -130,4 +142,8 @@ document.addEventListener('DOMContentLoaded', function() {
     window.loadTankStatus = function() {
         loadContent('/tank_status/');
     };
+    window.loadVehicleList = function() {
+        
+        loadContent('/vehicles/');
+    }
 });
