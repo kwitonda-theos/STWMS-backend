@@ -115,7 +115,7 @@ class Alert(models.Model):
 
 class Report(models.Model):
     REPORT_TYPES = [
-        ('daily', 'Daily'),
+        ('daily' , 'Daily'),
         ('weekly', 'Weekly'),
         ('monthly', 'Monthly'),
     ]

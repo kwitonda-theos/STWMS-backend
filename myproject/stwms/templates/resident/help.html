@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STWMS - Request for Help</title>
+    <link rel="stylesheet" href="stws_styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="logo-section">
+                <h1>
+                    <i class="fas fa-recycle logo-icon"></i> STWMS
+                </h1>
+                <p>Management platform</p>
+            </div>
+            
+            <nav>
+                <a href="index.html" class="nav-item">
+                    <i class="fas fa-home"></i> CUSTOMERS' TAB
+                </a>
+                
+                <a href="help.html" class="nav-item active">
+                    <i class="fas fa-envelope"></i> Request for help
+                </a>
+
+                <a href="settings.html" class="nav-item">
+                    <i class="fas fa-cog"></i> SETTINGS
+                </a>
+            </nav>
+
+            <button class="sign-out-btn">Sign out</button>
+        </aside>
+
+        <main class="main-content">
+            <div class="settings-container">
+                <div class="top-right-icon">
+                     <img src="user_icon.png" alt="User Icon">
+                </div>
+                
+                <h3 style="margin-top: 0;">For further inquires</h3>
+                <p style="margin-bottom: 25px;">Write a message below</p>
+
+                <div class="form-container">
+                    <form class="contact-form">
+                        
+                        <div class="form-group">
+                            <div class="form-field">
+                                <label for="name">Name</label>
+                                <input type="text" id="name" placeholder="Enter your name" required>
+                            </div>
+                            <div class="form-field">
+                                <label for="email">Email</label>
+                                <input type="email" id="email" placeholder="Enter your email" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group single-column">
+                            <div class="form-field">
+                                <label for="subject">Subject</label>
+                                <select id="subject" required>
+                                    <option value="" disabled selected>Select a subject</option>
+                                    <option value="waste">Report Waste</option>
+                                    <option value="billing">Billing Inquiry</option>
+                                    <option value="general">General Question</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group single-column">
+                            <div class="form-field">
+                                <label for="message">Message</label>
+                                <textarea id="message" placeholder="Briefly describe your inquiry" required></textarea>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="form-submit-btn">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
