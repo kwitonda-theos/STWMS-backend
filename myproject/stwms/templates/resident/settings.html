@@ -3,9 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>STWMS - Settings</title>
+    <title>STWMS - Tank Status (User View)</title>
     <link rel="stylesheet" href="stws_styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* CSS specific to the single-user status display */
+        .user-status-card {
+            background-color: var(--dark-green);
+            color: white;
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 400px;
+            margin-top: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .user-status-card h3 {
+            margin-top: 0;
+            font-size: 28px;
+            color: var(--customers-tab); /* Bright green color for key status */
+        }
+        .user-status-card p {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        .level-indicator {
+            font-size: 48px;
+            font-weight: bold;
+            margin: 15px 0;
+            color: white;
+        }
+        /* Custom colors for status based on level */
+        .level-full { color: #dc3545; } /* Red for full/attention */
+        .level-normal { color: #28a745; } /* Green for normal */
+        .level-almost { color: #ffc107; } /* Yellow for almost full */
+    </style>
 </head>
 <body>
     <div class="app-container">
@@ -25,7 +57,7 @@
                 <a href="help.html" class="nav-item">
                     <i class="fas fa-envelope"></i> Request for help
                 </a>
-
+                
                 <a href="settings.html" class="nav-item active">
                     <i class="fas fa-cog"></i> SETTINGS
                 </a>
@@ -35,27 +67,28 @@
         </aside>
 
         <main class="main-content">
-            <div class="settings-container">
-                <div class="settings-group">
-                    <h4><i class="fas fa-cogs"></i> System preferences</h4>
-                    
-                    <div class="settings-option">
-                        <label for="theme-select">Theme</label>
-                        <select id="theme-select">
-                            <option value="light" selected>Light</option>
-                            <option value="dark">Dark</option>
-                        </select>
-                    </div>
-
-                    <div class="settings-option">
-                        <label for="language-select">Language</label>
-                        <select id="language-select">
-                            <option value="english" selected>English</option>
-                            <option value="kinyarwanda">Kinyarwanda</option>
-                            <option value="french">French</option>
-                        </select>
-                    </div>
+            <div class="settings-container"> 
+                <div class="top-right-icon">
+                     <img src="user_icon.png" alt="User Icon">
                 </div>
+
+                <h2>Your Tank Status</h2>
+                <p>Monitor the current fill level of your waste tank.</p>
+                
+                <div class="user-status-card">
+                    <p>Tank ID: KG 308 ST 18</p>
+                    <p>Status:</p>
+                    <h3 class="level-full">ATTENTION (FULL)</h3>
+                    
+                    <p>Current Fill Level:</p>
+                    <div class="level-indicator level-full">95%</div>
+                    
+                    <p>Last Collected: 8 weeks ago</p>
+                    <button class="action-button btn-schedule" style="margin-top: 15px; width: 80%;">Request Early Collection</button>
+                </div>
+                
+                <p style="margin-top: 25px; color: #777;">Note: Collection is automatically scheduled when the tank reaches 100%.</p>
+
             </div>
         </main>
     </div>
