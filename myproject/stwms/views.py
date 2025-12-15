@@ -488,8 +488,7 @@ def log_in(request):
                     return redirect('stwms:driver_dashboard')
                 
                 elif role == 'resident':
-                    # Assuming residents go to the landing page or a resident dashboard
-                    return redirect('stwms:home') 
+                    return redirect('stwms:resident_dashboard') 
                 
                 else:
                     # Fallback if role is unknown
@@ -759,3 +758,15 @@ def company_bin_create_view(request):
 def company_location_create_view(request):
     form = LocationForm()
     return render(request, "location/location_form_content.html", {"form": form})
+
+def resident_dashboard(request):
+
+    return render(request, "resident/index.html")
+
+def resident_settings(request):
+    
+    return render(request, "resident/settings.html")
+
+def resident_help(request):
+    
+    return render(request, "resident/help.html")

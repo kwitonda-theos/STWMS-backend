@@ -110,5 +110,10 @@ urlpatterns = [
     path('reports/create/', views.report_create, name='report_create'),
     path('reports/<int:pk>/edit/', views.report_update, name='report_update'),
     path('reports/<int:pk>/delete/', views.report_delete, name='report_delete'),
+
+    # --- Resident Views ---
+    path('resident/', views.resident_dashboard, name='resident_dashboard'),
+    path('resident/settings/', views.resident_settings, name='resident_settings'),
+    path('resident/help/', views.resident_help, name='resident_help'),
 ]
 
