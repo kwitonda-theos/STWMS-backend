@@ -1,228 +1,205 @@
+/* --- Global Reset --- */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
-    font-family: "Jost", sans-serif;
+    background-color: #f3f4f6; /* Light gray background */
     height: 100vh;
     display: flex;
-    overflow: hidden;
+    align-items: center;
+    justify-content: center;
 }
 
-.container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+/* --- Login Wrapper & Card --- */
+.login-wrapper {
     width: 100%;
-    height: 100vh;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
 }
 
-.left-section {
-    flex: 1;
+.login-card {
     background: white;
-    padding: 40px 100px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    width: 100%;
+    max-width: 420px;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05); /* Soft shadow */
+    text-align: center;
 }
 
-.right-section {
-    
-    flex: 1;
-    background: #006325;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
+/* --- Header --- */
+.login-header {
+    margin-bottom: 30px;
 }
 
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 60px;
-}
-
-.logo-icon {
-    width: 32px;
-    height: 32px;
-    background: #1a5f3a;
+.logo-circle {
+    width: 60px;
+    height: 60px;
+    background-color: #e6f4ea; /* Light green bg */
+    color: #006325; /* STWMS Brand Green */
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
-    font-weight: bold;
-    font-size: 18px;
+    font-size: 28px;
+    margin: 0 auto 15px auto;
 }
 
-.logo-text {
-    font-weight: 600;
-    font-size: 25px;
-    color: #006325;
+.login-header h2 {
+    color: #1f2937;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 5px;
 }
 
-.logo-subtext {
-    font-size: 20px;
-    color: #006325;
-    margin-left: 5px;
-}
-
-.welcome-text h1 {
-    font-size: 32px;
-    color: #1a1a1a;
-}
-
-.welcome-text p {
-    color: #666;
-    font-size: 16px;
-    margin-bottom: 40px;
-    font-weight: 500;
-}
-
-.form-group {
-    margin-bottom: 20px;
-}
-
-.form-group label {
-    display: block;
-    font-size: 16px;
-    color: #333;
-    margin-bottom: 8px;
-    font-weight: 500;
-}
-
-.form-group input {
-    width: 100%;
-    padding: 12px 15px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+.login-header p {
+    color: #6b7280;
     font-size: 14px;
-    transition: border-color 0.3s;
 }
 
-.form-group input:focus {
-    outline: none;
-    border-color: #006325;
+/* --- Form Elements --- */
+.input-group {
+    margin-bottom: 20px;
+    text-align: left;
 }
 
-.password-group {
+.input-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 8px;
+}
+
+.input-wrapper {
     position: relative;
 }
 
-.forgot-password {
+.input-icon {
     position: absolute;
-    right: 0;
-    top: 0;
-    font-size: 16px;
-    color: #006325;
-    text-decoration: none;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
+    font-size: 14px;
 }
 
-.forgot-password:hover {
-    text-decoration: underline;
+.input-wrapper input {
+    width: 100%;
+    padding: 12px 15px 12px 40px; /* Space for icon */
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: #f9fafb;
+    transition: all 0.3s ease;
+    color: #1f2937;
+}
+
+.input-wrapper input:focus {
+    outline: none;
+    border-color: #006325; /* Brand Green Focus */
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(0, 99, 37, 0.1);
+}
+
+/* --- Options (Remember Me / Forgot Password) --- */
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    font-size: 13px;
 }
 
 .remember-me {
     display: flex;
     align-items: center;
-    gap: 8px;
-    margin: 20px 0;
-    font-size: 14px;
-    color: #666;
-}
-
-.remember-me input[type="checkbox"] {
-    width: 16px;
-    height: 16px;
+    color: #4b5563;
     cursor: pointer;
 }
 
-
-
-.role-btn:hover {
-    background: #0d4028;
+.remember-me input {
+    margin-right: 8px;
+    accent-color: #006325;
 }
 
-.login-btn {
-    width: 100%;
-    padding: 16px;
-    background: #006325;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.3s;
-}
-
-.login-btn:hover {
-    background: #0d4028;
-}
-
-.divider {
-    text-align: center;
-    margin: 10px 0;
-    color: #999;
-    font-size: 14px;
-}
-
-.signup-text {
-    text-align: center;
-    font-size: 16px;
-    color: #666;
-}
-
-.signup-text a {
+.forgot-link {
     color: #006325;
     text-decoration: none;
     font-weight: 600;
 }
 
-.signup-text a:hover {
+.forgot-link:hover {
     text-decoration: underline;
 }
 
-.right-logo {
-    text-align: center;
-}
-
-.right-logo-icon {
-    width: 80px;
-    height: 80px;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 50%;
+/* --- Button --- */
+.login-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #006325; /* Brand Green */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 20px;
-    font-size: 40px;
-    font-weight: bold;
+    gap: 8px;
 }
 
-.right-logo h2 {
-    font-size: 48px;
-    
+.login-btn:hover {
+    background-color: #004d1c; /* Darker green */
+}
+
+/* --- Footer --- */
+.login-footer {
+    margin-top: 25px;
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.login-footer a {
+    color: #006325;
     font-weight: 600;
+    text-decoration: none;
 }
 
-.right-logo p {
-    font-size: 24px;
-    font-weight: 500;
+.login-footer a:hover {
+    text-decoration: underline;
 }
 
-@media (max-width: 768px) {
-    .container {
-        flex-direction: column;
-    }
+/* --- Alerts --- */
+.messages {
+    margin-bottom: 20px;
+}
 
-    .right-section {
-        display: none;
-    }
+.alert {
+    padding: 10px 15px;
+    border-radius: 6px;
+    font-size: 14px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
 
-    .left-section {
-        padding: 40px 30px;
-    }
+.alert.error {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+
+.alert.success {
+    background-color: #d1fae5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
 }

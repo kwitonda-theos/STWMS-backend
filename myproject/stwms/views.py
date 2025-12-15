@@ -1,6 +1,8 @@
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login as auth_login
+
 from django.contrib import messages
 from django.db import IntegrityError
 from django.http import JsonResponse, HttpResponse
@@ -17,6 +19,16 @@ from .forms import (
     UsersForm, LocationForm, WasteBinForm, SensorForm,
     CollectorForm, VehicleForm, RouteForm,
     AlertForm, ReportForm
+)
+
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import viewsets
+from .serializers import (
+    UserSerializer, UsersProfileSerializer, LocationSerializer,
+    WasteBinSerializer, SensorSerializer, CollectorSerializer,
+    VehicleSerializer, CollectionRouteSerializer, AlertSerializer,
+    ReportSerializer
 )
 # users views
 def users_list(request):
@@ -195,30 +207,51 @@ def vehicle_list(request):
     return render(request, "vehicles/vehicle_list.html", {"vehicles": vehicles})
 
 
+# ... (imports) ...
+
+# ... existing imports ...
+
 def vehicle_create(request):
     form = VehicleForm(request.POST or None)
     if form.is_valid():
         form.save()
-        # If it's an AJAX request, return JSON response
+        # FIX: Redirect to /vehicles/ (the list), NOT /overview/
         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-            return JsonResponse({'success': True, 'redirect': '/overview/'})
+            return JsonResponse({'success': True, 'redirect': '/vehicles/'})
         return redirect("stwms:vehicle_list")
-    # If it's an AJAX request, return just the form HTML
+        
+    # Return HTML for AJAX modal/content
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         from django.template.loader import render_to_string
         html = render_to_string('vehicles/vehicle_form.html', {'form': form}, request=request)
+        if request.method == 'POST': 
+             # Return error HTML with status 400
+             return JsonResponse({'success': False, 'html': html}, status=400)
         return HttpResponse(html)
+        
     return render(request, "vehicles/vehicle_form.html", {"form": form})
 
 
 def vehicle_update(request, pk):
     vehicle = get_object_or_404(Vehicle, pk=pk)
     form = VehicleForm(request.POST or None, instance=vehicle)
+    
     if form.is_valid():
         form.save()
+        # FIX: Added AJAX support for Edit
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'success': True, 'redirect': '/vehicles/'})
         return redirect("stwms:vehicle_list")
-    return render(request, "vehicles/vehicle_form.html", {"form": form})
 
+    # Return HTML for AJAX modal/content
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        from django.template.loader import render_to_string
+        html = render_to_string('vehicles/vehicle_form.html', {'form': form}, request=request)
+        if request.method == 'POST':
+            return JsonResponse({'success': False, 'html': html}, status=400)
+        return HttpResponse(html)
+
+    return render(request, "vehicles/vehicle_form.html", {"form": form})
 
 def vehicle_delete(request, pk):
     vehicle = get_object_or_404(Vehicle, pk=pk)
@@ -431,6 +464,46 @@ def register(request):
     return render(request, "authentication/register.html")
 
 def log_in(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        
+        # 1. Authenticate the user (Checks username/password match)
+        user = authenticate(request, username=username, password=password)
+        
+        if user is not None:
+            # 2. Log the user in (Creates session)
+            auth_login(request, user)
+            
+            # 3. Check Role & Redirect
+            try:
+                # Get the extended profile (Users model)
+                user_profile = Users.objects.get(user=user)
+                role = user_profile.role.lower().strip()
+                
+                if role == 'admin' or role == 'company':
+                    return redirect('stwms:company_dashboard')
+                
+                elif role == 'collector' or role == 'driver':
+                    return redirect('stwms:driver_dashboard')
+                
+                elif role == 'resident':
+                    # Assuming residents go to the landing page or a resident dashboard
+                    return redirect('stwms:home') 
+                
+                else:
+                    # Fallback if role is unknown
+                    return redirect('stwms:home')
+                    
+            except Users.DoesNotExist:
+                # If they are a superuser or missing a profile
+                if user.is_superuser:
+                    return redirect('/admin/')
+                messages.error(request, "User profile not found.")
+                
+        else:
+            messages.error(request, "Invalid username or password.")
+            
     return render(request, "authentication/log_in.html")
 
 def forgot_password(request):
@@ -577,3 +650,112 @@ def route_details(request):
 
 def driver_dashboard(request):
     return render(request, "Driver/driver.html")
+
+
+
+
+# --- API ENDPOINTS ---
+
+@api_view(['GET'])
+def api_dashboard_stats(request):
+    """
+    Returns JSON data for the Overview cards:
+    - Total Bins, Trucks, Urgent Collections, Efficiency
+    """
+    total_bins = WasteBin.objects.count()
+    total_trucks = Vehicle.objects.count()
+    urgent_collections = WasteBin.objects.filter(status='full').count()
+    
+    efficiency = 0
+    if total_bins > 0:
+        working_bins = WasteBin.objects.filter(status='empty').count()
+        efficiency = int((working_bins / total_bins) * 100)
+
+    # Get recent alerts (serialized)
+    recent_alerts = Alert.objects.order_by('-timestamp')[:5]
+    alerts_data = AlertSerializer(recent_alerts, many=True).data
+
+    data = {
+        "total_bins": total_bins,
+        "total_trucks": total_trucks,
+        "urgent_collections": urgent_collections,
+        "efficiency": efficiency,
+        "recent_alerts": alerts_data
+    }
+    return Response(data)
+
+@api_view(['GET'])
+def api_tank_status(request):
+    """
+    Returns list of all bins for the Tank Status page.
+    Supports filtering via ?status=full query param.
+    """
+    status_filter = request.GET.get('status')
+    
+    if status_filter and status_filter != 'all':
+        bins = WasteBin.objects.filter(status=status_filter).select_related('location')
+    else:
+        bins = WasteBin.objects.select_related('location').all()
+        
+    serializer = WasteBinSerializer(bins, many=True)
+    return Response(serializer.data)
+
+class UserViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows standard Django users to be viewed or edited.
+    """
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+class UsersProfileViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint for extended user profiles (Residents, Collectors, Admins).
+    """
+    queryset = Users.objects.all()
+    serializer_class = UsersProfileSerializer
+
+class LocationViewSet(viewsets.ModelViewSet):
+    queryset = Location.objects.all()
+    serializer_class = LocationSerializer
+
+class WasteBinViewSet(viewsets.ModelViewSet):
+    queryset = WasteBin.objects.all()
+    serializer_class = WasteBinSerializer
+
+class SensorViewSet(viewsets.ModelViewSet):
+    queryset = Sensor.objects.all()
+    serializer_class = SensorSerializer
+
+class CollectorViewSet(viewsets.ModelViewSet):
+    queryset = Collector.objects.all()
+    serializer_class = CollectorSerializer
+
+class VehicleViewSet(viewsets.ModelViewSet):
+    queryset = Vehicle.objects.all()
+    serializer_class = VehicleSerializer
+
+class CollectionRouteViewSet(viewsets.ModelViewSet):
+    queryset = CollectionRoute.objects.all()
+    serializer_class = CollectionRouteSerializer
+
+class AlertViewSet(viewsets.ModelViewSet):
+    queryset = Alert.objects.all()
+    serializer_class = AlertSerializer
+
+class ReportViewSet(viewsets.ModelViewSet):
+    queryset = Report.objects.all()
+    serializer_class = ReportSerializer
+
+#  (Inside Company Dashboard Views section) 
+
+def company_bin_create_view(request):
+    # Use the standard WasteBinForm
+    form = WasteBinForm()
+    # Point to YOUR existing file
+    return render(request, "bin/bin_form_content.html", {"form": form})
+
+# ... existing imports ...
+
+def company_location_create_view(request):
+    form = LocationForm()
+    return render(request, "location/location_form_content.html", {"form": form})

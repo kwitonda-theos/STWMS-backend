@@ -1,15 +1,37 @@
-
-from django.urls import path
+from rest_framework.routers import DefaultRouter
+from django.urls import path,include
 from . import views
+
+# Create a router and register our viewsets with it.
+router = DefaultRouter()
+router.register(r'users', views.UserViewSet)
+router.register(r'profiles', views.UsersProfileViewSet)
+router.register(r'locations', views.LocationViewSet)
+router.register(r'bins', views.WasteBinViewSet)
+router.register(r'sensors', views.SensorViewSet)
+router.register(r'collectors', views.CollectorViewSet)
+router.register(r'vehicles', views.VehicleViewSet)
+router.register(r'routes', views.CollectionRouteViewSet)
+router.register(r'alerts', views.AlertViewSet)
+router.register(r'reports', views.ReportViewSet)
 
 app_name = 'stwms'
 
 urlpatterns = [
+
+    path('api/', include(router.urls)),
+
     path('', views.vw, name='home'),
     path('base/', views.base, name='base'),
     path('log_in/', views.log_in, name='log_in'),
     path('register/', views.register, name='register'),
     path('forgot_password/', views.forgot_password, name='forgot_password'),
+
+    # api endpoints
+    path('api/overview-stats/', views.api_dashboard_stats, name='api_overview_stats'),
+    path('api/tanks/', views.api_tank_status, name='api_tank_status'),
+    path('company/bin/create/', views.company_bin_create_view, name='company_bin_create'),
+    path('company/location/create/', views.company_location_create_view, name='company_location_create'),
 
     # driver view
     path('driver_dashboard/', views.driver_dashboard, name='driver_dashboard'),

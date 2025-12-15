@@ -1,90 +1,83 @@
+<div class="content-header">
+    <div class="header-text">
+        <h2>Vehicle Fleet</h2>
+        <p class="subtitle">Manage trucks and collection vehicles</p>
+    </div>
+    <a href="/vehicles/create/" class="btn btn-primary create-vehicle">
+        <i class="fas fa-plus"></i> Add New Vehicle
+    </a>
+</div>
 
-{% block content %}
-
-<h2>Vehicles</h2>
-<p class="subtitle">Add a new vehicle to the system</p>
-
-<p><a class="btn create-vehicle" href="#">+ Create Vehicle</a></p>
-
-<div class="vehicle-cards-grid">
-    {% for vehicle in vehicles %}
-    <div class="stat-card vehicle-card">
-        <div class="stat-content">
-            <h3>{{ vehicle.plate_number }}</h3>
-            <div><strong>Capacity:</strong> {{ vehicle.capacity }}</div>
-            <div><strong>Location:</strong> {% if vehicle.current_location %}{{ vehicle.current_location.house }}{% else %}N/A{% endif %}</div>
-            <div><strong>Collector:</strong> {% if vehicle.assigned_collector %}{{ vehicle.assigned_collector.user.username }}{% else %}N/A{% endif %}</div>
-        </div>
-        <div class="stat-actions" style="margin-top: 16px; display: flex; gap: 8px;">
-            <a class="btn edit-btn" href="{% url 'stwms:vehicle_update' vehicle.id %}" >Edit</a>
-            <form style="display:inline" method="post" action="{% url 'stwms:vehicle_delete' vehicle.id %}">{% csrf_token %}
-                <button class="btn btn-danger" type="submit" >Delete</button>
-            </form>
+<div class="data-panel">
+    <div class="panel-controls">
+        <div class="search-bar">
+            <input type="text" placeholder="Search vehicles..." onkeyup="filterTable(this)">
         </div>
     </div>
-    {% empty %}
-    <div style="color: #888; margin-top: 20px;">No vehicles found.</div>
-    {% endfor %}
+
+    <table class="styled-table">
+        <thead>
+            <tr>
+                <th>Plate Number</th>
+                <th>Capacity</th>
+                <th>Current Location</th>
+                <th>Driver</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for vehicle in vehicles %}
+            <tr>
+                <td>{{ vehicle.plate_number }}</td>
+                <td>{{ vehicle.capacity }}</td>
+                <td>{{ vehicle.current_location.sector|default:"-" }}</td>
+                <td>{{ vehicle.assigned_collector.user.username|default:"Unassigned" }}</td>
+                <td>
+                    <a href="/vehicles/{{ vehicle.id }}/edit/" class="btn btn-sm btn-outline" style="font-style: none;">
+                        <i class="fas fa-edit">Edit</i>
+                    </a>
+                    <a href="/vehicles/{{ vehicle.id }}/delete/" class="btn btn-sm btn-outline" style="color:red; font-style: none;">
+                        <i class="fas fa-trash-alt">Delete</i>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 
 <style>
-.subtitle {
-    color: #555;
-    margin-bottom: 20px;
-}   
-.edit-btn{
-    
-    font-size: 14px;
-    border-radius: 6px;
-    text-decoration: none;
-    
-}
-.create-vehicle {
-    background-color: #006325;
-    color: white;
-    padding: 10px 50px;
-    border-radius: 8px;
-    text-decoration: none;
-    font-size: 16px;
-    font-weight: 600;
-}
-.vehicle-cards-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
-    gap: 24px;
-    margin-top: 24px;
-}
-.vehicle-card {
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-    border: 1px solid #696969;
-    padding: 24px 20px 16px 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    min-height: 180px;
-}
-.vehicle-card h3 {
-    margin: 0 0 10px 0;
-    font-size: 1.2rem;
-    color: #006325;
-}
-.vehicle-card .stat-content > div {
-    margin-bottom: 6px;
-    font-size: 15px;
-}
-.vehicle-card .stat-actions .btn {
-    font-size: 14px;
-    padding: 6px 16px;
-    border-radius: 6px;
-}
-.vehicle-card .btn-danger {
-    background: #dc3545;
-    color: #fff;
-    border: none;
-    padding: 20px 20px;
-}
-</style>
+    a{
+        text-decoration: none;
+    }
+    .create-vehicle {
+        text-decoration: none;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        padding: 5px 15px;
+        background-color: #006325;
+        color: white;
+        border-radius: 8px;
+    }
 
-{% endblock %}
+    .styled-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    .styled-table thead tr {
+        background-color: #f2f2f2;
+    }
+
+    .styled-table th, .styled-table td {
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .styled-table tbody tr:hover {
+        background-color: #f1f1f1;
+    }
+</style>

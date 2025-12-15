@@ -1,86 +1,49 @@
-<div class="headers">
+<div class="header">
     <h1>Dashboard Overview</h1>
     <p>Monitor your waste management operations in real-time</p>
 </div>
-
-
 
 <div class="stats-grid">
     <div class="stat-card">
         <div class="stat-content">
             <h3>Total tanks</h3>
-            <div class="stat-value">{{ total_bins }}</div>
+            <div class="stat-value" id="stat-total-bins">--</div> 
             <div class="stat-change positive">Active</div>
         </div>
-        <div class="stat-icon">
-            <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
-            </svg>
-        </div>
+        <div class="stat-icon"><svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></div>
     </div>
 
     <div class="stat-card">
         <div class="stat-content">
             <h3>Total trucks</h3>
-            <div class="stat-value">{{ total_trucks }}</div>
+            <div class="stat-value" id="stat-total-trucks">--</div>
             <div class="stat-change positive">Fleet</div>
         </div>
-        <div class="stat-icon">
-            <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M18 18.5c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5-1.5.67-1.5 1.5.67 1.5 1.5 1.5zm1.5-9H17V12h4.46L19.5 9.5zM6 18.5c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5-1.5.67-1.5 1.5.67 1.5 1.5 1.5zM20 8l3 4v5h-2c0 1.66-1.34 3-3 3s-3-1.34-3-3H9c0 1.66-1.34 3-3 3s-3-1.34-3-3H1V6c0-1.11.89-2 2-2h14v4h3zM3 6v9h.76c.55-.61 1.35-1 2.24-1s1.69.39 2.24 1H15V6H3z"/>
-            </svg>
-        </div>
+        <div class="stat-icon"><svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M18 18.5c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5-1.5.67-1.5 1.5.67 1.5 1.5 1.5zm1.5-9H17V12h4.46L19.5 9.5zM6 18.5c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5-1.5.67-1.5 1.5.67 1.5 1.5 1.5zM20 8l3 4v5h-2c0 1.66-1.34 3-3 3s-3-1.34-3-3H9c0 1.66-1.34 3-3 3s-3-1.34-3-3H1V6c0-1.11.89-2 2-2h14v4h3zM3 6v9h.76c.55-.61 1.35-1 2.24-1s1.69.39 2.24 1H15V6H3z"/></svg></div>
     </div>
 
     <div class="stat-card">
         <div class="stat-content">
             <h3>Urgent collections</h3>
-            <div class="stat-value">{{ urgent_collections }}</div>
-            <div class="stat-change negative">Full Tanks</div>
+            <div class="stat-value" id="stat-urgent">--</div>
+            <div class="stat-change negative">Full Bins</div>
         </div>
-        <div class="stat-icon">
-            <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
-            </svg>
-        </div>
+        <div class="stat-icon"><svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg></div>
     </div>
 
     <div class="stat-card">
         <div class="stat-content">
             <h3>Efficiency score</h3>
-            <div class="stat-value">{{ efficiency }}%</div>
+            <div class="stat-value" id="stat-efficiency">--%</div>
             <div class="stat-change positive">Based on empty bins</div>
         </div>
-        <div class="stat-icon">
-            <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
-            </svg>
-        </div>
+        <div class="stat-icon"><svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg></div>
     </div>
 </div>
 
 <div class="alerts-section">
     <h2>Recent Alerts</h2>
-    
-    {% if recent_alerts %}
-        {% for alert in recent_alerts %}
-        <div class="alert-item">
-            <div class="alert-left">
-                {% if alert.resolved %}
-                    <div class="alert-icon success">✓</div>
-                {% else %}
-                    <div class="alert-icon error">⚠</div>
-                {% endif %}
-                
-                <div class="alert-info">
-                    <h4>Bin: {{ alert.bin.WasteBin_id }}</h4>
-                    <p>{{ alert.get_alert_type_display }}</p>
-                </div>
-            </div>
-            <div class="alert-time">{{ alert.timestamp|timesince }} ago</div>
-        </div>
-        {% endfor %}
-    {% else %}
-        <p style="color: #888; margin-top: 10px;">No recent alerts.</p>
-    {% endif %}
+    <div id="recent-alerts-list">
+        <p style="color:#888;">Loading alerts...</p>
+    </div>
 </div>

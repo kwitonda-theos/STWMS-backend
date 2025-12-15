@@ -3,15 +3,15 @@
         <h2>Create New Tank</h2>
         <p class="subtitle">Add a new waste bin to the system</p>
     </div>
-    
 </div>
-<button class="btn btn-outline" onclick="loadTankStatus()">
+
+<button class="btn btn-outline" onclick="loadContent('tank_status')">
     <i class="fas fa-arrow-left"></i> Back to Tank Status
 </button>
 
 <div style="background: white; border-radius: 12px; padding: 30px; border: 1px solid #747373; max-width: 600px; margin: 20px 0;">
     {% if form %}
-    <form method="post" id="bin-create-form" action="{% url 'stwms:bin_create' %}">
+    <form id="bin-create-form">
         {% csrf_token %}
         
         {% for field in form %}
@@ -20,11 +20,13 @@
                 {{ field.label }}{% if field.field.required %} <span style="color: #dc3545;">*</span>{% endif %}
             </label>
             {{ field }}
+            
             {% if field.name == 'location' %}
-            <button type="button" class="btn-outline" onclick="loadLocationForm()" style="margin-top: 8px; padding: 8px 16px; font-size: 14px; border-radius: 6px;">
+            <button type="button" class="btn-outline" onclick="loadCreateLocationForm()" style="margin-top: 8px; padding: 8px 16px; font-size: 14px; border-radius: 6px; cursor: pointer;">
                 <i class="fas fa-plus"></i> Add Location
             </button>
             {% endif %}
+
             {% if field.help_text %}
             <small style="display: block; margin-top: 4px; color: #666; font-size: 12px;">{{ field.help_text }}</small>
             {% endif %}
@@ -37,10 +39,11 @@
         {% endfor %}
         
         <div style="display: flex; gap: 10px; margin-top: 30px;">
-            <button class="btn-outline" type="submit" onclick="loadTankStatus()" style="flex: 1; border-radius: 8px;">
+            <button class="btn-outline" type="button" onclick="submitBinForm()" style="flex: 1; border-radius: 8px; cursor: pointer;">
                 <i class="fas fa-save"></i> Create Tank
             </button>
-            <button class="btn-outline" type="button" onclick="loadTankStatus()" style="flex: 1; background: #f5f5f5; color: #333;border: 1px solid #747373; border-radius: 8px;">
+            
+            <button class="btn-outline" type="button" onclick="loadContent('tank_status')" style="flex: 1; background: #f5f5f5; color: #333; border: 1px solid #747373; border-radius: 8px; cursor: pointer;">
                 Cancel
             </button>
         </div>
@@ -51,6 +54,7 @@
 </div>
 
 <style>
+    /* Kept your existing styles */
     #bin-create-form input,
     #bin-create-form select,
     #bin-create-form textarea {
@@ -72,126 +76,3 @@
         background-color: #fff;
     }
 </style>
-
-<script>
-// Make loadTankStatus available globally
-window.loadTankStatus = function() {
-    const mainContent = document.querySelector('.main-content');
-    if (mainContent) {
-        fetch('/tank_status/', {
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to load content');
-                }
-                return response.text();
-            })
-            .then(html => {
-                mainContent.innerHTML = html;
-                
-                // Execute any scripts in the loaded HTML (same as loadContent does)
-                const scripts = mainContent.querySelectorAll('script');
-                scripts.forEach(function(oldScript) {
-                    const newScript = document.createElement('script');
-                    Array.from(oldScript.attributes).forEach(attr => {
-                        newScript.setAttribute(attr.name, attr.value);
-                    });
-                    newScript.appendChild(document.createTextNode(oldScript.innerHTML));
-                    oldScript.parentNode.replaceChild(newScript, oldScript);
-                });
-            })
-            .catch(error => {
-                console.error('Error loading tank status:', error);
-            });
-    }
-};
-
-// Function to load location form
-window.loadLocationForm = function() {
-    const mainContent = document.querySelector('.main-content');
-    if (mainContent) {
-        fetch('/locations/create/', {
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to load content');
-                }
-                return response.text();
-            })
-            .then(html => {
-                mainContent.innerHTML = html;
-                
-                // Execute any scripts in the loaded HTML (same as loadContent does)
-                const scripts = mainContent.querySelectorAll('script');
-                scripts.forEach(function(oldScript) {
-                    const newScript = document.createElement('script');
-                    Array.from(oldScript.attributes).forEach(attr => {
-                        newScript.setAttribute(attr.name, attr.value);
-                    });
-                    newScript.appendChild(document.createTextNode(oldScript.innerHTML));
-                    oldScript.parentNode.replaceChild(newScript, oldScript);
-                });
-            })
-            .catch(error => {
-                console.error('Error loading location form:', error);
-            });
-    }
-};
-
-// Handle form submission via AJAX - run immediately since content is loaded dynamically
-(function() {
-    const form = document.getElementById('bin-create-form');
-    if (form) {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const formData = new FormData(form);
-            const submitBtn = form.querySelector('button[type="submit"]');
-            const originalText = submitBtn.innerHTML;
-            
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating...';
-            
-            fetch(form.action, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            })
-            .then(response => {
-                const contentType = response.headers.get('content-type') || '';
-                if (contentType.includes('application/json')) {
-                    return response.json();
-                }
-                return response.text();
-            })
-            .then(data => {
-                if (typeof data === 'object' && data.success) {
-                    // Success - reload tank status page
-                    window.loadTankStatus();
-                } else if (typeof data === 'string') {
-                    // Form errors - replace content with updated form
-                    const mainContent = document.querySelector('.main-content');
-                    if (mainContent) {
-                        mainContent.innerHTML = data;
-                    }
-                }
-            })
-            .catch(error => {
-                console.error('Error submitting form:', error);
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = originalText;
-                alert('An error occurred. Please try again.');
-            });
-        });
-    }
-})();
-</script>
-
