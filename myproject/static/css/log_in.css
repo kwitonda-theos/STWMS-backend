@@ -8,7 +8,7 @@
 
 body {
     background-color: #f3f4f6; /* Light gray background */
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -190,6 +190,7 @@ body {
     display: flex;
     align-items: center;
     gap: 8px;
+    text-align: left;
 }
 
 .alert.error {
