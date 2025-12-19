@@ -91,6 +91,40 @@ class WasteBinForm(forms.ModelForm):
     class Meta:
         model = WasteBin
         fields = "__all__"
+        error_messages = {
+            'WasteBin_id': {
+                'unique': 'A waste bin with this ID already exists. Please choose a different ID.',
+            },
+            'location': {
+                'unique': 'This location already has a waste bin assigned. Please select a different location.',
+            },
+        }
+    
+    def clean_WasteBin_id(self):
+        waste_bin_id = self.cleaned_data.get('WasteBin_id')
+        if waste_bin_id:
+            # Check if this ID already exists (excluding current instance if updating)
+            queryset = WasteBin.objects.filter(WasteBin_id=waste_bin_id)
+            if self.instance and self.instance.pk:
+                queryset = queryset.exclude(pk=self.instance.pk)
+            if queryset.exists():
+                raise forms.ValidationError(
+                    'A waste bin with this ID already exists. Please choose a different ID.'
+                )
+        return waste_bin_id
+    
+    def clean_location(self):
+        location = self.cleaned_data.get('location')
+        if location:
+            # Check if this location already has a waste bin (excluding current instance if updating)
+            queryset = WasteBin.objects.filter(location=location)
+            if self.instance and self.instance.pk:
+                queryset = queryset.exclude(pk=self.instance.pk)
+            if queryset.exists():
+                raise forms.ValidationError(
+                    'This location already has a waste bin assigned. Please select a different location.'
+                )
+        return location
     
     def clean(self):
         cleaned_data = super().clean()

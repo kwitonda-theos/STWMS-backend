@@ -26,7 +26,7 @@ body {
     background: white;
     width: 100%;
     max-width: 420px;
-    padding: 40px;
+    padding: 40px 70px;
     border-radius: 16px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05); /* Soft shadow */
     text-align: center;
@@ -203,4 +203,139 @@ body {
     background-color: #d1fae5;
     color: #065f46;
     border: 1px solid #a7f3d0;
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
+/* Tablet Styles (max-width: 768px) */
+@media (max-width: 768px) {
+    .login-card {
+        max-width: 100%;
+        padding: 35px 50px;
+    }
+
+    .login-header h2 {
+        font-size: 22px;
+    }
+
+    .logo-circle {
+        width: 55px;
+        height: 55px;
+        font-size: 26px;
+    }
+}
+
+/* Mobile Styles (max-width: 480px) */
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+
+    .login-wrapper {
+        padding: 10px;
+    }
+
+    .login-card {
+        padding: 30px 25px;
+        border-radius: 12px;
+    }
+
+    .login-header {
+        margin-bottom: 25px;
+    }
+
+    .logo-circle {
+        width: 50px;
+        height: 50px;
+        font-size: 24px;
+        margin-bottom: 12px;
+    }
+
+    .login-header h2 {
+        font-size: 20px;
+        margin-bottom: 4px;
+    }
+
+    .login-header p {
+        font-size: 13px;
+    }
+
+    .input-group {
+        margin-bottom: 18px;
+    }
+
+    .input-group label {
+        font-size: 13px;
+        margin-bottom: 6px;
+    }
+
+    .input-wrapper input {
+        padding: 11px 12px 11px 38px;
+        font-size: 14px;
+    }
+
+    .input-icon {
+        left: 12px;
+        font-size: 13px;
+    }
+
+    .form-options {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .remember-me {
+        font-size: 13px;
+    }
+
+    .forgot-link {
+        font-size: 13px;
+        width: 100%;
+        text-align: left;
+    }
+
+    .login-btn {
+        padding: 13px;
+        font-size: 15px;
+    }
+
+    .login-footer {
+        margin-top: 20px;
+        font-size: 13px;
+    }
+
+    .alert {
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+}
+
+/* Very Small Mobile (max-width: 360px) */
+@media (max-width: 360px) {
+    .login-card {
+        padding: 25px 20px;
+    }
+
+    .login-header h2 {
+        font-size: 18px;
+    }
+
+    .logo-circle {
+        width: 45px;
+        height: 45px;
+        font-size: 22px;
+    }
+
+    .input-wrapper input {
+        padding: 10px 10px 10px 35px;
+    }
+
+    .login-btn {
+        padding: 12px;
+        font-size: 14px;
+    }
 }

@@ -1,5 +1,5 @@
 // Filter functions - Define globally before DOMContentLoaded to ensure they're always available
-window.filterTanks = function() {
+window.filterTanks = function () {
     const input = document.getElementById('tankSearch');
     if (!input) {
         console.warn('tankSearch input not found');
@@ -19,7 +19,7 @@ window.filterTanks = function() {
     });
 };
 
-window.filterStatus = function(selectedStatus) {
+window.filterStatus = function (selectedStatus) {
     const cards = document.querySelectorAll('.tank-card');
     console.log(`Filtering ${cards.length} tank cards by status: "${selectedStatus}"`);
     cards.forEach(card => {
@@ -32,7 +32,7 @@ window.filterStatus = function(selectedStatus) {
     });
 };
 
-window.filterVehicles = function() {
+window.filterVehicles = function () {
     const input = document.getElementById('vehicleSearch');
     if (!input) {
         console.warn('vehicleSearch input not found');
@@ -52,11 +52,11 @@ window.filterVehicles = function() {
     });
 };
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Load saved theme on page load
     const settings = getSettings();
     applyTheme(settings.theme);
-    
+
     // --- 1. Configuration & Elements ---
     const menuItems = {
         'overview': document.querySelector('.menu-item-overview'),
@@ -67,39 +67,39 @@ document.addEventListener('DOMContentLoaded', function() {
     };
     const mainContent = document.querySelector('.main-content');
     const signOutBtn = document.querySelector('.sign-out');
-    
+
     // Mobile Menu Toggle
     const mobileMenuToggle = document.getElementById('mobileMenuToggle');
     const sidebar = document.getElementById('sidebar');
     const sidebarOverlay = document.getElementById('sidebarOverlay');
-    
+
     function toggleMobileMenu() {
         if (sidebar && sidebarOverlay) {
             sidebar.classList.toggle('mobile-open');
             sidebarOverlay.classList.toggle('active');
         }
     }
-    
+
     function closeMobileMenu() {
         if (sidebar && sidebarOverlay) {
             sidebar.classList.remove('mobile-open');
             sidebarOverlay.classList.remove('active');
         }
     }
-    
+
     if (mobileMenuToggle) {
         mobileMenuToggle.addEventListener('click', toggleMobileMenu);
     }
-    
+
     if (sidebarOverlay) {
         sidebarOverlay.addEventListener('click', closeMobileMenu);
     }
-    
+
     const sidebarClose = document.getElementById('sidebarClose');
     if (sidebarClose) {
         sidebarClose.addEventListener('click', closeMobileMenu);
     }
-    
+
     // Close mobile menu when clicking on menu items
     Object.values(menuItems).forEach(item => {
         if (item) {
@@ -110,9 +110,9 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     });
-    
+
     // Close mobile menu on window resize if screen becomes larger
-    window.addEventListener('resize', function() {
+    window.addEventListener('resize', function () {
         if (window.innerWidth > 768) {
             closeMobileMenu();
         }
@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     // 2. Content Loading Logic 
-    window.loadContent = function(url) {
+    window.loadContent = function (url) {
         // Highlight the correct Sidebar Item
         let activeKey = null;
         for (const [key, route] of Object.entries(contentRoutes)) {
@@ -137,8 +137,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         if (activeKey) {
-            Object.values(menuItems).forEach(el => { if(el) el.classList.remove('active'); });
-            if(menuItems[activeKey]) menuItems[activeKey].classList.add('active');
+            Object.values(menuItems).forEach(el => { if (el) el.classList.remove('active'); });
+            if (menuItems[activeKey]) menuItems[activeKey].classList.add('active');
         }
 
         // Show loading text
@@ -152,7 +152,7 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .then(html => {
                 mainContent.innerHTML = html;
-                
+
                 //  Re-execute scripts inside the new HTML (needed for filters)
                 mainContent.querySelectorAll('script').forEach(oldScript => {
                     const newScript = document.createElement('script');
@@ -196,7 +196,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // --- 4. Event Delegation (Handles ALL dynamic links: Create, Edit, Back) ---
     if (mainContent) {
-        mainContent.addEventListener('click', function(event) {
+        mainContent.addEventListener('click', function (event) {
             const link = event.target.closest('a, button');
             if (!link) return;
 
@@ -205,11 +205,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 event.preventDefault();
                 const deleteBtn = link.classList.contains('delete-tank-btn') ? link : link.closest('.delete-tank-btn');
                 const binId = deleteBtn.getAttribute('data-bin-id');
-                
+
                 if (binId && confirm('Are you sure you want to delete this tank? This action cannot be undone.')) {
                     deleteBtn.disabled = true;
                     deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Deleting...';
-                    
+
                     fetch(`/bins/${binId}/delete/`, {
                         method: 'POST',
                         headers: {
@@ -217,20 +217,20 @@ document.addEventListener('DOMContentLoaded', function() {
                             'X-CSRFToken': getCookie('csrftoken')
                         }
                     })
-                    .then(response => {
-                        if (response.ok) {
-                            // Reload tank status page
-                            loadContent('/tank_status/');
-                        } else {
-                            throw new Error('Delete failed');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error deleting tank:', error);
-                        alert('Error deleting tank. Please try again.');
-                        deleteBtn.disabled = false;
-                        deleteBtn.innerHTML = '<i class="fas fa-trash"></i> Delete';
-                    });
+                        .then(response => {
+                            if (response.ok) {
+                                // Reload tank status page
+                                loadContent('/tank_status/');
+                            } else {
+                                throw new Error('Delete failed');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error deleting tank:', error);
+                            alert('Error deleting tank. Please try again.');
+                            deleteBtn.disabled = false;
+                            deleteBtn.innerHTML = '<i class="fas fa-trash"></i> Delete';
+                        });
                 }
                 return;
             }
@@ -240,11 +240,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 event.preventDefault();
                 const deleteBtn = link.classList.contains('delete-vehicle-btn') ? link : link.closest('.delete-vehicle-btn');
                 const vehicleId = deleteBtn.getAttribute('data-vehicle-id');
-                
+
                 if (vehicleId && confirm('Are you sure you want to delete this vehicle? This action cannot be undone.')) {
                     deleteBtn.disabled = true;
                     deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Deleting...';
-                    
+
                     fetch(`/vehicles/${vehicleId}/delete/`, {
                         method: 'POST',
                         headers: {
@@ -252,29 +252,29 @@ document.addEventListener('DOMContentLoaded', function() {
                             'X-CSRFToken': getCookie('csrftoken')
                         }
                     })
-                    .then(response => {
-                        if (response.ok) {
-                            // Reload vehicle list page
-                            loadContent('/vehicles/');
-                        } else {
-                            throw new Error('Delete failed');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error deleting vehicle:', error);
-                        alert('Error deleting vehicle. Please try again.');
-                        deleteBtn.disabled = false;
-                        deleteBtn.innerHTML = '<i class="fas fa-trash"></i> Delete';
-                    });
+                        .then(response => {
+                            if (response.ok) {
+                                // Reload vehicle list page
+                                loadContent('/vehicles/');
+                            } else {
+                                throw new Error('Delete failed');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error deleting vehicle:', error);
+                            alert('Error deleting vehicle. Please try again.');
+                            deleteBtn.disabled = false;
+                            deleteBtn.innerHTML = '<i class="fas fa-trash"></i> Delete';
+                        });
                 }
                 return;
             }
 
             // Check if it is a dynamic link
-            const isDynamic = link.classList.contains('create-vehicle') || 
-                              link.classList.contains('create-tank') ||
-                              (link.tagName === 'A' && link.getAttribute('href') && link.getAttribute('href').includes('/edit/')) ||
-                              (link.tagName === 'A' && link.getAttribute('href') && link.getAttribute('href').includes('/create/'));
+            const isDynamic = link.classList.contains('create-vehicle') ||
+                link.classList.contains('create-tank') ||
+                (link.tagName === 'A' && link.getAttribute('href') && link.getAttribute('href').includes('/edit/')) ||
+                (link.tagName === 'A' && link.getAttribute('href') && link.getAttribute('href').includes('/create/'));
 
             // Handle "Back" buttons or explicitly marked Ajax links
             if (isDynamic || link.classList.contains('ajax-link')) {
@@ -285,7 +285,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         // 5. Filter Input Event Delegation (for dynamically loaded content)
-        mainContent.addEventListener('input', function(event) {
+        mainContent.addEventListener('input', function (event) {
             if (event.target.id === 'tankSearch') {
                 window.filterTanks();
             } else if (event.target.id === 'vehicleSearch') {
@@ -293,7 +293,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
-        mainContent.addEventListener('change', function(event) {
+        mainContent.addEventListener('change', function (event) {
             if (event.target.classList.contains('form-select') && event.target.closest('.panel-controls')) {
                 const select = event.target;
                 // Check if it's the status filter by checking if it has status options
@@ -305,40 +305,40 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         // 5. Form Submission (Create/Edit Vehicles and Locations) 
-        mainContent.addEventListener('submit', function(event) {
+        mainContent.addEventListener('submit', function (event) {
             const form = event.target;
-            
+
             // Only intercept specific forms
             if (form.id === 'vehicle-create-form') {
                 event.preventDefault();
                 const formData = new FormData(form);
                 const submitBtn = form.querySelector('button[type="submit"]');
-                
-                if(submitBtn) { submitBtn.disabled = true; submitBtn.innerHTML = 'Saving...'; }
+
+                if (submitBtn) { submitBtn.disabled = true; submitBtn.innerHTML = 'Saving...'; }
 
                 fetch(form.action, {
                     method: 'POST',
                     body: formData,
                     headers: { 'X-Requested-With': 'XMLHttpRequest' }
                 })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) {
-                        // Reload the list on success
-                        if (data.redirect) loadContent(data.redirect);
-                        else loadContent('/vehicles/'); 
-                    } else {
-                        // If validation fails, render the HTML with errors
-                        if(data.html) mainContent.innerHTML = data.html;
-                        else alert('Error saving vehicle');
-                    }
-                })
-                .catch(err => {
-                    console.error(err);
-                    // Reload list if it was actually a success but parsed wrong, otherwise alert
-                    alert('An error occurred or the response was not JSON.');
-                    if(submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = 'Save'; }
-                });
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Reload the list on success
+                            if (data.redirect) loadContent(data.redirect);
+                            else loadContent('/vehicles/');
+                        } else {
+                            // If validation fails, render the HTML with errors
+                            if (data.html) mainContent.innerHTML = data.html;
+                            else alert('Error saving vehicle');
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        // Reload list if it was actually a success but parsed wrong, otherwise alert
+                        alert('An error occurred or the response was not JSON.');
+                        if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = 'Save'; }
+                    });
             } else if (form.id === 'createLocationForm') {
                 event.preventDefault();
                 submitLocationForm();
@@ -350,25 +350,25 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // 6. Global Functions 
-    window.loadVehicleList = function() { loadContent('/vehicles/'); };
-    window.loadTankStatus = function() { loadContent('/tank_status/'); };
-    window.loadCreateBinForm = function() { loadContent('/bins/create/'); };
-    window.loadCreateLocationForm = function() { loadContent('/company/location/create/'); };
-    
+    window.loadVehicleList = function () { loadContent('/vehicles/'); };
+    window.loadTankStatus = function () { loadContent('/tank_status/'); };
+    window.loadCreateBinForm = function () { loadContent('/bins/create/'); };
+    window.loadCreateLocationForm = function () { loadContent('/company/location/create/'); };
+
     // Bin Form Submission
-    window.submitBinForm = function() {
+    window.submitBinForm = function () {
         const form = document.getElementById('bin-create-form');
         if (!form) {
             console.error('Bin form not found');
             return;
         }
-        
+
         const formData = new FormData(form);
         const submitBtn = form.querySelector('button[type="button"][onclick*="submitBinForm"]');
-        
-        if(submitBtn) { 
-            submitBtn.disabled = true; 
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating...'; 
+
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating...';
         }
 
         fetch('/bins/create/', {
@@ -376,56 +376,56 @@ document.addEventListener('DOMContentLoaded', function() {
             body: formData,
             headers: { 'X-Requested-With': 'XMLHttpRequest' }
         })
-        .then(res => {
-            // Check if response is JSON or HTML
-            const contentType = res.headers.get('content-type');
-            if (contentType && contentType.includes('application/json')) {
-                return res.json();
-            } else {
-                return res.text().then(text => ({ html: text }));
-            }
-        })
-        .then(data => {
-            if (data.success) {
-                // On success, redirect to tank status
-                if (data.redirect) {
-                    loadContent(data.redirect);
+            .then(res => {
+                // Check if response is JSON or HTML
+                const contentType = res.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) {
+                    return res.json();
                 } else {
-                    loadTankStatus();
+                    return res.text().then(text => ({ html: text }));
                 }
-            } else {
-                // If validation fails, render the HTML with errors
-                if(data.html) {
-                    mainContent.innerHTML = data.html;
+            })
+            .then(data => {
+                if (data.success) {
+                    // On success, redirect to tank status
+                    if (data.redirect) {
+                        loadContent(data.redirect);
+                    } else {
+                        loadTankStatus();
+                    }
                 } else {
-                    alert('Error creating tank. Please check the form fields.');
+                    // If validation fails, render the HTML with errors
+                    if (data.html) {
+                        mainContent.innerHTML = data.html;
+                    } else {
+                        alert('Error creating tank. Please check the form fields.');
+                    }
                 }
-            }
-        })
-        .catch(err => {
-            console.error('Bin form submission error:', err);
-            alert('An error occurred while creating the tank.');
-            if(submitBtn) { 
-                submitBtn.disabled = false; 
-                submitBtn.innerHTML = '<i class="fas fa-save"></i> Create Tank'; 
-            }
-        });
+            })
+            .catch(err => {
+                console.error('Bin form submission error:', err);
+                alert('An error occurred while creating the tank.');
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fas fa-save"></i> Create Tank';
+                }
+            });
     };
-    
+
     // Location Form Submission
-    window.submitLocationForm = function() {
+    window.submitLocationForm = function () {
         const form = document.getElementById('createLocationForm');
         if (!form) {
             console.error('Location form not found');
             return;
         }
-        
+
         const formData = new FormData(form);
         const submitBtn = form.querySelector('button[type="button"][onclick*="submitLocationForm"]');
-        
-        if(submitBtn) { 
-            submitBtn.disabled = true; 
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...'; 
+
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
         }
 
         fetch('/locations/create/', {
@@ -433,45 +433,45 @@ document.addEventListener('DOMContentLoaded', function() {
             body: formData,
             headers: { 'X-Requested-With': 'XMLHttpRequest' }
         })
-        .then(res => {
-            // Check if response is JSON or HTML
-            const contentType = res.headers.get('content-type');
-            if (contentType && contentType.includes('application/json')) {
-                return res.json();
-            } else {
-                return res.text().then(text => ({ html: text }));
-            }
-        })
-        .then(data => {
-            if (data.success) {
-                // On success, redirect back to bin form
-                if (data.redirect_to === 'bin_create') {
-                    loadCreateBinForm();
+            .then(res => {
+                // Check if response is JSON or HTML
+                const contentType = res.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) {
+                    return res.json();
                 } else {
-                    loadContent('/locations/');
+                    return res.text().then(text => ({ html: text }));
                 }
-            } else {
-                // If validation fails, render the HTML with errors
-                if(data.html) {
-                    mainContent.innerHTML = data.html;
+            })
+            .then(data => {
+                if (data.success) {
+                    // On success, redirect back to bin form
+                    if (data.redirect_to === 'bin_create') {
+                        loadCreateBinForm();
+                    } else {
+                        loadContent('/locations/');
+                    }
                 } else {
-                    alert('Error saving location');
+                    // If validation fails, render the HTML with errors
+                    if (data.html) {
+                        mainContent.innerHTML = data.html;
+                    } else {
+                        alert('Error saving location');
+                    }
                 }
-            }
-        })
-        .catch(err => {
-            console.error('Location form submission error:', err);
-            alert('An error occurred while saving the location.');
-            if(submitBtn) { 
-                submitBtn.disabled = false; 
-                submitBtn.innerHTML = '<i class="fas fa-save"></i> Save Location'; 
-            }
-        });
+            })
+            .catch(err => {
+                console.error('Location form submission error:', err);
+                alert('An error occurred while saving the location.');
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fas fa-save"></i> Save Location';
+                }
+            });
     };
-    
+
 
     // 7. Data Initializers 
-    
+
     function initOverview() {
         console.log("Initializing Overview...");
         fetch('/api/overview-stats/')
@@ -481,17 +481,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 safeSetText('stat-total-trucks', data.total_trucks);
                 safeSetText('stat-urgent', data.urgent_collections);
                 safeSetText('stat-efficiency', (data.efficiency || 0) + '%');
-                
+
                 const container = document.getElementById('recent-alerts-list');
-                if(container && data.recent_alerts) {
-                    if(data.recent_alerts.length === 0) {
+                if (container && data.recent_alerts) {
+                    if (data.recent_alerts.length === 0) {
                         container.innerHTML = '<p style="color:#888;">No recent alerts.</p>';
                     } else {
-                        container.innerHTML = data.recent_alerts.map(a => 
-                            `<div class="alert-item" style="padding:10px; border-bottom:1px solid #eee;">
+                        container.innerHTML = data.recent_alerts.map(a =>
+                            `<div class="alert-item" style="padding:10px 30px; border-bottom:1px solid #eee;">
                                 <div class="alert-left">
                                     <svg width="15" height="15" fill="#fa3e3e" viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
-                                    <strong>${a.bin_id || 'Bin'}</strong>${a.alert_type.replace('_',' ')}
+                                    <div style="display:flex; flex-direction:column;">
+                                        <strong>${a.bin_id || 'Bin'}</strong>
+                                        <span>${a.alert_type.replace('_', ' ')}</span>
+                                    </div>
                                 </div>
                                 <span style="float:right; color:#888; font-size:0.8em;">${new Date(a.timestamp).toLocaleTimeString()}</span>
                              </div>`
@@ -502,16 +505,61 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(e => console.error("Overview API Error:", e));
     }
 
+    function updateTankStats(data) {
+        if (!data || data.length === 0) {
+            document.getElementById('stat-total-tanks').textContent = '0';
+            document.getElementById('stat-attention').textContent = '0';
+            document.getElementById('stat-almost-full').textContent = '0';
+            document.getElementById('stat-normal').textContent = '0';
+            return;
+        }
+
+        let totalTanks = 0; // Count only non-maintenance tanks
+        let attentionCount = 0; // Full tanks (>=90%)
+        let almostFullCount = 0; // Intermediate tanks (>=50% and <90%)
+        let normalCount = 0; // Empty tanks (<50%)
+
+        data.forEach(bin => {
+            const fillLevel = bin.fill_level ? Number(bin.fill_level) : 0;
+            const status = bin.status ? bin.status.toLowerCase() : 'unknown';
+
+            // Skip maintenance tanks from calculations
+            if (status === 'maintenance') {
+                return;
+            }
+
+            // Count this tank in the total (since it's not maintenance)
+            totalTanks++;
+
+            if (fillLevel >= 90) {
+                attentionCount++;
+            } else if (fillLevel >= 50) {
+                almostFullCount++;
+            } else {
+                normalCount++;
+            }
+        });
+
+        // Update the dashboard stats
+        document.getElementById('stat-total-tanks').textContent = totalTanks;
+        document.getElementById('stat-attention').textContent = attentionCount;
+        document.getElementById('stat-almost-full').textContent = almostFullCount;
+        document.getElementById('stat-normal').textContent = normalCount;
+    }
+
     function initTankStatus() {
         console.log("Initializing Tanks...");
         const grid = document.getElementById('tankGrid');
         if (!grid) return;
-        
+
         grid.innerHTML = '<p style="text-align:center; width:100%; color:#888;">Loading tanks...</p>';
 
         fetch('/api/tanks/')
             .then(res => res.json())
             .then(data => {
+                // Update dashboard stats
+                updateTankStats(data);
+
                 grid.innerHTML = '';
                 if (!data || data.length === 0) {
                     grid.innerHTML = '<div class="no-data"><p>No waste bins found.</p></div>';
@@ -519,7 +567,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 data.forEach(bin => {
                     const fillLevel = bin.fill_level ? Number(bin.fill_level) : 0;
-                    
+
                     // Status 
                     let displayStatus = bin.status ? bin.status.toLowerCase() : 'unknown';
                     let badgeClass = 'status-active';
@@ -562,11 +610,14 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(e => console.error("Tank API Error:", e));
     }
 
+    // Expose initTankStatus globally for onclick handlers
+    window.initTankStatus = initTankStatus;
+
     function initVehicleList() {
         console.log("Initializing Vehicles...");
         const grid = document.getElementById('vehicleGrid');
         if (!grid) return;
-        
+
         grid.innerHTML = '<p style="text-align:center; width:100%; color:#888;">Loading vehicles...</p>';
 
         fetch('/api/vehicles/')
@@ -582,10 +633,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     const loc = vehicle.current_location_details || {};
                     let sector = loc.sector || loc.district || 'Unassigned';
                     let house = loc.house ? `House: ${loc.house}` : '';
-                    
+
                     // Driver/Collector
                     const driver = vehicle.assigned_collector_name || 'Unassigned';
-                    
+
                     // Capacity
                     const capacity = vehicle.capacity ? Number(vehicle.capacity).toFixed(2) : '0.00';
 
@@ -629,7 +680,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(e => console.error("Vehicle API Error:", e));
     }
 
-    function safeSetText(id, val) { const el=document.getElementById(id); if(el) el.innerText = val || 0; }
+    function safeSetText(id, val) { const el = document.getElementById(id); if (el) el.innerText = val || 0; }
 
     // Helper function to get CSRF token
     function getCookie(name) {
@@ -648,10 +699,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Settings Management
-    window.initSettings = function() {
+    window.initSettings = function () {
         // Load saved settings
         loadSettings();
-        
+
         // Set up auto-refresh if enabled
         setupAutoRefresh();
     };
@@ -661,21 +712,21 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Settings Functions - Global scope
-window.toggleSetting = function(toggleElement) {
+window.toggleSetting = function (toggleElement) {
     toggleElement.classList.toggle('active');
     const settingName = toggleElement.getAttribute('data-setting');
     const isActive = toggleElement.classList.contains('active');
-    
+
     // Save to localStorage
     const settings = getSettings();
     settings.notifications[settingName] = isActive;
     saveSettings(settings);
-    
+
     // Show feedback
     showSettingFeedback(settingName, isActive);
 };
 
-window.changeTheme = function(theme) {
+window.changeTheme = function (theme) {
     const settings = getSettings();
     settings.theme = theme;
     saveSettings(settings);
@@ -683,7 +734,7 @@ window.changeTheme = function(theme) {
     showSettingFeedback('theme', theme);
 };
 
-window.changeLanguage = function(language) {
+window.changeLanguage = function (language) {
     const settings = getSettings();
     settings.language = language;
     saveSettings(settings);
@@ -692,7 +743,7 @@ window.changeLanguage = function(language) {
     alert(`Language preference saved: ${language}. Full translation requires page reload.`);
 };
 
-window.changeRefreshInterval = function(interval) {
+window.changeRefreshInterval = function (interval) {
     const settings = getSettings();
     settings.refreshInterval = parseInt(interval);
     saveSettings(settings);
@@ -713,7 +764,7 @@ function getSettings() {
         language: 'english',
         refreshInterval: 60
     };
-    
+
     const saved = localStorage.getItem('stwms_settings');
     if (saved) {
         try {
@@ -732,7 +783,7 @@ function saveSettings(settings) {
 
 function loadSettings() {
     const settings = getSettings();
-    
+
     // Load notification toggles
     Object.keys(settings.notifications).forEach(key => {
         const toggle = document.querySelector(`[data-setting="${key}"]`);
@@ -744,20 +795,20 @@ function loadSettings() {
             }
         }
     });
-    
+
     // Load saved theme
     const themeSelect = document.getElementById('theme-select');
     if (themeSelect) {
         themeSelect.value = settings.theme;
         applyTheme(settings.theme);
     }
-    
+
     // Load language
     const languageSelect = document.getElementById('language-select');
     if (languageSelect) {
         languageSelect.value = settings.language;
     }
-    
+
     // Load refresh interval
     const refreshSelect = document.getElementById('refresh-interval-select');
     if (refreshSelect) {
@@ -768,17 +819,17 @@ function loadSettings() {
 function applyTheme(theme) {
     const body = document.body;
     const html = document.documentElement;
-    
+
     // Remove existing theme classes
     body.classList.remove('theme-light', 'theme-dark');
     html.classList.remove('theme-light', 'theme-dark');
-    
+
     if (theme === 'auto') {
         // Use system preference
         const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
         theme = prefersDark ? 'dark' : 'light';
     }
-    
+
     if (theme === 'dark') {
         body.classList.add('theme-dark');
         html.classList.add('theme-dark');
@@ -796,15 +847,15 @@ function setupAutoRefresh() {
         clearInterval(autoRefreshInterval);
         autoRefreshInterval = null;
     }
-    
+
     const settings = getSettings();
     const interval = settings.refreshInterval * 1000; // Convert to milliseconds
-    
+
     // Only set up auto-refresh if we're on a page that needs it
     autoRefreshInterval = setInterval(() => {
         const currentUrl = window.location.pathname;
         const mainContent = document.querySelector('.main-content');
-        
+
         if (mainContent) {
             // Check what page we're on and refresh accordingly
             if (currentUrl.includes('tank_status') || mainContent.innerHTML.includes('Tank Status')) {
@@ -831,19 +882,19 @@ function showSettingFeedback(setting, value) {
 }
 
 // Initialize settings when settings page loads
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Check if we're on the settings page
     if (document.querySelector('.setting-item') || document.getElementById('theme-select')) {
         window.initSettings();
     }
-    
+
     // Also initialize when content is loaded dynamically
-    const observer = new MutationObserver(function(mutations) {
+    const observer = new MutationObserver(function (mutations) {
         if (document.querySelector('.setting-item') || document.getElementById('theme-select')) {
             window.initSettings();
         }
     });
-    
+
     const mainContent = document.querySelector('.main-content');
     if (mainContent) {
         observer.observe(mainContent, { childList: true, subtree: true });

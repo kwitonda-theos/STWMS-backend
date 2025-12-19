@@ -14,6 +14,48 @@
     </div>
 </div>
 
+<div class="tank-stats-dashboard" id="tankStatsDashboard">
+    <div class="tank-stat-card">
+        <div class="tank-stat-content">
+            <p class="tank-stat-label">Total tanks</p>
+            <div class="tank-stat-value" id="stat-total-tanks">0</div>
+        </div>
+        <div class="tank-stat-indicator indicator-blue">
+            <div class="indicator-inner"></div>
+        </div>
+    </div>
+    
+    <div class="tank-stat-card">
+        <div class="tank-stat-content">
+            <p class="tank-stat-label">Attention</p>
+            <div class="tank-stat-value value-red" id="stat-attention">0</div>
+        </div>
+        <div class="tank-stat-indicator indicator-red">
+            <div class="indicator-inner"></div>
+        </div>
+    </div>
+    
+    <div class="tank-stat-card">
+        <div class="tank-stat-content">
+            <p class="tank-stat-label">Intermediate</p>
+            <div class="tank-stat-value value-yellow" id="stat-almost-full">0</div>
+        </div>
+        <div class="tank-stat-indicator indicator-yellow">
+            <div class="indicator-inner"></div>
+        </div>
+    </div>
+    
+    <div class="tank-stat-card">
+        <div class="tank-stat-content">
+            <p class="tank-stat-label">Normal</p>
+            <div class="tank-stat-value value-green" id="stat-normal">0</div>
+        </div>
+        <div class="tank-stat-indicator indicator-green">
+            <div class="indicator-inner"></div>
+        </div>
+    </div>
+</div>
+
 <div class="panel-controls">
     <div class="search-bar">
         <input type="text" id="tankSearch" placeholder="Search by Bin ID or Sector..." onkeyup="filterTanks()">
