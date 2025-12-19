@@ -5,17 +5,15 @@
     </div>
 </div>
 
-<button class="btn btn-outline" onclick="loadCreateBinForm()">
-    <i class="fas fa-arrow-left"></i> Back to Tank Form
-</button>
 
-<div style="background: white; border-radius: 12px; padding: 30px; border: 1px solid #747373; max-width: 600px; margin: 20px 0;">
+
+<div class="card" style="background: white; border-radius: 12px; padding: 30px; border: 1px solid #747373; max-width: 600px; margin: 20px 0;">
     <form id="createLocationForm">
         {% csrf_token %}
         
         {% for field in form %}
         <div style="margin-bottom: 20px;">
-            <label style="display: block; font-size: 16px; font-weight: 500; margin-bottom: 6px; color: #070707;">
+            <label for="{{ field.id_for_label }}" style="display: block; font-size: 16px; font-weight: 500; margin-bottom: 6px; color: #070707;">
                 {{ field.label }} {% if field.field.required %}<span style="color: #dc3545;">*</span>{% endif %}
             </label>
             
@@ -37,23 +35,3 @@
         </div>
     </form>
 </div>
-
-<style>
-    #createLocationForm input,
-    #createLocationForm select {
-        width: 100%;
-        padding: 12px 15px;
-        border: 1px solid #e0e0e0;
-        border-radius: 8px;
-        font-size: 14px;
-        background-color: #fafafa;
-        color: #1a1a1a;
-        box-sizing: border-box;
-    }
-    #createLocationForm input:focus,
-    #createLocationForm select:focus {
-        outline: none;
-        border-color: #006325;
-        background-color: #fff;
-    }
-</style>

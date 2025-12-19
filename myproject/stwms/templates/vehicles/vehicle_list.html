@@ -3,81 +3,21 @@
         <h2>Vehicle Fleet</h2>
         <p class="subtitle">Manage trucks and collection vehicles</p>
     </div>
-    <a href="/vehicles/create/" class="btn btn-primary create-vehicle">
-        <i class="fas fa-plus"></i> Add New Vehicle
-    </a>
-</div>
-
-<div class="data-panel">
-    <div class="panel-controls">
-        <div class="search-bar">
-            <input type="text" placeholder="Search vehicles..." onkeyup="filterTable(this)">
-        </div>
+    <div style="display: flex; gap: 10px;">
+        <a href="/vehicles/create/" class="btn btn-primary create-vehicle" style="padding: 10px 30px; font-size: 0.9em; text-decoration: none; border: none; border-radius: 5px; cursor: pointer; background-color: #006325; color: white;font-weight: 600;">
+            <i class="fas fa-plus"></i> Add New Vehicle
+        </a>
+        <button class="btn btn-outline" onclick="initVehicleList()" style="padding: 10px 30px; font-size: 0.9em; text-decoration: none; border: none; border-radius: 5px; cursor: pointer; background-color: #006325; color: white;font-weight: 600; font-family: 'Jost', sans-serif;">
+            <i class="fas fa-sync-alt"></i> Refresh
+        </button>
     </div>
-
-    <table class="styled-table">
-        <thead>
-            <tr>
-                <th>Plate Number</th>
-                <th>Capacity</th>
-                <th>Current Location</th>
-                <th>Driver</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for vehicle in vehicles %}
-            <tr>
-                <td>{{ vehicle.plate_number }}</td>
-                <td>{{ vehicle.capacity }}</td>
-                <td>{{ vehicle.current_location.sector|default:"-" }}</td>
-                <td>{{ vehicle.assigned_collector.user.username|default:"Unassigned" }}</td>
-                <td>
-                    <a href="/vehicles/{{ vehicle.id }}/edit/" class="btn btn-sm btn-outline" style="font-style: none;">
-                        <i class="fas fa-edit">Edit</i>
-                    </a>
-                    <a href="/vehicles/{{ vehicle.id }}/delete/" class="btn btn-sm btn-outline" style="color:red; font-style: none;">
-                        <i class="fas fa-trash-alt">Delete</i>
-                    </a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
 </div>
 
-<style>
-    a{
-        text-decoration: none;
-    }
-    .create-vehicle {
-        text-decoration: none;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        padding: 5px 15px;
-        background-color: #006325;
-        color: white;
-        border-radius: 8px;
-    }
+<div class="panel-controls">
+    <div class="search-bar">
+        <input type="text" id="vehicleSearch" placeholder="Search by Plate Number or Location..." onkeyup="filterVehicles()">
+    </div>
+</div>
 
-    .styled-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
-    }
-
-    .styled-table thead tr {
-        background-color: #f2f2f2;
-    }
-
-    .styled-table th, .styled-table td {
-        padding: 12px 15px;
-        text-align: left;
-        border-bottom: 1px solid #ddd;
-    }
-
-    .styled-table tbody tr:hover {
-        background-color: #f1f1f1;
-    }
-</style>
+<div class="analytics-grid" id="vehicleGrid">
+</div>

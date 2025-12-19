@@ -21,7 +21,7 @@
                 <h3>Bin overflow alerts</h3>
                 <p>Get notified when bins reach 90% capacity</p>
             </div>
-            <div class="toggle active" onclick="this.classList.toggle('active')"></div>
+            <div class="toggle active" data-setting="binOverflowAlerts" onclick="toggleSetting(this)"></div>
         </div>
 
         <div class="setting-item">
@@ -29,7 +29,7 @@
                 <h3>Route optimization updates</h3>
                 <p>Receive AI-generated route suggestions</p>
             </div>
-            <div class="toggle active" onclick="this.classList.toggle('active')"></div>
+            <div class="toggle active" data-setting="routeOptimization" onclick="toggleSetting(this)"></div>
         </div>
 
         <div class="setting-item">
@@ -37,7 +37,7 @@
                 <h3>Maintenance reminders</h3>
                 <p>Alert for scheduled maintenance</p>
             </div>
-            <div class="toggle active" onclick="this.classList.toggle('active')"></div>
+            <div class="toggle active" data-setting="maintenanceReminders" onclick="toggleSetting(this)"></div>
         </div>
 
         <div class="setting-item">
@@ -45,7 +45,7 @@
                 <h3>Daily reports</h3>
                 <p>Automated daily summary via email</p>
             </div>
-            <div class="toggle" onclick="this.classList.toggle('active')"></div>
+            <div class="toggle" data-setting="dailyReports" onclick="toggleSetting(this)"></div>
         </div>
     </div>
 
@@ -61,10 +61,10 @@
         <div class="form-group">
             <label>Theme</label>
             <div class="select-wrapper">
-                <select>
-                    <option>Light</option>
-                    <option>Dark</option>
-                    <option>Auto</option>
+                <select id="theme-select" onchange="changeTheme(this.value)">
+                    <option value="light">Light</option>
+                    <option value="dark">Dark</option>
+                    <option value="auto">Auto</option>
                 </select>
             </div>
         </div>
@@ -72,11 +72,11 @@
         <div class="form-group">
             <label>Language</label>
             <div class="select-wrapper">
-                <select>
-                    <option>english</option>
-                    <option>español</option>
-                    <option>français</option>
-                    <option>deutsch</option>
+                <select id="language-select" onchange="changeLanguage(this.value)">
+                    <option value="english">english</option>
+                    <option value="español">español</option>
+                    <option value="français">français</option>
+                    <option value="deutsch">deutsch</option>
                 </select>
             </div>
         </div>
@@ -84,11 +84,11 @@
         <div class="form-group">
             <label>Auto refresh interval</label>
             <div class="select-wrapper">
-                <select>
-                    <option>30 s</option>
-                    <option>60 s</option>
-                    <option>120 s</option>
-                    <option>300 s</option>
+                <select id="refresh-interval-select" onchange="changeRefreshInterval(this.value)">
+                    <option value="30">30 s</option>
+                    <option value="60">60 s</option>
+                    <option value="120">120 s</option>
+                    <option value="300">300 s</option>
                 </select>
             </div>
         </div>

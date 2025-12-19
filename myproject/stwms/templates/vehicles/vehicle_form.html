@@ -5,7 +5,7 @@
     </div>
 </div>
 
-<div class="data-panel" style="max-width: 600px; margin: 0 auto;">
+<div class="data-panel" style="max-width: 600px; margin: 0 0px; border: 1px solid #747373; padding: 20px; border-radius: 10px;">
     
     <form method="post" id="vehicle-create-form" action="{% if form.instance.pk %}/vehicles/{{ form.instance.pk }}/edit/{% else %}/vehicles/create/{% endif %}">
         {% csrf_token %}
@@ -36,87 +36,13 @@
         </div>
 
         <div class="form-actions">
-            <button class="btn btn-primary" type="submit">
+            <button class="btn-save" type="submit">
                 <i class="fas fa-save"></i> Save Vehicle
             </button>
             
-            <button class="btn btn-outline back-btn" type="button" onclick="loadVehicleList()">
+            <button class="btn-cancel" type="button" onclick="loadVehicleList()">
                 Cancel
             </button>
         </div>
     </form>
 </div>
-
-<style>
-    /* Form Layout */
-    .form-group {
-        margin-bottom: 20px;
-    }
-
-    .form-group label {
-        display: block;
-        font-weight: 500;
-        margin-bottom: 8px;
-        color: #374151;
-        font-size: 0.95rem;
-    }
-
-    .required {
-        color: #ef4444;
-        margin-left: 2px;
-    }
-
-    /* Input Styling */
-    #vehicle-create-form input[type="text"],
-    #vehicle-create-form input[type="number"],
-    #vehicle-create-form select {
-        width: 100%;
-        padding: 12px 15px;
-        border: 1px solid #e5e7eb;
-        border-radius: 8px;
-        background-color: #f9fafb;
-        font-size: 1rem;
-        color: #1f2937;
-        transition: all 0.2s ease;
-        box-sizing: border-box; /* Ensures padding doesn't break width */
-    }
-
-    /* Focus State */
-    #vehicle-create-form input:focus,
-    #vehicle-create-form select:focus {
-        outline: none;
-        border-color: #10B981; /* Brand Green */
-        background-color: #fff;
-        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
-    }
-
-    /* Help Text & Errors */
-    .help-text {
-        display: block;
-        margin-top: 6px;
-        color: #6b7280;
-        font-size: 0.85rem;
-    }
-
-    .error-msg {
-        color: #dc2626;
-        font-size: 0.85rem;
-        margin-top: 5px;
-    }
-
-    /* Button Area */
-    .form-actions {
-        display: flex;
-        gap: 15px;
-        margin-top: 30px;
-        padding-top: 20px;
-        border-top: 1px solid #f3f4f6;
-    }
-
-    .form-actions button {
-        flex: 1;
-        padding: 12px;
-        font-size: 1rem;
-        border-radius: 8px;
-    }
-</style>

@@ -144,6 +144,11 @@ def bin_update(request, pk):
 def bin_delete(request, pk):
     bin = get_object_or_404(WasteBin, pk=pk)
     bin.delete()
+    
+    # Support AJAX requests
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({'success': True})
+    
     return redirect("stwms:tank_status")
 # sensor views
 def sensor_list(request):
@@ -256,6 +261,11 @@ def vehicle_update(request, pk):
 def vehicle_delete(request, pk):
     vehicle = get_object_or_404(Vehicle, pk=pk)
     vehicle.delete()
+    
+    # Support AJAX requests
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({'success': True})
+    
     return redirect("stwms:vehicle_list")
 
 # collection route views

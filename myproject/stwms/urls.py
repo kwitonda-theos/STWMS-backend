@@ -67,7 +67,7 @@ urlpatterns = [
     path('bins/', views.bin_list, name='bin_list'),
     path('bins/create/', views.bin_create, name='bin_create'),
     path('bins/<int:pk>/edit/', views.bin_update, name='bin_update'),
-    path('bins/<int:pk>/delete/', views.bin_delete, name='bin_delete'),
+    path('bins/<str:pk>/delete/', views.bin_delete, name='bin_delete'),
 
     # sensor views
 
