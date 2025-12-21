@@ -45,6 +45,8 @@ urlpatterns = [
     path('driver_dashboard/', views.driver_dashboard, name='driver_dashboard'),
     path('driver_home/', views.driver_home, name='driver_home'),
     path('driver_history/', views.history, name='driver_history'),
+    path('driver_history/week/', views.history_week, name='driver_history_week'),
+    path('driver_history/month/', views.history_month, name='driver_history_month'),
     path('driver_notifications/', views.notifications, name='driver_notifications'),
     path('driver_routes/', views.route_details, name='driver_routes'),
 

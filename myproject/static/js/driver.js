@@ -1,11 +1,100 @@
 
+console.log('driver.js loaded');
+
+// Default performance data for history page (global scope)
+const DEFAULT_PERFORMANCE = {
+    collection_rate: 60,
+    efficiency: 75,
+    total_collections: 85,
+    total_weight: 1250.5
+};
+
+// Global function for tab clicks (accessible from onclick attributes)
+// Must be defined in global scope, not inside DOMContentLoaded
+window.handleTabClick = function(btn, period) {
+    console.log('=== handleTabClick called ===');
+    console.log('Button:', btn);
+    console.log('Period:', period);
+    
+    // Force remove active from all buttons
+    const allButtons = document.querySelectorAll('.tab-btn');
+    console.log('Found', allButtons.length, 'tab buttons');
+    allButtons.forEach(b => {
+        b.classList.remove('active');
+    });
+    
+    // Force add active to clicked button - CSS will handle the green color
+    btn.classList.add('active');
+    console.log('Button styled - should be green now');
+    
+    // Update title based on period
+    const titleElement = document.getElementById('collections-title');
+    console.log('Title element:', titleElement);
+    const titles = {
+        'today': "Today's Collections",
+        'week': "This Week's Collections",
+        'month': "This Month's Collections"
+    };
+    if (titleElement) {
+        titleElement.textContent = titles[period] || "Collections";
+        console.log('Title updated to:', titles[period]);
+    } else {
+        console.error('Title element not found!');
+    }
+    
+    // Load data for selected period - call loadHistory if available
+    console.log('Calling loadHistory with period:', period);
+    if (window.loadHistoryFunction) {
+        window.loadHistoryFunction(period);
+    } else {
+        console.error('loadHistoryFunction not available!');
+        // Try to fetch directly
+        fetch(`/api/driver/history/?period=${period}`, {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('History data received:', data);
+            const list = document.getElementById('collection-list');
+            if (list) {
+                if (data.collections && data.collections.length > 0) {
+                    list.innerHTML = data.collections.map(c => 
+                        `<div class="collection-item"><div class="item-main"><div class="status-dot completed-dot"></div><span class="location">${c.location}</span><span class="details type">Collection</span><span class="details time">${c.time}</span></div><div class="item-stats"><span class="stat-value">${c.estimated_weight} kg</span></div></div>`
+                    ).join('');
+                } else {
+                    list.innerHTML = '<div class="no-collections"><p>No collection yet</p></div>';
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error loading history:', error);
+            const list = document.getElementById('collection-list');
+            if (list) {
+                list.innerHTML = '<div class="no-collections"><p>No collection yet</p></div>';
+            }
+        });
+    }
+};
+
+console.log('handleTabClick function defined globally');
+
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOMContentLoaded fired');
     let homeLink = document.querySelector('.menu-item-home');
     let routesLink = document.querySelector('.menu-item-routes');
     let historyLink = document.querySelector('.menu-item-history');
     let notificationLink = document.querySelector('.menu-item-notification');
     let signOutBtn = document.querySelector('.sign-out');
     let mainContent = document.querySelector('.main-content');
+    
+    console.log('Elements found:', {
+        homeLink: !!homeLink,
+        routesLink: !!routesLink,
+        historyLink: !!historyLink,
+        notificationLink: !!notificationLink,
+        signOutBtn: !!signOutBtn,
+        mainContent: !!mainContent
+    });
 
     // Define content routes mapping
     const contentRoutes = {
@@ -64,6 +153,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 updateRoutesPage();
                 // Set up auto-refresh for routes page
                 startAutoRefresh();
+            } else if (url.includes('driver_history')) {
+                // Initialize history page functionality
+                console.log('History page detected, calling initializeHistoryPage');
+                initializeHistoryPage();
             } else {
                 stopAutoRefresh();
             }
@@ -379,6 +472,176 @@ document.addEventListener('DOMContentLoaded', function() {
         return cookieValue;
     }
 
+
+    // Initialize history page functionality
+    function initializeHistoryPage() {
+        console.log('=== initializeHistoryPage called ===');
+        let currentPeriod = 'today';
+        
+        // Check if buttons exist
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        console.log('Found', tabButtons.length, 'tab buttons on initialization');
+        tabButtons.forEach((btn, i) => {
+            console.log(`Button ${i}:`, btn, 'data-period:', btn.getAttribute('data-period'));
+        });
+        
+        // Load initial data
+        console.log('Loading initial history data for:', currentPeriod);
+        loadHistory(currentPeriod);
+        
+        console.log('History page initialized. Tab buttons should work via onclick handlers.');
+    }
+
+    // Load history data - expose globally
+    function loadHistory(period) {
+        console.log('=== loadHistory called ===');
+        console.log('Period:', period);
+        
+        // Show loading state
+        const list = document.getElementById('collection-list');
+        console.log('Collection list element:', list);
+        if (list) {
+            list.innerHTML = '<div class="no-collections"><p>Loading...</p></div>';
+            console.log('Set loading state');
+        } else {
+            console.error('Collection list element not found!');
+        }
+        
+        const url = `/api/driver/history/?period=${period}`;
+        console.log('Fetching from URL:', url);
+        
+        fetch(url, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => {
+            console.log('Response received:', response.status, response.statusText);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('History data received:', data);
+            console.log('Collections:', data.collections);
+            console.log('Performance:', data.performance);
+            updateCollectionsList(data.collections || [], period);
+            // Use performance data from API or defaults
+            const performance = data.performance || DEFAULT_PERFORMANCE;
+            console.log('Using performance data:', performance);
+            updatePerformanceMetrics(performance);
+        })
+        .catch(error => {
+            console.error('=== Error loading history ===');
+            console.error('Error details:', error);
+            console.error('Error message:', error.message);
+            const list = document.getElementById('collection-list');
+            if (list) {
+                list.innerHTML = '<div class="no-collections"><p>No collection yet</p></div>';
+            }
+            // Use default performance data on error
+            updatePerformanceMetrics(DEFAULT_PERFORMANCE);
+        });
+    }
+    
+    // Expose loadHistory globally so handleTabClick can call it
+    window.loadHistoryFunction = loadHistory;
+
+    // Update collections list
+    function updateCollectionsList(collections, period) {
+        const list = document.getElementById('collection-list');
+        const title = document.getElementById('collections-title');
+        
+        // Update title based on period
+        const titles = {
+            'today': "Today's Collections",
+            'week': "This Week's Collections",
+            'month': "This Month's Collections"
+        };
+        if (title) {
+            title.textContent = titles[period] || "Collections";
+        }
+        
+        if (!list) return;
+        
+        if (collections.length === 0) {
+            list.innerHTML = '<div class="no-collections"><p>No collection yet</p></div>';
+            return;
+        }
+        
+        list.innerHTML = collections.map(collection => {
+            // Determine quality based on fill level
+            let quality = 'good';
+            let qualityText = 'Good';
+            if (collection.fill_level >= 90) {
+                quality = 'good';
+                qualityText = 'Excellent';
+            } else if (collection.fill_level >= 50) {
+                quality = 'average';
+                qualityText = 'Good';
+            } else {
+                quality = 'low';
+                qualityText = 'Fair';
+            }
+            
+            return `
+                <div class="collection-item">
+                    <div class="item-main">
+                        <div class="status-dot completed-dot"></div>
+                        <span class="location">${collection.location}</span>
+                        <span class="details type">Collection</span>
+                        <span class="details time">${collection.time}</span>
+                    </div>
+                    <div class="item-stats">
+                        <span class="stat-value">${collection.estimated_weight} kg</span>
+                        <span class="stat-value quality ${quality}">${qualityText}</span>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    // Update performance metrics
+    function updatePerformanceMetrics(performance) {
+        // Use defaults if performance is missing
+        if (!performance) {
+            performance = DEFAULT_PERFORMANCE;
+        }
+        
+        // Update collection rate
+        const rateBar = document.getElementById('collection-rate-bar');
+        const rateValue = document.getElementById('collection-rate-value');
+        if (rateBar && rateValue) {
+            const rate = performance.collection_rate || DEFAULT_PERFORMANCE.collection_rate;
+            rateBar.style.width = rate + '%';
+            rateValue.textContent = rate + '%';
+        }
+        
+        // Update efficiency
+        const efficiencyBar = document.getElementById('efficiency-bar');
+        const efficiencyValue = document.getElementById('efficiency-value');
+        if (efficiencyBar && efficiencyValue) {
+            const efficiency = performance.efficiency || DEFAULT_PERFORMANCE.efficiency;
+            efficiencyBar.style.width = efficiency + '%';
+            efficiencyValue.textContent = efficiency + '%';
+        }
+        
+        // Update total collections
+        const totalCollections = document.getElementById('total-collections');
+        if (totalCollections) {
+            const total = performance.total_collections || DEFAULT_PERFORMANCE.total_collections;
+            totalCollections.textContent = total;
+        }
+        
+        // Update total weight
+        const totalWeight = document.getElementById('total-weight');
+        if (totalWeight) {
+            const weight = performance.total_weight || DEFAULT_PERFORMANCE.total_weight;
+            totalWeight.textContent = weight + ' kg';
+        }
+    }
+
     // Event Listeners
     if (homeLink) {
         homeLink.addEventListener('click', function(event) {
@@ -420,7 +683,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Event delegation for dynamically loaded buttons
+    console.log('Setting up event delegation');
     document.addEventListener('click', function(event) {
+        console.log('Click detected on:', event.target, 'Classes:', event.target.className, 'Tag:', event.target.tagName);
+        
         // Handle "View routes" button click
         if (event.target.classList.contains('navigate-to-routes')) {
             event.preventDefault();
@@ -433,6 +699,49 @@ document.addEventListener('DOMContentLoaded', function() {
             event.preventDefault();
             setActiveMenuItem('notification');
             loadContent(contentRoutes['notification']);
+        }
+        
+        // Handle history tab button clicks - check if clicked element or its parent has tab-btn class
+        const tabBtn = event.target.closest('.tab-btn');
+        if (tabBtn) {
+            event.preventDefault();
+            event.stopPropagation();
+            console.log('Tab clicked via delegation:', tabBtn.getAttribute('data-period'));
+            console.log('Button element:', tabBtn);
+            
+            // Force remove active from all buttons
+            document.querySelectorAll('.tab-btn').forEach(b => {
+                b.classList.remove('active');
+                b.style.backgroundColor = '';
+                b.style.color = '';
+                b.style.borderColor = '';
+            });
+            
+            // Force add active to clicked button
+            tabBtn.classList.add('active');
+            tabBtn.style.backgroundColor = '#2d5016';
+            tabBtn.style.color = 'white';
+            tabBtn.style.borderColor = '#2d5016';
+            console.log('Button should now be green');
+            
+            // Get period and update content
+            const period = tabBtn.getAttribute('data-period');
+            console.log('Current period set to:', period);
+            
+            // Update title based on period
+            const titleElement = document.getElementById('collections-title');
+            const titles = {
+                'today': "Today's Collections",
+                'week': "This Week's Collections",
+                'month': "This Month's Collections"
+            };
+            if (titleElement) {
+                titleElement.textContent = titles[period] || "Collections";
+                console.log('Title updated to:', titles[period]);
+            }
+            
+            // Load data for selected period
+            loadHistory(period);
         }
     });
 

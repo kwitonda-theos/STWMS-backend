@@ -761,7 +761,38 @@ def history(request):
             pass
     
     context = {
-        'collector': collector
+        'collector': collector,
+        'period': 'today'
+    }
+    return render(request, "Driver/history.html", context)
+
+def history_week(request):
+    # Get collector for the logged-in user
+    collector = None
+    if request.user.is_authenticated:
+        try:
+            collector = Collector.objects.get(user=request.user)
+        except Collector.DoesNotExist:
+            pass
+    
+    context = {
+        'collector': collector,
+        'period': 'week'
+    }
+    return render(request, "Driver/history.html", context)
+
+def history_month(request):
+    # Get collector for the logged-in user
+    collector = None
+    if request.user.is_authenticated:
+        try:
+            collector = Collector.objects.get(user=request.user)
+        except Collector.DoesNotExist:
+            pass
+    
+    context = {
+        'collector': collector,
+        'period': 'month'
     }
     return render(request, "Driver/history.html", context)
 

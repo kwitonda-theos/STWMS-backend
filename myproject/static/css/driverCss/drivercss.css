@@ -159,7 +159,7 @@ ul {
 }
 
 .notification-badge {
-    background-color: var(--bright-green); 
+    background-color: var(--deep-green); 
     color: #fff;
     border-radius: 50%;
     width: 20px;
@@ -377,7 +377,7 @@ ul {
 
 .optimize-btn {
     padding: 10px 25px;
-    background-color: var(--bright-green);
+    background-color: var(--deep-green);
     color: white;
     border: none;
     border-radius: 8px;
@@ -474,9 +474,9 @@ ul {
 }
 
 .tab-btn.active {
-    background: var(--deep-green);
-    color: white;
-    border-color: var(--deep-green);
+    background: var(--deep-green) !important;
+    color: white !important;
+    border-color: var(--deep-green) !important;
 }
 
 .today-collections-section, .performance-summary-section {
@@ -515,12 +515,12 @@ ul {
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    background: var(--bright-green);
+    background: var(--deep-green);
     margin-right: 10px;
 }
 
 .status-dot.completed-dot {
-    background: var(--bright-green);
+    background: var(--deep-green);
 }
 
 .location { font-weight: 600; font-size: 15px; display: block; }
@@ -544,12 +544,12 @@ ul {
 
 .progress-bar {
     height: 100%;
-    background: var(--bright-green);
+    background: var(--deep-green);
     border-radius: 4px;
 }
 
 .progress-bar.green-progress {
-    background: var(--bright-green);
+    background: var(--deep-green);
 }
 
 .metric-item {
@@ -605,7 +605,7 @@ ul {
 
 .notification-card.medium {
     background: #f0fdf4;
-    border-left: 4px solid var(--bright-green);
+    border-left: 4px solid var(--deep-green);
 }
 
 .icon-section {
