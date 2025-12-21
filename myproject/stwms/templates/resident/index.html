@@ -491,15 +491,19 @@ body {
             </div>
             
             <nav>
-                <a href="index.html" class="nav-item active">
+                <a href="{% url 'stwms:resident_dashboard' %}" class="nav-item active">
                     <i class="fas fa-home"></i> CUSTOMERS' TAB
                 </a>
                 
-                <a href="help.html" class="nav-item">
+                <a href="{% url 'stwms:resident_mark_bin_full' %}" class="nav-item">
+                    <i class="fas fa-trash"></i> Mark Bin Full
+                </a>
+                
+                <a href="{% url 'stwms:resident_help' %}" class="nav-item">
                     <i class="fas fa-envelope"></i> Request for help
                 </a>
 
-                <a href="settings.html" class="nav-item">
+                <a href="{% url 'stwms:resident_settings' %}" class="nav-item">
                     <i class="fas fa-cog"></i> SETTINGS
                 </a>
             </nav>
@@ -518,6 +522,11 @@ body {
             <div class="content-body">
                 <div class="message-box">
                     <p>Dear customers report waste on time STWMS is here to help you do that easily to keep your home clean and Rwanda as well!</p>
+                    <div style="margin-top: 20px;">
+                        <a href="{% url 'stwms:resident_mark_bin_full' %}" style="display: inline-block; padding: 12px 24px; background: #00C74A; color: white; text-decoration: none; border-radius: 6px; font-weight: 600; transition: background 0.2s;">
+                            🗑️ Mark My Bin as Full
+                        </a>
+                    </div>
                 </div>
 
                 <div class="contact-info">

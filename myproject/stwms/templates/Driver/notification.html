@@ -9,37 +9,218 @@
 <section class="notification-page">
     <div class="notification-actions">
         <div class="notification-status">
-            <h2>Recent **Notification**</h2>
-            <p>4 unread notifications</p>
+            <h2>Recent Notifications</h2>
+            <p id="unread-count">{{ unread_count }} unread notification{{ unread_count|pluralize }}</p>
         </div>
         <div class="action-buttons">
-            <button class="action-btn-link">Mark All as read</button>
+            <button class="action-btn-link" id="mark-all-read">Mark All as read</button>
         </div>
     </div>
 
-    <div class="notification-list">
-        <div class="notification-card urgent">
-            <div class="icon-section"><i class="icon alert-icon">⚠️</i></div>
-            <div class="content-section">
-                <div class="notification-title">Urgent: Full toilet</div>
-                <div class="notification-body">Toilet at Kg24 Av is 95% full and requires immediate collection</div>
-                <div class="notification-footer">
-                    <span class="time">2 minutes ago</span>
+    <div class="notification-list" id="notification-list">
+        {% if alerts %}
+            {% for alert in alerts %}
+                <div class="notification-card {% if alert.alert_type == 'bin_full' or alert.alert_type == 'leakage' %}urgent{% elif alert.alert_type == 'sensor_error' %}medium{% endif %}" data-alert-id="{{ alert.id }}">
+                    <div class="icon-section">
+                        <i class="icon alert-icon">
+                            {% if alert.alert_type == 'bin_full' or alert.alert_type == 'leakage' %}⚠️
+                            {% elif alert.alert_type == 'sensor_error' %}🔧
+                            {% elif alert.alert_type == 'overheat' %}🌡️
+                            {% else %}ℹ️{% endif %}
+                        </i>
+                    </div>
+                    <div class="content-section">
+                        <div class="notification-title">
+                            {% if alert.alert_type == 'bin_full' %}Urgent: Bin Full
+                            {% elif alert.alert_type == 'sensor_error' %}Sensor Error
+                            {% elif alert.alert_type == 'leakage' %}Urgent: Leakage Detected
+                            {% elif alert.alert_type == 'overheat' %}Overheating Alert
+                            {% else %}{{ alert.get_alert_type_display }}{% endif %}
+                        </div>
+                        <div class="notification-body">
+                            {% if alert.bin %}
+                                {% if alert.alert_type == 'bin_full' %}
+                                    Bin at {{ alert.bin.location.sector }}{% if alert.bin.location.cell %}, {{ alert.bin.location.cell }}{% endif %} is {{ alert.bin.fill_level|floatformat:0 }}% full and requires immediate collection
+                                {% elif alert.alert_type == 'sensor_error' %}
+                                    Sensor error detected at {{ alert.bin.location.sector }}{% if alert.bin.location.cell %}, {{ alert.bin.location.cell }}{% endif %}
+                                {% elif alert.alert_type == 'leakage' %}
+                                    Leakage detected at {{ alert.bin.location.sector }}{% if alert.bin.location.cell %}, {{ alert.bin.location.cell }}{% endif %} - urgent attention required
+                                {% elif alert.alert_type == 'overheat' %}
+                                    Overheating detected at {{ alert.bin.location.sector }}{% if alert.bin.location.cell %}, {{ alert.bin.location.cell }}{% endif %}
+                                {% else %}
+                                    Alert at {{ alert.bin.location.sector }}{% if alert.bin.location.cell %}, {{ alert.bin.location.cell }}{% endif %}
+                                {% endif %}
+                            {% else %}
+                                Alert: {{ alert.get_alert_type_display }}
+                            {% endif %}
+                        </div>
+                        <div class="notification-footer">
+                            <span class="time">{{ alert.timestamp|timesince }} ago</span>
+                            <button class="mark-read-btn" data-alert-id="{{ alert.id }}">Mark as read</button>
+                        </div>
+                    </div>
+                    <div class="priority {% if alert.alert_type == 'bin_full' or alert.alert_type == 'leakage' %}high{% elif alert.alert_type == 'sensor_error' %}medium-p{% else %}low{% endif %}">
+                        {% if alert.alert_type == 'bin_full' or alert.alert_type == 'leakage' %}High
+                        {% elif alert.alert_type == 'sensor_error' %}Medium
+                        {% else %}Low{% endif %}
+                    </div>
                 </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-notifications">
+                <p>No notifications at this time.</p>
             </div>
-            <div class="priority high">High</div>
-        </div>
-        
-        <div class="notification-card medium">
-            <div class="icon-section"><i class="icon info-icon">ℹ️</i></div>
-            <div class="content-section">
-                <div class="notification-title">Route optimization Complete</div>
-                <div class="notification-body">Your route from downtown to Gisozí has been Optimized.</div>
-                <div class="notification-footer">
-                    <span class="time">15 minutes ago</span>
-                </div>
-            </div>
-            <div class="priority medium-p">Medium</div>
-        </div>
+        {% endif %}
     </div>
 </section>
+
+<script>
+// Load notifications dynamically and handle mark as read
+document.addEventListener('DOMContentLoaded', function() {
+    loadNotifications();
+    
+    // Mark all as read
+    const markAllBtn = document.getElementById('mark-all-read');
+    if (markAllBtn) {
+        markAllBtn.addEventListener('click', function() {
+            markAllAlertsRead();
+        });
+    }
+    
+    // Mark individual alert as read
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('mark-read-btn')) {
+            const alertId = e.target.getAttribute('data-alert-id');
+            markAlertRead(alertId);
+        }
+    });
+});
+
+function loadNotifications() {
+    fetch('/api/driver/notifications/', {
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        updateNotificationList(data.notifications);
+        updateUnreadCount(data.unread_count);
+    })
+    .catch(error => console.error('Error loading notifications:', error));
+}
+
+function updateNotificationList(notifications) {
+    const list = document.getElementById('notification-list');
+    if (!list) return;
+    
+    if (notifications.length === 0) {
+        list.innerHTML = '<div class="no-notifications"><p>No notifications at this time.</p></div>';
+        return;
+    }
+    
+    list.innerHTML = notifications.map(notif => {
+        const icon = notif.type === 'bin_full' || notif.type === 'leakage' ? '⚠️' :
+                    notif.type === 'sensor_error' ? '🔧' :
+                    notif.type === 'overheat' ? '🌡️' : 'ℹ️';
+        
+        const cardClass = notif.priority === 'high' ? 'urgent' : 
+                         notif.priority === 'medium' ? 'medium' : '';
+        
+        const priorityClass = notif.priority === 'high' ? 'high' :
+                             notif.priority === 'medium' ? 'medium-p' : 'low';
+        
+        const priorityText = notif.priority === 'high' ? 'High' :
+                           notif.priority === 'medium' ? 'Medium' : 'Low';
+        
+        const title = notif.type === 'bin_full' ? 'Urgent: Bin Full' :
+                     notif.type === 'sensor_error' ? 'Sensor Error' :
+                     notif.type === 'leakage' ? 'Urgent: Leakage Detected' :
+                     notif.type === 'overheat' ? 'Overheating Alert' :
+                     notif.type_display;
+        
+        return `
+            <div class="notification-card ${cardClass}" data-alert-id="${notif.id}">
+                <div class="icon-section"><i class="icon alert-icon">${icon}</i></div>
+                <div class="content-section">
+                    <div class="notification-title">${title}</div>
+                    <div class="notification-body">${notif.message}</div>
+                    <div class="notification-footer">
+                        <span class="time">${notif.time_ago}</span>
+                        <button class="mark-read-btn" data-alert-id="${notif.id}">Mark as read</button>
+                    </div>
+                </div>
+                <div class="priority ${priorityClass}">${priorityText}</div>
+            </div>
+        `;
+    }).join('');
+}
+
+function updateUnreadCount(count) {
+    const countElement = document.getElementById('unread-count');
+    if (countElement) {
+        countElement.textContent = `${count} unread notification${count !== 1 ? 's' : ''}`;
+    }
+}
+
+function markAlertRead(alertId) {
+    fetch('/api/driver/mark-alert-resolved/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken'),
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify({ alert_id: alertId })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Remove the alert from the list
+            const alertCard = document.querySelector(`[data-alert-id="${alertId}"]`);
+            if (alertCard) {
+                alertCard.style.opacity = '0.5';
+                alertCard.style.textDecoration = 'line-through';
+                setTimeout(() => {
+                    loadNotifications(); // Reload to update count
+                }, 500);
+            }
+        }
+    })
+    .catch(error => console.error('Error marking alert as read:', error));
+}
+
+function markAllAlertsRead() {
+    fetch('/api/driver/mark-alert-resolved/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken'),
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify({ mark_all: true })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            loadNotifications();
+        }
+    })
+    .catch(error => console.error('Error marking all alerts as read:', error));
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>

@@ -162,9 +162,28 @@ class VehicleForm(forms.ModelForm):
 
 
 class RouteForm(forms.ModelForm):
+    bins = forms.ModelMultipleChoiceField(
+        queryset=WasteBin.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=True,
+        help_text="Select bins to include in this collection route"
+    )
+    
     class Meta:
         model = CollectionRoute
-        fields = "__all__"
+        fields = ['assigned_collector', 'bins', 'start_time']
+        widgets = {
+            'start_time': forms.DateTimeInput(attrs={'type': 'datetime-local', 'class': 'form-control'}),
+            'assigned_collector': forms.Select(attrs={'class': 'form-control'})
+        }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Only show active collectors
+        self.fields['assigned_collector'].queryset = Collector.objects.filter(status='Active')
+        # For editing, include bins already in this route
+        if self.instance and self.instance.pk:
+            self.fields['bins'].initial = self.instance.bins.all()
 
 
 class AlertForm(forms.ModelForm):

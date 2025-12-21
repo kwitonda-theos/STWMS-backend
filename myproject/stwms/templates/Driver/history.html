@@ -8,42 +8,18 @@
 
 <section class="history-page">
     <div class="tab-navigation">
-        <button class="tab-btn active">Today</button>
-        <button class="tab-btn">This Week</button>
-        <button class="tab-btn">Monthly stats</button>
+        <button class="tab-btn active" data-period="today">Today</button>
+        <button class="tab-btn" data-period="week">This Week</button>
+        <button class="tab-btn" data-period="month">Monthly stats</button>
     </div>
 
     <div class="today-collections-section">
         <div class="section-header">
-            <h2>Today's **Collections**</h2>
+            <h2 id="collections-title">Today's Collections</h2>
         </div>
 
-        <div class="collection-list">
-            <div class="collection-item">
-                <div class="item-main">
-                    <div class="status-dot completed-dot"></div>
-                    <span class="location">KN 15 Ave, Nyarugenge</span>
-                    <span class="details type">Recycling</span>
-                    <span class="details time">07:30 AM</span>
-                </div>
-                <div class="item-stats">
-                    <span class="stat-value">45 kg</span>
-                    <span class="stat-value quality good">Excellent</span>
-                </div>
-            </div>
-
-            <div class="collection-item">
-                <div class="item-main">
-                    <div class="status-dot completed-dot"></div>
-                    <span class="location">Remera Sector, Gasabo</span>
-                    <span class="details type">General Waste</span>
-                    <span class="details time">08:00 AM</span>
-                </div>
-                <div class="item-stats">
-                    <span class="stat-value">78 kg</span>
-                    <span class="stat-value quality average">Good</span>
-                </div>
-            </div>
+        <div class="collection-list" id="collection-list">
+            <div class="loading-message">Loading collections...</div>
         </div>
     </div>
 
@@ -52,17 +28,152 @@
         <div class="metric-item">
             <span class="metric-label">Collection Rate</span>
             <div class="progress-bar-container">
-                <div class="progress-bar green-progress" style="width: 100%;"></div>
+                <div class="progress-bar green-progress" id="collection-rate-bar" style="width: 0%;"></div>
             </div>
-            <span class="metric-value">100%</span>
+            <span class="metric-value" id="collection-rate-value">0%</span>
         </div>
 
         <div class="metric-item">
             <span class="metric-label">Efficiency</span>
             <div class="progress-bar-container">
-                <div class="progress-bar green-progress " style="width: 96%;"></div>
+                <div class="progress-bar green-progress" id="efficiency-bar" style="width: 0%;"></div>
             </div>
-            <span class="metric-value">96%</span>
+            <span class="metric-value" id="efficiency-value">0%</span>
+        </div>
+        
+        <div class="metric-item">
+            <span class="metric-label">Total Collections</span>
+            <span class="metric-value" id="total-collections">0</span>
+        </div>
+        
+        <div class="metric-item">
+            <span class="metric-label">Total Weight</span>
+            <span class="metric-value" id="total-weight">0 kg</span>
         </div>
     </div>
 </section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let currentPeriod = 'today';
+    
+    // Load initial data
+    loadHistory(currentPeriod);
+    
+    // Tab navigation
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Update active tab
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Load data for selected period
+            currentPeriod = this.getAttribute('data-period');
+            loadHistory(currentPeriod);
+        });
+    });
+});
+
+function loadHistory(period) {
+    fetch(`/api/driver/history/?period=${period}`, {
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        updateCollectionsList(data.collections, period);
+        updatePerformanceMetrics(data.performance);
+    })
+    .catch(error => {
+        console.error('Error loading history:', error);
+        document.getElementById('collection-list').innerHTML = 
+            '<div class="no-collections"><p>Error loading history. Please try again.</p></div>';
+    });
+}
+
+function updateCollectionsList(collections, period) {
+    const list = document.getElementById('collection-list');
+    const title = document.getElementById('collections-title');
+    
+    // Update title based on period
+    const titles = {
+        'today': "Today's Collections",
+        'week': "This Week's Collections",
+        'month': "This Month's Collections"
+    };
+    if (title) {
+        title.textContent = titles[period] || "Collections";
+    }
+    
+    if (!list) return;
+    
+    if (collections.length === 0) {
+        list.innerHTML = '<div class="no-collections"><p>No collections found for this period.</p></div>';
+        return;
+    }
+    
+    list.innerHTML = collections.map(collection => {
+        // Determine quality based on fill level
+        let quality = 'good';
+        let qualityText = 'Good';
+        if (collection.fill_level >= 90) {
+            quality = 'good';
+            qualityText = 'Excellent';
+        } else if (collection.fill_level >= 50) {
+            quality = 'average';
+            qualityText = 'Good';
+        } else {
+            quality = 'low';
+            qualityText = 'Fair';
+        }
+        
+        return `
+            <div class="collection-item">
+                <div class="item-main">
+                    <div class="status-dot completed-dot"></div>
+                    <span class="location">${collection.location}</span>
+                    <span class="details type">Collection</span>
+                    <span class="details time">${collection.time}</span>
+                </div>
+                <div class="item-stats">
+                    <span class="stat-value">${collection.estimated_weight} kg</span>
+                    <span class="stat-value quality ${quality}">${qualityText}</span>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function updatePerformanceMetrics(performance) {
+    // Update collection rate
+    const rateBar = document.getElementById('collection-rate-bar');
+    const rateValue = document.getElementById('collection-rate-value');
+    if (rateBar && rateValue) {
+        const rate = performance.collection_rate || 0;
+        rateBar.style.width = rate + '%';
+        rateValue.textContent = rate + '%';
+    }
+    
+    // Update efficiency
+    const efficiencyBar = document.getElementById('efficiency-bar');
+    const efficiencyValue = document.getElementById('efficiency-value');
+    if (efficiencyBar && efficiencyValue) {
+        const efficiency = performance.efficiency || 0;
+        efficiencyBar.style.width = efficiency + '%';
+        efficiencyValue.textContent = efficiency + '%';
+    }
+    
+    // Update total collections
+    const totalCollections = document.getElementById('total-collections');
+    if (totalCollections) {
+        totalCollections.textContent = performance.total_collections || 0;
+    }
+    
+    // Update total weight
+    const totalWeight = document.getElementById('total-weight');
+    if (totalWeight) {
+        totalWeight.textContent = (performance.total_weight || 0) + ' kg';
+    }
+}
+</script>

@@ -2,6 +2,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login as auth_login
+from django.conf import settings
 
 from django.contrib import messages
 from django.db import IntegrityError
@@ -645,17 +646,174 @@ def settings(request):
     }
     return render(request, "company/settings.html", context)
 
+# Company: Assign tasks to collectors
+def assign_task(request):
+    """
+    Company view to assign collection routes (tasks) to collectors
+    """
+    if request.method == 'POST':
+        form = RouteForm(request.POST)
+        
+        # Debug: Log form data
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            import json
+            print(f"Form data received: {dict(request.POST)}")
+            print(f"Bins selected: {request.POST.getlist('bins')}")
+        
+        if form.is_valid():
+            try:
+                route = form.save(commit=False)
+                route.completed = False
+                route.save()
+                
+                # Save many-to-many relationships (bins)
+                form.save_m2m()
+                
+                # Verify bins were saved
+                bin_count = route.bins.count()
+                print(f"Route {route.id} created with {bin_count} bins")
+                
+                messages.success(request, f'Task assigned to {route.assigned_collector.user.username} successfully!')
+                
+                # Support AJAX requests
+                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                    return JsonResponse({
+                        'success': True, 
+                        'redirect': '/overview/',
+                        'message': f'Task assigned successfully with {bin_count} bins'
+                    })
+                
+                return redirect('stwms:overview')
+            except Exception as e:
+                # Handle any errors during save
+                import traceback
+                error_trace = traceback.format_exc()
+                print(f"Error saving route: {error_trace}")
+                
+                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                    return JsonResponse({
+                        'success': False, 
+                        'error': str(e),
+                        'trace': error_trace if settings.DEBUG else None
+                    }, status=400)
+                messages.error(request, f'Error assigning task: {str(e)}')
+        else:
+            # Form is invalid - log errors
+            print(f"Form validation errors: {form.errors}")
+            print(f"Form non-field errors: {form.non_field_errors()}")
+            
+            # Return form with errors
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                # Return form with errors as HTML
+                from django.template.loader import render_to_string
+                collectors = Collector.objects.filter(status='Active')
+                full_bins = WasteBin.objects.filter(status='full')
+                urgent_bins = WasteBin.objects.filter(status__in=['full', 'intermediate']).select_related('location')
+                html = render_to_string('company/assign_task.html', {
+                    'form': form,
+                    'collectors': collectors,
+                    'full_bins': full_bins,
+                    'urgent_bins': urgent_bins
+                }, request=request)
+                return HttpResponse(html, status=400)
+    else:
+        form = RouteForm()
+    
+    # Get available collectors and bins
+    collectors = Collector.objects.filter(status='Active')
+    full_bins = WasteBin.objects.filter(status='full')
+    urgent_bins = WasteBin.objects.filter(status__in=['full', 'intermediate']).select_related('location')
+    
+    # Support AJAX requests for form loading
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest' and request.method == 'GET':
+        from django.template.loader import render_to_string
+        html = render_to_string('company/assign_task.html', {
+            'form': form,
+            'collectors': collectors,
+            'full_bins': full_bins,
+            'urgent_bins': urgent_bins
+        }, request=request)
+        return HttpResponse(html)
+    
+    context = {
+        'form': form,
+        'collectors': collectors,
+        'full_bins': full_bins,
+        'urgent_bins': urgent_bins
+    }
+    return render(request, "company/assign_task.html", context)
+
 # driver home view
 def driver_home(request):
-    return render(request, "Driver/home.html")
+    username = request.user.username if request.user.is_authenticated else "Driver"
+    context = {
+        'username': username
+    }
+    return render(request, "Driver/home.html", context)
 
 def history(request):
-    return render(request, "Driver/history.html")
+    # Get collector for the logged-in user
+    collector = None
+    if request.user.is_authenticated:
+        try:
+            collector = Collector.objects.get(user=request.user)
+        except Collector.DoesNotExist:
+            pass
+    
+    context = {
+        'collector': collector
+    }
+    return render(request, "Driver/history.html", context)
 
 def notifications(request):
-    return render(request, "Driver/notification.html")
+    # Get alerts for the driver's assigned bins
+    alerts = []
+    unread_count = 0
+    
+    if request.user.is_authenticated:
+        try:
+            collector = Collector.objects.get(user=request.user)
+            # Get bins assigned to this collector's routes
+            from datetime import date
+            today = date.today()
+            routes = CollectionRoute.objects.filter(
+                assigned_collector=collector,
+                start_time__date=today
+            )
+            
+            # Get all bins from these routes
+            route_bins = WasteBin.objects.filter(routes__in=routes).distinct()
+            
+            # Get alerts for these bins
+            alerts = Alert.objects.filter(
+                bin__in=route_bins,
+                resolved=False
+            ).select_related('bin', 'bin__location').order_by('-timestamp')[:50]
+            
+            unread_count = alerts.count()
+        except Collector.DoesNotExist:
+            # If not a collector, show all unresolved alerts
+            alerts = Alert.objects.filter(resolved=False).select_related('bin', 'bin__location').order_by('-timestamp')[:50]
+            unread_count = alerts.count()
+    
+    context = {
+        'alerts': alerts,
+        'unread_count': unread_count
+    }
+    return render(request, "Driver/notification.html", context)
 def route_details(request):
-    return render(request, "Driver/routes.html")
+    # Get the collector for the logged-in user
+    collector = None
+    if request.user.is_authenticated:
+        try:
+            collector = Collector.objects.get(user=request.user)
+        except Collector.DoesNotExist:
+            pass
+    
+    context = {
+        'collector': collector
+    }
+    return render(request, "Driver/routes.html", context)
 
 def driver_dashboard(request):
     return render(request, "Driver/driver.html")
@@ -755,6 +913,401 @@ class ReportViewSet(viewsets.ModelViewSet):
     queryset = Report.objects.all()
     serializer_class = ReportSerializer
 
+# --- DRIVER API ENDPOINTS ---
+
+@api_view(['GET'])
+def api_driver_stats(request):
+    """
+    Returns driver-specific stats:
+    - Pending collections, Completed today, Route progress
+    """
+    if not request.user.is_authenticated:
+        return Response({'error': 'Not authenticated'}, status=401)
+    
+    try:
+        collector = Collector.objects.get(user=request.user)
+    except Collector.DoesNotExist:
+        return Response({
+            'pending_collections': 0,
+            'completed_today': 0,
+            'route_progress': 0
+        })
+    
+    # Get today's routes for this collector
+    from datetime import date, datetime
+    today = date.today()
+    today_routes = CollectionRoute.objects.filter(
+        assigned_collector=collector,
+        start_time__date=today
+    )
+    
+    # Count pending bins (in routes that aren't completed)
+    pending_routes = today_routes.filter(completed=False)
+    pending_bins = 0
+    for route in pending_routes:
+        pending_bins += route.bins.count()
+    
+    # Count completed bins today
+    completed_routes = today_routes.filter(completed=True)
+    completed_bins = 0
+    for route in completed_routes:
+        completed_bins += route.bins.count()
+    
+    # Calculate route progress
+    total_bins_today = pending_bins + completed_bins
+    route_progress = int((completed_bins / total_bins_today * 100)) if total_bins_today > 0 else 0
+    
+    return Response({
+        'pending_collections': pending_bins,
+        'completed_today': completed_bins,
+        'route_progress': route_progress
+    })
+
+@api_view(['GET'])
+def api_driver_routes(request):
+    """
+    Returns routes assigned to the logged-in driver
+    """
+    if not request.user.is_authenticated:
+        return Response({'error': 'Not authenticated'}, status=401)
+    
+    try:
+        collector = Collector.objects.get(user=request.user)
+    except Collector.DoesNotExist:
+        return Response({'routes': [], 'all_stops': [], 'completed_count': 0, 'total_count': 0})
+    
+    from datetime import date
+    today = date.today()
+    
+    # Get today's routes (both completed and pending)
+    routes = CollectionRoute.objects.filter(
+        assigned_collector=collector,
+        start_time__date=today
+    ).prefetch_related('bins', 'bins__location')
+    
+    routes_data = []
+    all_stops = []  # All collection stops from all routes
+    completed_count = 0
+    total_count = 0
+    
+    for route in routes:
+        bins_data = []
+        for bin in route.bins.all():
+            # Determine if bin is collected (status is empty or route is completed)
+            is_collected = route.completed or bin.status == 'empty'
+            if is_collected:
+                completed_count += 1
+            total_count += 1
+            
+            bin_data = {
+                'id': bin.WasteBin_id,
+                'location': f"{bin.location.sector}, {bin.location.cell}" if bin.location else "Unknown",
+                'status': bin.status,
+                'fill_level': float(bin.fill_level),
+                'is_collected': is_collected,
+                'route_id': route.id
+            }
+            bins_data.append(bin_data)
+            all_stops.append(bin_data)
+        
+        routes_data.append({
+            'id': route.id,
+            'start_time': route.start_time.isoformat(),
+            'bins': bins_data,
+            'total_bins': len(bins_data),
+            'completed': route.completed
+        })
+    
+    # Calculate remaining count
+    remaining_count = total_count - completed_count
+    
+    return Response({
+        'routes': routes_data,
+        'all_stops': all_stops,
+        'completed_count': completed_count,
+        'total_count': total_count,
+        'remaining_count': remaining_count
+    })
+
+@api_view(['GET'])
+def api_driver_notifications(request):
+    """
+    Returns recent alerts/notifications for the driver's assigned bins
+    """
+    if not request.user.is_authenticated:
+        return Response({'error': 'Not authenticated'}, status=401)
+    
+    try:
+        collector = Collector.objects.get(user=request.user)
+        # Get bins assigned to this collector's routes
+        from datetime import date
+        today = date.today()
+        routes = CollectionRoute.objects.filter(
+            assigned_collector=collector,
+            start_time__date=today
+        )
+        
+        # Get all bins from these routes
+        route_bins = WasteBin.objects.filter(routes__in=routes).distinct()
+        
+        # Get alerts for these bins
+        alerts = Alert.objects.filter(
+            bin__in=route_bins,
+            resolved=False
+        ).select_related('bin', 'bin__location').order_by('-timestamp')[:50]
+    except Collector.DoesNotExist:
+        # If not a collector, show all unresolved alerts
+        alerts = Alert.objects.filter(resolved=False).select_related('bin', 'bin__location').order_by('-timestamp')[:50]
+    
+    alerts_data = []
+    for alert in alerts:
+        # Determine priority based on alert type
+        priority = 'low'
+        if alert.alert_type in ['bin_full', 'leakage']:
+            priority = 'high'
+        elif alert.alert_type == 'sensor_error':
+            priority = 'medium'
+        
+        # Get alert type display name
+        alert_type_display = dict(Alert.ALERT_TYPES).get(alert.alert_type, alert.alert_type)
+        
+        # Build alert message
+        bin_location = "Unknown"
+        if alert.bin and alert.bin.location:
+            bin_location = f"{alert.bin.location.sector}, {alert.bin.location.cell}"
+        
+        alert_message = ""
+        if alert.alert_type == 'bin_full':
+            fill_level = float(alert.bin.fill_level) if alert.bin else 0
+            alert_message = f"Bin at {bin_location} is {fill_level:.0f}% full and requires immediate collection"
+        elif alert.alert_type == 'sensor_error':
+            alert_message = f"Sensor error detected at {bin_location}"
+        elif alert.alert_type == 'leakage':
+            alert_message = f"Leakage detected at {bin_location} - urgent attention required"
+        elif alert.alert_type == 'overheat':
+            alert_message = f"Overheating detected at {bin_location}"
+        else:
+            alert_message = f"Alert at {bin_location}"
+        
+        alerts_data.append({
+            'id': alert.id,
+            'type': alert.alert_type,
+            'type_display': alert_type_display,
+            'bin_id': alert.bin.WasteBin_id if alert.bin else None,
+            'location': bin_location,
+            'fill_level': float(alert.bin.fill_level) if alert.bin else 0,
+            'priority': priority,
+            'timestamp': alert.timestamp.isoformat(),
+            'time_ago': get_time_ago(alert.timestamp),
+            'message': alert_message,
+            'resolved': alert.resolved
+        })
+    
+    return Response({
+        'notifications': alerts_data,
+        'unread_count': len(alerts_data)
+    })
+
+@api_view(['POST'])
+def api_mark_collection_complete(request):
+    """
+    Mark a bin collection as complete
+    """
+    if not request.user.is_authenticated:
+        return Response({'error': 'Not authenticated'}, status=401)
+    
+    bin_id = request.data.get('bin_id')
+    route_id = request.data.get('route_id')
+    
+    if not bin_id or not route_id:
+        return Response({'error': 'bin_id and route_id required'}, status=400)
+    
+    try:
+        collector = Collector.objects.get(user=request.user)
+        route = CollectionRoute.objects.get(id=route_id, assigned_collector=collector)
+        waste_bin = WasteBin.objects.get(WasteBin_id=bin_id)
+        
+        # Update bin status to empty after collection
+        waste_bin.status = 'empty'
+        waste_bin.fill_level = 0
+        waste_bin.save()
+        
+        # Check if all bins in route are collected (simplified - you might want to track individual bin completion)
+        
+        return Response({'success': True, 'message': 'Collection marked as complete'})
+    except (Collector.DoesNotExist, CollectionRoute.DoesNotExist, WasteBin.DoesNotExist) as e:
+        return Response({'error': str(e)}, status=404)
+
+@api_view(['GET'])
+def api_driver_history(request):
+    """
+    Returns collection history for the driver
+    Supports filtering by period: today, week, month
+    """
+    if not request.user.is_authenticated:
+        return Response({'error': 'Not authenticated'}, status=401)
+    
+    period = request.GET.get('period', 'today')  # today, week, month
+    
+    try:
+        collector = Collector.objects.get(user=request.user)
+    except Collector.DoesNotExist:
+        return Response({'collections': [], 'performance': {}})
+    
+    from datetime import date, datetime, timedelta
+    from django.utils import timezone
+    
+    # Calculate date range based on period
+    now = timezone.now()
+    if period == 'today':
+        start_date = now.replace(hour=0, minute=0, second=0, microsecond=0)
+        end_date = now
+    elif period == 'week':
+        start_date = now - timedelta(days=7)
+        end_date = now
+    elif period == 'month':
+        start_date = now - timedelta(days=30)
+        end_date = now
+    else:
+        start_date = now.replace(hour=0, minute=0, second=0, microsecond=0)
+        end_date = now
+    
+    # Get completed routes in the period
+    routes = CollectionRoute.objects.filter(
+        assigned_collector=collector,
+        completed=True,
+        start_time__gte=start_date,
+        start_time__lte=end_date
+    ).prefetch_related('bins', 'bins__location').order_by('-start_time')
+    
+    collections_data = []
+    total_bins = 0
+    total_weight = 0  # Estimate based on fill level
+    
+    for route in routes:
+        for bin in route.bins.all():
+            # Estimate weight (simplified - you might have actual weight data)
+            estimated_weight = float(bin.fill_level) * 0.5  # kg estimate
+            total_weight += estimated_weight
+            total_bins += 1
+            
+            location_str = "Unknown"
+            if bin.location:
+                location_str = f"{bin.location.sector}"
+                if bin.location.cell:
+                    location_str += f", {bin.location.cell}"
+                if bin.location.district:
+                    location_str += f" - {bin.location.district}"
+            
+            collections_data.append({
+                'id': bin.WasteBin_id,
+                'route_id': route.id,
+                'location': location_str,
+                'time': route.start_time.strftime('%I:%M %p'),
+                'date': route.start_time.strftime('%Y-%m-%d'),
+                'datetime': route.start_time.isoformat(),
+                'estimated_weight': round(estimated_weight, 1),
+                'fill_level': float(bin.fill_level),
+                'status': 'completed'
+            })
+    
+    # Calculate performance metrics
+    # Collection rate: completed routes / total assigned routes in period
+    total_assigned = CollectionRoute.objects.filter(
+        assigned_collector=collector,
+        start_time__gte=start_date,
+        start_time__lte=end_date
+    ).count()
+    
+    completed_count = routes.count()
+    collection_rate = int((completed_count / total_assigned * 100)) if total_assigned > 0 else 0
+    
+    # Efficiency: based on bins collected vs assigned
+    total_assigned_bins = 0
+    for route in CollectionRoute.objects.filter(
+        assigned_collector=collector,
+        start_time__gte=start_date,
+        start_time__lte=end_date
+    ):
+        total_assigned_bins += route.bins.count()
+    
+    efficiency = int((total_bins / total_assigned_bins * 100)) if total_assigned_bins > 0 else 0
+    
+    # Average weight per collection
+    avg_weight = round(total_weight / total_bins, 1) if total_bins > 0 else 0
+    
+    return Response({
+        'collections': collections_data,
+        'performance': {
+            'collection_rate': collection_rate,
+            'efficiency': efficiency,
+            'total_collections': total_bins,
+            'total_weight': round(total_weight, 1),
+            'average_weight': avg_weight,
+            'period': period
+        }
+    })
+
+@api_view(['POST'])
+def api_mark_alert_resolved(request):
+    """
+    Mark an alert as resolved
+    """
+    if not request.user.is_authenticated:
+        return Response({'error': 'Not authenticated'}, status=401)
+    
+    alert_id = request.data.get('alert_id')
+    mark_all = request.data.get('mark_all', False)
+    
+    if mark_all:
+        # Mark all alerts for this driver as resolved
+        try:
+            collector = Collector.objects.get(user=request.user)
+            from datetime import date
+            today = date.today()
+            routes = CollectionRoute.objects.filter(
+                assigned_collector=collector,
+                start_time__date=today
+            )
+            route_bins = WasteBin.objects.filter(routes__in=routes).distinct()
+            alerts = Alert.objects.filter(bin__in=route_bins, resolved=False)
+            alerts.update(resolved=True)
+            return Response({'success': True, 'message': f'{alerts.count()} alerts marked as resolved'})
+        except Collector.DoesNotExist:
+            alerts = Alert.objects.filter(resolved=False)
+            count = alerts.count()
+            alerts.update(resolved=True)
+            return Response({'success': True, 'message': f'{count} alerts marked as resolved'})
+    elif alert_id:
+        try:
+            alert = Alert.objects.get(id=alert_id)
+            alert.resolved = True
+            alert.save()
+            return Response({'success': True, 'message': 'Alert marked as resolved'})
+        except Alert.DoesNotExist:
+            return Response({'error': 'Alert not found'}, status=404)
+    else:
+        return Response({'error': 'alert_id or mark_all required'}, status=400)
+
+def get_time_ago(timestamp):
+    """Helper function to get human-readable time ago"""
+    from datetime import datetime, timezone
+    now = datetime.now(timezone.utc)
+    if timestamp.tzinfo is None:
+        timestamp = timestamp.replace(tzinfo=timezone.utc)
+    diff = now - timestamp
+    
+    if diff.days > 0:
+        return f"{diff.days} day{'s' if diff.days > 1 else ''} ago"
+    elif diff.seconds >= 3600:
+        hours = diff.seconds // 3600
+        return f"{hours} hour{'s' if hours > 1 else ''} ago"
+    elif diff.seconds >= 60:
+        minutes = diff.seconds // 60
+        return f"{minutes} minute{'s' if minutes > 1 else ''} ago"
+    else:
+        return "Just now"
+
 #  (Inside Company Dashboard Views section) 
 
 def company_bin_create_view(request):
@@ -780,3 +1333,104 @@ def resident_settings(request):
 def resident_help(request):
     
     return render(request, "resident/help.html")
+
+# Resident: Mark bin as full
+@api_view(['POST'])
+def api_mark_bin_full(request):
+    """
+    API endpoint for residents to mark their bin as full
+    """
+    if not request.user.is_authenticated:
+        return Response({'error': 'Not authenticated'}, status=401)
+    
+    bin_id = request.data.get('bin_id')
+    
+    if not bin_id:
+        return Response({'error': 'bin_id is required'}, status=400)
+    
+    try:
+        # Get the bin - check if user owns it or is a resident
+        waste_bin = WasteBin.objects.get(WasteBin_id=bin_id)
+        
+        # Check if user is the owner or is a resident
+        is_owner = waste_bin.owner == request.user
+        is_resident = False
+        try:
+            user_profile = Users.objects.get(user=request.user)
+            is_resident = user_profile.role == 'resident'
+        except Users.DoesNotExist:
+            pass
+        
+        if not (is_owner or is_resident):
+            return Response({'error': 'You do not have permission to update this bin'}, status=403)
+        
+        # Update bin status to full
+        waste_bin.status = 'full'
+        waste_bin.fill_level = 95  # Set to 95% when marked as full
+        waste_bin.save()
+        
+        # Create an alert for the bin being full
+        alert, created = Alert.objects.get_or_create(
+            bin=waste_bin,
+            alert_type='bin_full',
+            resolved=False,
+            defaults={
+                'timestamp': timezone.now()
+            }
+        )
+        
+        if not created:
+            # Update timestamp if alert already exists
+            alert.timestamp = timezone.now()
+            alert.save()
+        
+        return Response({
+            'success': True,
+            'message': 'Bin marked as full. Collection team has been notified.',
+            'bin_id': bin_id,
+            'status': waste_bin.status,
+            'fill_level': float(waste_bin.fill_level)
+        })
+        
+    except WasteBin.DoesNotExist:
+        return Response({'error': 'Bin not found'}, status=404)
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)
+
+def resident_mark_bin_full(request):
+    """
+    Resident view to mark their bin as full (web form)
+    """
+    if not request.user.is_authenticated:
+        messages.error(request, 'Please log in to mark your bin as full.')
+        return redirect('stwms:log_in')
+    
+    # Get bins owned by this user
+    user_bins = WasteBin.objects.filter(owner=request.user)
+    
+    if request.method == 'POST':
+        bin_id = request.POST.get('bin_id')
+        if bin_id:
+            try:
+                waste_bin = WasteBin.objects.get(WasteBin_id=bin_id, owner=request.user)
+                waste_bin.status = 'full'
+                waste_bin.fill_level = 95
+                waste_bin.save()
+                
+                # Create alert
+                Alert.objects.get_or_create(
+                    bin=waste_bin,
+                    alert_type='bin_full',
+                    resolved=False,
+                    defaults={'timestamp': timezone.now()}
+                )
+                
+                messages.success(request, f'Bin {bin_id} marked as full. Collection team has been notified!')
+                return redirect('stwms:resident_dashboard')
+            except WasteBin.DoesNotExist:
+                messages.error(request, 'Bin not found or you do not have permission.')
+    
+    context = {
+        'user_bins': user_bins
+    }
+    return render(request, "resident/mark_bin_full.html", context)

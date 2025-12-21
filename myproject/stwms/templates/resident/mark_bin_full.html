@@ -1,0 +1,58 @@
+<div class="settings-container">
+    <h2 style="color: #006325; margin-bottom: 30px;">Mark Bin as Full</h2>
+    <p style="color: #666; margin-bottom: 30px;">Report when your waste bin is full and needs collection</p>
+    
+    {% if user_bins %}
+    <div class="bins-list" style="display: grid; gap: 20px;">
+        {% for bin in user_bins %}
+        <div class="bin-card" style="background: white; padding: 20px; border-radius: 8px; border: 1px solid #ddd; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
+                <div>
+                    <h3 style="margin: 0; color: #006325;">Bin ID: {{ bin.WasteBin_id }}</h3>
+                    <p style="margin: 5px 0; color: #666;">
+                        {% if bin.location %}
+                            📍 {{ bin.location.sector }}{% if bin.location.cell %}, {{ bin.location.cell }}{% endif %}
+                        {% else %}
+                            Location not set
+                        {% endif %}
+                    </p>
+                </div>
+                <div style="text-align: right;">
+                    <span class="status-badge" style="padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;
+                        {% if bin.status == 'full' %}background: #dc3545; color: white;
+                        {% elif bin.status == 'intermediate' %}background: #ffc107; color: #333;
+                        {% else %}background: #28a745; color: white;{% endif %}">
+                        {{ bin.status|title }}
+                    </span>
+                    <p style="margin: 5px 0; font-size: 14px; color: #666;">
+                        Fill Level: {{ bin.fill_level }}%
+                    </p>
+                </div>
+            </div>
+            
+            {% if bin.status != 'full' %}
+            <form method="post" style="margin-top: 15px;">
+                {% csrf_token %}
+                <input type="hidden" name="bin_id" value="{{ bin.WasteBin_id }}">
+                <button type="submit" style="width: 100%; padding: 12px; background: #006325; color: white; border: none; border-radius: 6px; font-size: 15px; font-weight: 600; cursor: pointer; transition: background 0.2s;">
+                    🗑️ Mark as Full - Request Collection
+                </button>
+            </form>
+            {% else %}
+            <div style="padding: 12px; background: #d4edda; color: #155724; border-radius: 6px; text-align: center; font-weight: 600;">
+                ✅ Already marked as full - Collection team notified
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div style="background: #fff3cd; padding: 30px; border-radius: 8px; text-align: center; border-left: 4px solid #ffc107;">
+        <p style="margin: 0; color: #856404; font-size: 16px;">
+            <strong>No bins assigned to your account.</strong><br>
+            Please contact support to get a bin assigned to your location.
+        </p>
+    </div>
+    {% endif %}
+</div>
+

@@ -345,6 +345,9 @@ document.addEventListener('DOMContentLoaded', function () {
             } else if (form.id === 'bin-create-form') {
                 event.preventDefault();
                 submitBinForm();
+            } else if (form.id === 'assignTaskForm') {
+                event.preventDefault();
+                submitAssignTaskForm();
             }
         });
     }
@@ -705,6 +708,87 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Set up auto-refresh if enabled
         setupAutoRefresh();
+    };
+
+    // Assign Task Form Submission
+    window.submitAssignTaskForm = function () {
+        const form = document.getElementById('assignTaskForm');
+        if (!form) {
+            console.error('Assign task form not found');
+            return;
+        }
+
+        const formData = new FormData(form);
+        const submitBtn = form.querySelector('button[type="submit"]');
+
+        // Debug: Log form data
+        console.log('Submitting assign task form...');
+        const binsSelected = Array.from(form.querySelectorAll('input[name="bins"]:checked')).map(cb => cb.value);
+        console.log('Bins selected:', binsSelected);
+        console.log('Collector:', formData.get('assigned_collector'));
+        console.log('Start time:', formData.get('start_time'));
+
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Assigning...';
+        }
+
+        fetch('/company/assign-task/', {
+            method: 'POST',
+            body: formData,
+            headers: { 
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': getCookie('csrftoken')
+            }
+        })
+            .then(res => {
+                const contentType = res.headers.get('content-type');
+                
+                // Check if response is JSON (success)
+                if (contentType && contentType.includes('application/json')) {
+                    return res.json().then(data => {
+                        if (data.success) {
+                            // Success - reload overview
+                            loadContent('/overview/');
+                            return null;
+                        } else {
+                            // Error in JSON response
+                            alert('Error: ' + (data.error || 'Unknown error'));
+                            if (submitBtn) {
+                                submitBtn.disabled = false;
+                                submitBtn.innerHTML = 'Assign Task';
+                            }
+                            return null;
+                        }
+                    });
+                }
+                
+                // Otherwise, it's HTML (either form with errors or redirect)
+                return res.text().then(html => {
+                    if (html) {
+                        // Update content with form (may have errors)
+                        mainContent.innerHTML = html;
+                        // Re-initialize any scripts if needed
+                        if (typeof initOverview === 'function' && res.status === 200) {
+                            // If status is 200, it might be a redirect response
+                            // Check if we should reload overview
+                            setTimeout(() => {
+                                if (mainContent.innerHTML.includes('Dashboard Overview')) {
+                                    initOverview();
+                                }
+                            }, 100);
+                        }
+                    }
+                });
+            })
+            .catch(err => {
+                console.error('Assign task form submission error:', err);
+                alert('An error occurred while assigning the task. Please check the console for details.');
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = 'Assign Task';
+                }
+            });
     };
 
     // Initial Load

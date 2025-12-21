@@ -11,7 +11,7 @@
         <div class="route-status">
             <i class="icon map-pin-icon">📍</i>
             <h2>Today's Route</h2>
-            <p>Remaining 5 stops</p>
+            <p id="remaining-stops">Loading stops...</p>
         </div>
         <button class="optimize-btn">Optimize route</button>
     </div>
@@ -32,23 +32,10 @@
 <section class="data-summary">
     <div class="collection-stops-card">
         <h3>Collection stops</h3>
-        <p>7 of 12 stops completed</p>
-        <ul class="stop-list">
-            <li class="stop-item pending">
-                <span>KN 15 Ave, Nyarugenge</span>
-                <span class="status">Pending</span>
-            </li>
-            <li class="stop-item pending">
-                <span>Remera Sector, Gasabo</span>
-                <span class="status">Pending</span>
-            </li>
-            <li class="stop-item completed">
-                <span>Kimisagara Quarter</span>
-                <span class="status">Completed</span>
-            </li>
-            <li class="stop-item completed">
-                <span>Kinyinya Sector, Gasabo</span>
-                <span class="status">Completed</span>
+        <p id="stops-summary">Loading...</p>
+        <ul class="stop-list" id="collection-stops-list">
+            <li class="stop-item" style="text-align: center; padding: 20px; color: #666;">
+                Loading collection stops...
             </li>
         </ul>
     </div>
@@ -57,17 +44,17 @@
         <div class="stat-item">
             <i class="icon">📈</i>
             <span class="stat-label">Route progress</span>
-            <span class="stat-value progress">85%</span>
+            <span class="stat-value progress" id="route-progress">0%</span>
         </div>
         <div class="stat-item">
             <i class="icon">⏳</i>
             <span class="stat-label">Remaining time</span>
-            <span class="stat-value time">2h 30m</span>
+            <span class="stat-value time" id="remaining-time">--</span>
         </div>
         <div class="stat-item">
             <i class="icon">📍</i>
-            <span class="stat-label">Distance</span>
-            <span class="stat-value distance">24.5 km</span>
+            <span class="stat-label">Total stops</span>
+            <span class="stat-value distance" id="total-stops">0</span>
         </div>
     </div>
 </section>

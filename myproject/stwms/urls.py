@@ -30,6 +30,14 @@ urlpatterns = [
     # api endpoints
     path('api/overview-stats/', views.api_dashboard_stats, name='api_overview_stats'),
     path('api/tanks/', views.api_tank_status, name='api_tank_status'),
+    
+    # driver api endpoints
+    path('api/driver/stats/', views.api_driver_stats, name='api_driver_stats'),
+    path('api/driver/routes/', views.api_driver_routes, name='api_driver_routes'),
+    path('api/driver/notifications/', views.api_driver_notifications, name='api_driver_notifications'),
+    path('api/driver/complete-collection/', views.api_mark_collection_complete, name='api_mark_collection_complete'),
+    path('api/driver/mark-alert-resolved/', views.api_mark_alert_resolved, name='api_mark_alert_resolved'),
+    path('api/driver/history/', views.api_driver_history, name='api_driver_history'),
     path('company/bin/create/', views.company_bin_create_view, name='company_bin_create'),
     path('company/location/create/', views.company_location_create_view, name='company_location_create'),
 
@@ -115,5 +123,12 @@ urlpatterns = [
     path('resident/', views.resident_dashboard, name='resident_dashboard'),
     path('resident/settings/', views.resident_settings, name='resident_settings'),
     path('resident/help/', views.resident_help, name='resident_help'),
+    path('resident/mark-bin-full/', views.resident_mark_bin_full, name='resident_mark_bin_full'),
+    
+    # Company: Assign tasks
+    path('company/assign-task/', views.assign_task, name='assign_task'),
+    
+    # API endpoints
+    path('api/resident/mark-bin-full/', views.api_mark_bin_full, name='api_mark_bin_full'),
 ]
 
