@@ -271,15 +271,20 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             // Check if it is a dynamic link
+            const href = link.getAttribute('href');
             const isDynamic = link.classList.contains('create-vehicle') ||
                 link.classList.contains('create-tank') ||
-                (link.tagName === 'A' && link.getAttribute('href') && link.getAttribute('href').includes('/edit/')) ||
-                (link.tagName === 'A' && link.getAttribute('href') && link.getAttribute('href').includes('/create/'));
+                (link.tagName === 'A' && href && (
+                    href.includes('/edit/') ||
+                    href.includes('/create/') ||
+                    href.includes('/assign-task/') ||
+                    href.includes('/company/assign-task/')
+                ));
 
             // Handle "Back" buttons or explicitly marked Ajax links
             if (isDynamic || link.classList.contains('ajax-link')) {
                 event.preventDefault();
-                const url = link.getAttribute('href') || link.getAttribute('data-url');
+                const url = href || link.getAttribute('data-url');
                 if (url) loadContent(url);
             }
         });
@@ -468,6 +473,73 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (submitBtn) {
                     submitBtn.disabled = false;
                     submitBtn.innerHTML = '<i class="fas fa-save"></i> Save Location';
+                }
+            });
+    };
+
+    // Assign Task Form Submission
+    window.submitAssignTaskForm = function () {
+        const form = document.getElementById('assignTaskForm');
+        if (!form) {
+            console.error('Assign Task form not found');
+            return;
+        }
+
+        const formData = new FormData(form);
+        const submitBtn = form.querySelector('button[type="submit"]');
+
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Assigning...';
+        }
+
+        fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+            .then(res => {
+                const contentType = res.headers.get('content-type');
+                
+                // Check if response is JSON (success)
+                if (contentType && contentType.includes('application/json')) {
+                    return res.json().then(data => {
+                        if (data.success) {
+                            // Success - load overview in main-content
+                            loadContent('/overview/');
+                            return null;
+                        } else {
+                            // Error in JSON response
+                            alert('Error: ' + (data.error || 'Unknown error'));
+                            if (submitBtn) {
+                                submitBtn.disabled = false;
+                                submitBtn.innerHTML = 'Assign Task';
+                            }
+                            return null;
+                        }
+                    });
+                }
+                
+                // Otherwise, it's HTML (form with errors or error response)
+                return res.text().then(html => {
+                    if (res.ok || res.status === 400) {
+                        // Update content with form (may have errors)
+                        mainContent.innerHTML = html;
+                    } else {
+                        alert('An error occurred while assigning the task.');
+                        if (submitBtn) {
+                            submitBtn.disabled = false;
+                            submitBtn.innerHTML = 'Assign Task';
+                        }
+                    }
+                });
+            })
+            .catch(err => {
+                console.error('Assign Task form submission error:', err);
+                alert('An error occurred while assigning the task.');
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = 'Assign Task';
                 }
             });
     };
@@ -710,87 +782,6 @@ document.addEventListener('DOMContentLoaded', function () {
         setupAutoRefresh();
     };
 
-    // Assign Task Form Submission
-    window.submitAssignTaskForm = function () {
-        const form = document.getElementById('assignTaskForm');
-        if (!form) {
-            console.error('Assign task form not found');
-            return;
-        }
-
-        const formData = new FormData(form);
-        const submitBtn = form.querySelector('button[type="submit"]');
-
-        // Debug: Log form data
-        console.log('Submitting assign task form...');
-        const binsSelected = Array.from(form.querySelectorAll('input[name="bins"]:checked')).map(cb => cb.value);
-        console.log('Bins selected:', binsSelected);
-        console.log('Collector:', formData.get('assigned_collector'));
-        console.log('Start time:', formData.get('start_time'));
-
-        if (submitBtn) {
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Assigning...';
-        }
-
-        fetch('/company/assign-task/', {
-            method: 'POST',
-            body: formData,
-            headers: { 
-                'X-Requested-With': 'XMLHttpRequest',
-                'X-CSRFToken': getCookie('csrftoken')
-            }
-        })
-            .then(res => {
-                const contentType = res.headers.get('content-type');
-                
-                // Check if response is JSON (success)
-                if (contentType && contentType.includes('application/json')) {
-                    return res.json().then(data => {
-                        if (data.success) {
-                            // Success - reload overview
-                            loadContent('/overview/');
-                            return null;
-                        } else {
-                            // Error in JSON response
-                            alert('Error: ' + (data.error || 'Unknown error'));
-                            if (submitBtn) {
-                                submitBtn.disabled = false;
-                                submitBtn.innerHTML = 'Assign Task';
-                            }
-                            return null;
-                        }
-                    });
-                }
-                
-                // Otherwise, it's HTML (either form with errors or redirect)
-                return res.text().then(html => {
-                    if (html) {
-                        // Update content with form (may have errors)
-                        mainContent.innerHTML = html;
-                        // Re-initialize any scripts if needed
-                        if (typeof initOverview === 'function' && res.status === 200) {
-                            // If status is 200, it might be a redirect response
-                            // Check if we should reload overview
-                            setTimeout(() => {
-                                if (mainContent.innerHTML.includes('Dashboard Overview')) {
-                                    initOverview();
-                                }
-                            }, 100);
-                        }
-                    }
-                });
-            })
-            .catch(err => {
-                console.error('Assign task form submission error:', err);
-                alert('An error occurred while assigning the task. Please check the console for details.');
-                if (submitBtn) {
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = 'Assign Task';
-                }
-            });
-    };
-
     // Initial Load
     if (mainContent.innerHTML.trim() === '') loadContent(contentRoutes['overview']);
 });
@@ -960,8 +951,7 @@ function setupAutoRefresh() {
 }
 
 function showSettingFeedback(setting, value) {
-    // Optional: Show a brief notification that setting was saved
-    // You could implement a toast notification here
+    
     console.log(`Setting "${setting}" changed to: ${value}`);
 }
 
