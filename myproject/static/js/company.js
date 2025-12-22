@@ -271,20 +271,15 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             // Check if it is a dynamic link
-            const href = link.getAttribute('href');
             const isDynamic = link.classList.contains('create-vehicle') ||
                 link.classList.contains('create-tank') ||
-                (link.tagName === 'A' && href && (
-                    href.includes('/edit/') ||
-                    href.includes('/create/') ||
-                    href.includes('/assign-task/') ||
-                    href.includes('/company/assign-task/')
-                ));
+                (link.tagName === 'A' && link.getAttribute('href') && link.getAttribute('href').includes('/edit/')) ||
+                (link.tagName === 'A' && link.getAttribute('href') && link.getAttribute('href').includes('/create/'));
 
             // Handle "Back" buttons or explicitly marked Ajax links
             if (isDynamic || link.classList.contains('ajax-link')) {
                 event.preventDefault();
-                const url = href || link.getAttribute('data-url');
+                const url = link.getAttribute('href') || link.getAttribute('data-url');
                 if (url) loadContent(url);
             }
         });

@@ -498,8 +498,8 @@ def log_in(request):
                 elif role == 'collector' or role == 'driver':
                     return redirect('stwms:driver_dashboard')
                 
-                elif role == 'resident':
-                    return redirect('stwms:resident_dashboard') 
+                elif role == 'resident' or role == 'customer':
+                    return redirect('stwms:customer_dashboard') 
                 
                 else:
                     # Fallback if role is unknown
@@ -1386,6 +1386,134 @@ def resident_dashboard(request):
 def resident_settings(request):
     
     return render(request, "resident/settings.html")
+
+# Customer Dashboard Views
+def customer_dashboard(request):
+    """Main customer dashboard layout"""
+    return render(request, "customer/index.html")
+
+def customer_dashboard_content(request):
+    """Customer dashboard content (loaded via AJAX)"""
+    # Get user's bins if authenticated
+    user_bins = []
+    if request.user.is_authenticated:
+        try:
+            user_bins = WasteBin.objects.filter(owner=request.user).select_related('location')
+        except:
+            pass
+    
+    context = {
+        'user_bins': user_bins
+    }
+    
+    # Support AJAX requests
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        from django.template.loader import render_to_string
+        html = render_to_string('customer/dashboard.html', context, request=request)
+        return HttpResponse(html)
+    
+    return render(request, "customer/dashboard.html", context)
+
+def customer_settings(request):
+    """Customer settings page"""
+    user_profile = None
+    if request.user.is_authenticated:
+        try:
+            user_profile = Users.objects.get(user=request.user)
+        except Users.DoesNotExist:
+            pass
+    
+    context = {
+        'profile': user_profile
+    }
+    
+    # Support AJAX requests
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        from django.template.loader import render_to_string
+        html = render_to_string('customer/settings.html', context, request=request)
+        return HttpResponse(html)
+    
+    return render(request, "customer/settings.html", context)
+
+@api_view(['GET'])
+def api_customer_stats(request):
+    """
+    Returns customer-specific stats:
+    - Next collection date
+    - Monthly usage
+    """
+    if not request.user.is_authenticated:
+        return Response({'error': 'Not authenticated'}, status=401)
+    
+    from datetime import datetime, timedelta
+    from django.utils import timezone
+    
+    # Get user's bins
+    user_bins = WasteBin.objects.filter(owner=request.user)
+    
+    if not user_bins.exists():
+        return Response({
+            'next_collection': None,
+            'next_collection_date': None,
+            'days_until_collection': None,
+            'monthly_usage': 0,
+            'monthly_usage_percent': 0
+        })
+    
+    # Get the first bin (assuming one bin per customer for now)
+    user_bin = user_bins.first()
+    
+    # Find next collection - routes that include this bin and are not completed
+    next_collection = None
+    next_collection_date = None
+    days_until_collection = None
+    
+    upcoming_routes = CollectionRoute.objects.filter(
+        bins=user_bin,
+        completed=False,
+        start_time__gte=timezone.now()
+    ).order_by('start_time').first()
+    
+    if upcoming_routes:
+        next_collection = upcoming_routes
+        next_collection_date = upcoming_routes.start_time
+        days_until = (next_collection_date.date() - timezone.now().date()).days
+        days_until_collection = max(0, days_until)
+    
+    # Calculate monthly usage (based on fill level changes or completed collections)
+    # For now, we'll estimate based on current fill level and recent collections
+    monthly_usage = 0
+    monthly_usage_percent = 0
+    
+    # Get completed collections in the last 30 days for this bin
+    thirty_days_ago = timezone.now() - timedelta(days=30)
+    completed_collections = CollectionRoute.objects.filter(
+        bins=user_bin,
+        completed=True,
+        start_time__gte=thirty_days_ago
+    ).count()
+    
+    # Estimate monthly usage: assume each collection is ~100L (or use fill_level as estimate)
+    # For simplicity, we'll use fill_level as a rough estimate
+    if user_bin.fill_level:
+        fill_level = float(user_bin.fill_level)
+        # Estimate: if bin is 1000L capacity, current fill represents usage
+        # This is a simplified calculation - adjust based on actual capacity
+        estimated_capacity = 1000  # liters - adjust based on your actual bin capacity
+        monthly_usage = int((fill_level / 100) * estimated_capacity * (completed_collections + 1))
+        monthly_usage_percent = min(100, int((monthly_usage / estimated_capacity) * 100))
+    
+    return Response({
+        'next_collection': {
+            'id': next_collection.id if next_collection else None,
+            'date': next_collection_date.isoformat() if next_collection_date else None,
+        },
+        'next_collection_date': next_collection_date.strftime('%b %d, %Y') if next_collection_date else None,
+        'days_until_collection': days_until_collection,
+        'monthly_usage': monthly_usage,
+        'monthly_usage_percent': monthly_usage_percent,
+        'completed_collections_this_month': completed_collections
+    })
 
 def resident_help(request):
     

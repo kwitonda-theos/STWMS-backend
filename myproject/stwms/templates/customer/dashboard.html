@@ -1,338 +1,294 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>STWMS - My Dashboard</title>
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f8f9fa;
-            padding: 30px;
-        }
-        * {
-            box-sizing: border-box;
-        }
-        .main-content {
-            background-color: white;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        .card {
-            background-color: white;
-            border-radius: 12px;
-            padding: 25px;
-            box-shadow: 0 3px 15px rgba(0,0,0,0.08);
-            border: 1px solid #f0f0f0;
-        }
-        .notification-badge {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background-color: #ff4757;
-            color: white;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            font-size: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-        }
-        .notification-dropdown {
-            display: none;
-            position: absolute;
-            right: 0;
-            top: 50px;
-            width: 350px;
-            background-color: white;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            z-index: 1000;
-            border: 1px solid #e0e0e0;
-        }
-        .progress-bar {
-            height: 10px;
-            background-color: #e0e0e0;
-            border-radius: 5px;
-            overflow: hidden;
-            margin: 15px 0;
-        }
-        .progress-fill {
-            height: 100%;
-            border-radius: 5px;
-        }
-        .notification-item {
-            padding: 15px;
-            border-bottom: 1px solid #f0f0f0;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-        .notification-item:hover {
-            background-color: #f9f9f9;
-        }
-        .notification-item.unread {
-            background-color: #f0f9ff;
-            border-left: 3px solid #00C74A;
-        }
-        .notification-timestamp {
-            color: #999;
-            font-size: 12px;
-            margin-top: 5px;
-        }
-        .notification-content {
-            color: #333;
-            font-size: 14px;
-            line-height: 1.4;
-        }
-        .notification-title {
-            font-weight: 600;
-            color: #006325;
-            margin-bottom: 5px;
-        }
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .btn-primary {
-            background-color: #00C74A;
-            color: white;
-        }
-        .btn-primary:hover {
-            background-color: #00b542;
-            box-shadow: 0 4px 12px rgba(0, 199, 74, 0.2);
-        }
-        .btn-secondary {
-            background-color: #006325;
-            color: white;
-        }
-        .btn-secondary:hover {
-            background-color: #00521f;
-            box-shadow: 0 4px 12px rgba(0, 99, 37, 0.2);
-        }
-    </style>
-</head>
-<body>
-    <div class="main-content">
-        <!-- Header with Notification Bell -->
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+<style>
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+    .card {
+        background-color: white;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+        border: 1px solid #f0f0f0;
+    }
+    .notification-badge {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        background-color: #ff4757;
+        color: white;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+    }
+    .notification-dropdown {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: 50px;
+        width: 350px;
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        z-index: 1000;
+        border: 1px solid #e0e0e0;
+    }
+    .progress-bar {
+        height: 10px;
+        background-color: #e0e0e0;
+        border-radius: 5px;
+        overflow: hidden;
+        margin: 15px 0;
+    }
+    .progress-fill {
+        height: 100%;
+        border-radius: 5px;
+    }
+    .notification-item {
+        padding: 15px;
+        border-bottom: 1px solid #f0f0f0;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+    .notification-item:hover {
+        background-color: #f9f9f9;
+    }
+    .notification-item.unread {
+        background-color: #f0f9ff;
+        border-left: 3px solid #00C74A;
+    }
+    .notification-timestamp {
+        color: #999;
+        font-size: 12px;
+        margin-top: 5px;
+    }
+    .notification-content {
+        color: #333;
+        font-size: 14px;
+        line-height: 1.4;
+    }
+    .notification-title {
+        font-weight: 600;
+        color: #006325;
+        margin-bottom: 5px;
+    }
+    .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .btn-primary {
+        background-color: #00C74A;
+        color: white;
+    }
+    .btn-primary:hover {
+        background-color: #00b542;
+        box-shadow: 0 4px 12px rgba(0, 199, 74, 0.2);
+    }
+    .btn-secondary {
+        background-color: #006325;
+        color: white;
+    }
+    .btn-secondary:hover {
+        background-color: #00521f;
+        box-shadow: 0 4px 12px rgba(0, 99, 37, 0.2);
+    }
+</style>
+
+<div class="content-header">
+    <div class="header-text">
+        <h2>My Dashboard</h2>
+        <p class="subtitle">Welcome back! Here's your overview</p>
+    </div>
+    
+    <div style="display: flex; align-items: center; gap: 15px;">
+        <!-- Notification Bell with Badge -->
+        <div style="position: relative; cursor: pointer;" id="notificationBell">
+            <div style="font-size: 24px; color: #006325; padding: 8px; border-radius: 50%; background-color: rgba(0, 99, 37, 0.1); display: flex; align-items: center; justify-content: center; width: 50px; height: 50px;">
+                <i class="fas fa-bell"></i>
+            </div>
+            <div class="notification-badge">3</div>
+        </div>
+        
+        <!-- Notification Dropdown -->
+        <div id="notificationDropdown" class="notification-dropdown">
+            <div style="padding: 20px; border-bottom: 2px solid #f0f0f0;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h4 style="margin: 0; color: #006325; font-size: 18px;">Notifications</h4>
+                    <button id="markAllReadBtn" style="background: none; border: none; color: #00C74A; cursor: pointer; font-size: 14px; font-weight: 600;">Mark all read</button>
+                </div>
+            </div>
+            
+            <!-- Notification List -->
+            <div id="notificationList">
+                <div class="notification-item unread" data-id="1">
+                    <div class="notification-title">Collection Scheduled</div>
+                    <div class="notification-content">Your tank collection is scheduled for Dec 23, 2025 at 10:00 AM</div>
+                    <div class="notification-timestamp">10 minutes ago</div>
+                </div>
+                
+                <div class="notification-item unread" data-id="2">
+                    <div class="notification-title">Payment Reminder</div>
+                    <div class="notification-content">Monthly payment of $45.00 is due in 3 days. Click to pay now.</div>
+                    <div class="notification-timestamp">2 hours ago</div>
+                </div>
+                
+                <div class="notification-item unread" data-id="3">
+                    <div class="notification-title">System Update</div>
+                    <div class="notification-content">New features added to your dashboard. Check out the updates.</div>
+                    <div class="notification-timestamp">Yesterday</div>
+                </div>
+                
+                <div class="notification-item" data-id="4">
+                    <div class="notification-title">Maintenance Completed</div>
+                    <div class="notification-content">Routine maintenance on your tank has been completed successfully.</div>
+                    <div class="notification-timestamp">2 days ago</div>
+                </div>
+                
+                <div class="notification-item" data-id="5">
+                    <div class="notification-title">Welcome Message</div>
+                    <div class="notification-content">Thank you for choosing STWMS! Get started with our guide.</div>
+                    <div class="notification-timestamp">1 week ago</div>
+                </div>
+            </div>
+            
+            <div style="text-align: center; padding: 15px; border-top: 1px solid #f0f0f0;">
+                <a href="#" style="color: #00C74A; text-decoration: none; font-size: 14px; font-weight: 600; display: block;">View All Notifications</a>
+            </div>
+        </div>
+        
+        <!-- User Profile -->
+        <div style="display: flex; align-items: center; gap: 12px; padding: 10px 20px; background-color: #f8f9fa; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+            <div style="width: 40px; height: 40px; background-color: #00C74A; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 16px;">
+                {% if user.is_authenticated %}{{ user.username|first|upper }}{% else %}U{% endif %}
+            </div>
             <div>
-                <h1 style="color: #006325; margin: 0 0 8px 0; font-size: 32px; font-weight: 700;">My Dashboard</h1>
-                <p style="color: #666; margin: 0; font-size: 16px;">Welcome back, John! Here's your overview</p>
-            </div>
-            
-            <div style="display: flex; align-items: center; gap: 15px;">
-                <!-- Notification Bell with Badge -->
-                <div style="position: relative; cursor: pointer;" id="notificationBell">
-                    <div style="font-size: 24px; color: #006325; padding: 8px; border-radius: 50%; background-color: rgba(0, 99, 37, 0.1); display: flex; align-items: center; justify-content: center; width: 50px; height: 50px;">
-                        🔔
-                    </div>
-                    <div class="notification-badge">3</div>
-                </div>
-                
-                <!-- Notification Dropdown -->
-                <div id="notificationDropdown" class="notification-dropdown">
-                    <div style="padding: 20px; border-bottom: 2px solid #f0f0f0;">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <h4 style="margin: 0; color: #006325; font-size: 18px;">Notifications</h4>
-                            <button id="markAllReadBtn" style="background: none; border: none; color: #00C74A; cursor: pointer; font-size: 14px; font-weight: 600;">Mark all read</button>
-                        </div>
-                    </div>
-                    
-                    <!-- Notification List -->
-                    <div id="notificationList">
-                        <div class="notification-item unread" data-id="1">
-                            <div class="notification-title">Collection Scheduled</div>
-                            <div class="notification-content">Your tank collection is scheduled for Dec 23, 2025 at 10:00 AM</div>
-                            <div class="notification-timestamp">10 minutes ago</div>
-                        </div>
-                        
-                        <div class="notification-item unread" data-id="2">
-                            <div class="notification-title">Payment Reminder</div>
-                            <div class="notification-content">Monthly payment of $45.00 is due in 3 days. Click to pay now.</div>
-                            <div class="notification-timestamp">2 hours ago</div>
-                        </div>
-                        
-                        <div class="notification-item unread" data-id="3">
-                            <div class="notification-title">System Update</div>
-                            <div class="notification-content">New features added to your dashboard. Check out the updates.</div>
-                            <div class="notification-timestamp">Yesterday</div>
-                        </div>
-                        
-                        <div class="notification-item" data-id="4">
-                            <div class="notification-title">Maintenance Completed</div>
-                            <div class="notification-content">Routine maintenance on your tank has been completed successfully.</div>
-                            <div class="notification-timestamp">2 days ago</div>
-                        </div>
-                        
-                        <div class="notification-item" data-id="5">
-                            <div class="notification-title">Welcome Message</div>
-                            <div class="notification-content">Thank you for choosing STWMS! Get started with our guide.</div>
-                            <div class="notification-timestamp">1 week ago</div>
-                        </div>
-                    </div>
-                    
-                    <div style="text-align: center; padding: 15px; border-top: 1px solid #f0f0f0;">
-                        <a href="#" style="color: #00C74A; text-decoration: none; font-size: 14px; font-weight: 600; display: block;">View All Notifications</a>
-                    </div>
-                </div>
-                
-                <!-- User Profile -->
-                <div style="display: flex; align-items: center; gap: 12px; padding: 10px 20px; background-color: #f8f9fa; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
-                    <div style="width: 40px; height: 40px; background-color: #00C74A; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 16px;">JD</div>
-                    <div>
-                        <div style="font-weight: 600; color: #333;">John Doe</div>
-                        <div style="font-size: 13px; color: #666;">Customer #12345</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <hr style="border: none; border-top: 2px solid #e0e0e0; margin-bottom: 30px;">
-        
-        <!-- Quick Stats -->
-        <div class="stats-grid">
-            <div class="card">
-                <div style="color: #666; font-size: 14px; margin-bottom: 10px;">My Tank ID</div>
-                <div style="font-size: 28px; font-weight: 700; color: #006325; margin-bottom: 15px;">TANK-8472</div>
-                <div style="display: flex; align-items: center;">
-                    <div style="padding: 5px 12px; background-color: rgba(0, 199, 74, 0.1); color: #00C74A; border-radius: 20px; font-size: 13px; font-weight: 600;">ACTIVE</div>
-                </div>
-            </div>
-            
-            <div class="card">
-                <div style="color: #666; font-size: 14px; margin-bottom: 10px;">Current Fill Level</div>
-                <div style="font-size: 28px; font-weight: 700; color: #00C74A; margin-bottom: 10px;">42%</div>
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: 42%; background: linear-gradient(to right, #00C74A, #018F12);"></div>
-                </div>
-                <div style="color: #666; font-size: 13px;">Updated: Today, 08:30 AM</div>
-            </div>
-            
-            <div class="card">
-                <div style="color: #666; font-size: 14px; margin-bottom: 10px;">Next Collection</div>
-                <div style="font-size: 28px; font-weight: 700; color: #018F12; margin-bottom: 15px;">3 days</div>
-                <div style="color: #666; font-size: 14px;">Scheduled: Dec 23, 2025</div>
-            </div>
-            
-            <div class="card">
-                <div style="color: #666; font-size: 14px; margin-bottom: 10px;">Monthly Usage</div>
-                <div style="font-size: 28px; font-weight: 700; color: #006325; margin-bottom: 10px;">280L</div>
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: 28%; background: linear-gradient(to right, #006325, #00C74A);"></div>
-                </div>
-                <div style="color: #666; font-size: 13px;">28% of capacity</div>
-            </div>
-        </div>
-        
-        <!-- Quick Actions -->
-        <div class="card" style="margin-bottom: 30px;">
-            <h3 style="color: #006325; margin: 0 0 20px 0; font-size: 20px; font-weight: 600;">Quick Actions</h3>
-            
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
-                <button class="btn btn-primary">
-                    <span>📋</span> Request Collection
-                </button>
-                
-                <button class="btn btn-secondary">
-                    <span>💰</span> Make Payment
-                </button>
-                
-                <button class="btn" style="background-color: #f0f9ff; color: #006325; border: 1px solid #00C74A;">
-                    <span>⚠️</span> Report Issue
-                </button>
-                
-                <button class="btn" style="background-color: #f8f9fa; color: #333; border: 1px solid #e0e0e0;">
-                    <span>📊</span> View Reports
-                </button>
-            </div>
-        </div>
-        
-        <!-- Recent Activity -->
-        <div class="card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h3 style="color: #006325; margin: 0; font-size: 20px; font-weight: 600;">Recent Activity</h3>
-                <button class="btn" style="background-color: #f8f9fa; color: #666; border: 1px solid #e0e0e0; padding: 8px 20px; font-size: 14px;">View All Activity</button>
-            </div>
-            
-            <div style="border-left: 3px solid #00C74A; padding-left: 20px; position: relative;">
-                <div style="margin-bottom: 25px; position: relative;">
-                    <div style="position: absolute; left: -26px; top: 0; width: 10px; height: 10px; background-color: #00C74A; border-radius: 50%;"></div>
-                    <div style="font-weight: 600; color: #333; font-size: 16px;">Collection Completed</div>
-                    <div style="color: #666; font-size: 14px; margin-top: 3px;">December 18, 2025 • 10:30 AM</div>
-                    <div style="color: #888; font-size: 14px; margin-top: 5px;">Tank was emptied (95% → 5%) • Collection ID: COL-8472</div>
-                </div>
-                
-                <div style="margin-bottom: 25px; position: relative;">
-                    <div style="position: absolute; left: -26px; top: 0; width: 10px; height: 10px; background-color: #00C74A; border-radius: 50%;"></div>
-                    <div style="font-weight: 600; color: #333; font-size: 16px;">Monthly Payment</div>
-                    <div style="color: #666; font-size: 14px; margin-top: 3px;">December 15, 2025 • Auto-debit</div>
-                    <div style="color: #888; font-size: 14px; margin-top: 5px;">$45.00 • Receipt #INV-7842 • Status: Completed</div>
-                </div>
-                
-                <div style="position: relative;">
-                    <div style="position: absolute; left: -26px; top: 0; width: 10px; height: 10px; background-color: #00C74A; border-radius: 50%;"></div>
-                    <div style="font-weight: 600; color: #333; font-size: 16px;">Status Check</div>
-                    <div style="color: #666; font-size: 14px; margin-top: 3px;">December 20, 2025 • 8:15 AM</div>
-                    <div style="color: #888; font-size: 14px; margin-top: 5px;">Fill level: 42% • Status: Normal • No action required</div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Notifications Summary -->
-        <div class="card" style="margin-top: 30px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h3 style="color: #006325; margin: 0; font-size: 20px; font-weight: 600;">Notification Summary</h3>
-                <div style="display: flex; gap: 10px;">
-                    <button class="btn" style="background-color: #f8f9fa; color: #666; border: 1px solid #e0e0e0; padding: 8px 15px; font-size: 14px;" id="dismissAllBtn">
-                        Dismiss All
-                    </button>
-                    <button class="btn" style="background-color: #f0f9ff; color: #006325; border: 1px solid #00C74A; padding: 8px 15px; font-size: 14px;" id="openAllNotificationsBtn">
-                        Open All
-                    </button>
-                </div>
-            </div>
-            
-            <div id="notificationSummary">
-                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
-                    <div style="width: 12px; height: 12px; background-color: #00C74A; border-radius: 50%;"></div>
-                    <span style="color: #333; font-size: 15px;">3 unread notifications</span>
-                </div>
-                
-                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
-                    <div style="width: 12px; height: 12px; background-color: #ff9800; border-radius: 50%;"></div>
-                    <span style="color: #333; font-size: 15px;">1 upcoming collection in 3 days</span>
-                </div>
-                
-                <div style="display: flex; align-items: center; gap: 15px;">
-                    <div style="width: 12px; height: 12px; background-color: #006325; border-radius: 50%;"></div>
-                    <span style="color: #333; font-size: 15px;">Payment reminder - due in 3 days</span>
-                </div>
+                <div style="font-weight: 600; color: #333;">{% if user.is_authenticated %}{{ user.get_full_name|default:user.username }}{% else %}User{% endif %}</div>
+                <div style="font-size: 13px; color: #666;">Customer</div>
             </div>
         </div>
     </div>
+</div>
 
-    <script>
-        // Notification functionality
+<hr style="border: none; border-top: 2px solid #e0e0e0; margin-bottom: 30px;">
+
+<!-- Quick Stats -->
+<div class="stats-grid">
+    <div class="card">
+        <div style="color: #666; font-size: 14px; margin-bottom: 10px;">My Tank ID</div>
+        <div style="font-size: 28px; font-weight: 700; color: #006325; margin-bottom: 15px;" id="customer-tank-id">--</div>
+        <div style="display: flex; align-items: center;">
+            <div style="padding: 5px 12px; background-color: rgba(0, 199, 74, 0.1); color: #00C74A; border-radius: 20px; font-size: 13px; font-weight: 600;" id="customer-tank-status">ACTIVE</div>
+        </div>
+    </div>
+    
+    <div class="card">
+        <div style="color: #666; font-size: 14px; margin-bottom: 10px;">Current Fill Level</div>
+        <div style="font-size: 28px; font-weight: 700; color: #00C74A; margin-bottom: 10px;" id="customer-fill-level">--%</div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="customer-fill-progress" style="width: 0%; background: linear-gradient(to right, #00C74A, #018F12);"></div>
+        </div>
+        <div style="color: #666; font-size: 13px;" id="customer-last-updated">Updated: --</div>
+    </div>
+    
+    <div class="card">
+        <div style="color: #666; font-size: 14px; margin-bottom: 10px;">Next Collection</div>
+        <div style="font-size: 28px; font-weight: 700; color: #018F12; margin-bottom: 15px;" id="customer-next-collection">--</div>
+        <div style="color: #666; font-size: 14px;" id="customer-collection-date">Scheduled: --</div>
+    </div>
+    
+    <div class="card">
+        <div style="color: #666; font-size: 14px; margin-bottom: 10px;">Monthly Usage</div>
+        <div style="font-size: 28px; font-weight: 700; color: #006325; margin-bottom: 10px;" id="customer-monthly-usage">--L</div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="customer-usage-progress" style="width: 0%; background: linear-gradient(to right, #006325, #00C74A);"></div>
+        </div>
+        <div style="color: #666; font-size: 13px;" id="customer-usage-percent">--% of capacity</div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="card" style="margin-bottom: 30px;">
+    <h3 style="color: #006325; margin: 0 0 20px 0; font-size: 20px; font-weight: 600;">Quick Actions</h3>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+        <button class="btn btn-primary">
+            <i class="fas fa-calendar-check"></i> Request Collection
+        </button>
+        
+        <button class="btn btn-secondary">
+            <i class="fas fa-credit-card"></i> Make Payment
+        </button>
+        
+        <button class="btn" style="background-color: #f0f9ff; color: #006325; border: 1px solid #00C74A;">
+            <i class="fas fa-exclamation-triangle"></i> Report Issue
+        </button>
+        
+        <button class="btn" style="background-color: #f8f9fa; color: #333; border: 1px solid #e0e0e0;">
+            <i class="fas fa-chart-bar"></i> View Reports
+        </button>
+    </div>
+</div>
+
+<!-- Recent Activity -->
+<div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h3 style="color: #006325; margin: 0; font-size: 20px; font-weight: 600;">Recent Activity</h3>
+        <button class="btn" style="background-color: #f8f9fa; color: #666; border: 1px solid #e0e0e0; padding: 8px 20px; font-size: 14px;">View All Activity</button>
+    </div>
+    
+    <div id="recent-activity-list" style="border-left: 3px solid #00C74A; padding-left: 20px; position: relative;">
+        <p style="color: #888; text-align: center; padding: 20px;">Loading activity...</p>
+    </div>
+</div>
+
+<!-- Notifications Summary -->
+<div class="card" style="margin-top: 30px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h3 style="color: #006325; margin: 0; font-size: 20px; font-weight: 600;">Notification Summary</h3>
+        <div style="display: flex; gap: 10px;">
+            <button class="btn" style="background-color: #f8f9fa; color: #666; border: 1px solid #e0e0e0; padding: 8px 15px; font-size: 14px;" id="dismissAllBtn">
+                Dismiss All
+            </button>
+            <button class="btn" style="background-color: #f0f9ff; color: #006325; border: 1px solid #00C74A; padding: 8px 15px; font-size: 14px;" id="openAllNotificationsBtn">
+                Open All
+            </button>
+        </div>
+    </div>
+    
+    <div id="notificationSummary">
+        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+            <div style="width: 12px; height: 12px; background-color: #00C74A; border-radius: 50%;"></div>
+            <span style="color: #333; font-size: 15px;">3 unread notifications</span>
+        </div>
+        
+        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+            <div style="width: 12px; height: 12px; background-color: #ff9800; border-radius: 50%;"></div>
+            <span style="color: #333; font-size: 15px;">1 upcoming collection in 3 days</span>
+        </div>
+        
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <div style="width: 12px; height: 12px; background-color: #006325; border-radius: 50%;"></div>
+            <span style="color: #333; font-size: 15px;">Payment reminder - due in 3 days</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Notification functionality
+    function initCustomerDashboard() {
         const notificationBell = document.getElementById('notificationBell');
         const notificationDropdown = document.getElementById('notificationDropdown');
         const markAllReadBtn = document.getElementById('markAllReadBtn');
@@ -342,61 +298,70 @@
         
         let unreadCount = 3;
         
-        // Toggle notification dropdown
-        notificationBell.addEventListener('click', function(event) {
-            event.stopPropagation();
-            notificationDropdown.style.display = notificationDropdown.style.display === 'block' ? 'none' : 'block';
-        });
-        
-        // Mark all notifications as read
-        markAllReadBtn.addEventListener('click', function() {
-            const unreadItems = document.querySelectorAll('.notification-item.unread');
-            unreadItems.forEach(item => {
-                item.classList.remove('unread');
-                item.style.backgroundColor = 'white';
+        if (notificationBell) {
+            // Toggle notification dropdown
+            notificationBell.addEventListener('click', function(event) {
+                event.stopPropagation();
+                if (notificationDropdown) {
+                    notificationDropdown.style.display = notificationDropdown.style.display === 'block' ? 'none' : 'block';
+                }
             });
-            
-            // Update badge count
-            unreadCount = 0;
-            updateNotificationBadges();
-            
-            // Show confirmation
-            showToast('All notifications marked as read');
-        });
+        }
         
-        // Dismiss all notifications
-        dismissAllBtn.addEventListener('click', function() {
-            if (confirm('Are you sure you want to dismiss all notifications?')) {
-                const notificationList = document.getElementById('notificationList');
-                notificationList.innerHTML = '<div style="padding: 30px; text-align: center; color: #666;">No notifications</div>';
+        if (markAllReadBtn) {
+            // Mark all notifications as read
+            markAllReadBtn.addEventListener('click', function() {
+                const unreadItems = document.querySelectorAll('.notification-item.unread');
+                unreadItems.forEach(item => {
+                    item.classList.remove('unread');
+                    item.style.backgroundColor = 'white';
+                });
                 
-                // Update badge count
                 unreadCount = 0;
                 updateNotificationBadges();
-                
-                // Update summary
-                document.getElementById('notificationSummary').innerHTML = 
-                    '<div style="padding: 20px; text-align: center; color: #666;">No notifications</div>';
-                
-                showToast('All notifications dismissed');
-            }
-        });
+                showToast('All notifications marked as read');
+            });
+        }
         
-        // Open all notifications
-        openAllNotificationsBtn.addEventListener('click', function() {
-            notificationDropdown.style.display = 'block';
-            showToast('Opening all notifications');
-        });
+        if (dismissAllBtn) {
+            // Dismiss all notifications
+            dismissAllBtn.addEventListener('click', function() {
+                if (confirm('Are you sure you want to dismiss all notifications?')) {
+                    const notificationList = document.getElementById('notificationList');
+                    if (notificationList) {
+                        notificationList.innerHTML = '<div style="padding: 30px; text-align: center; color: #666;">No notifications</div>';
+                    }
+                    
+                    unreadCount = 0;
+                    updateNotificationBadges();
+                    
+                    const summary = document.getElementById('notificationSummary');
+                    if (summary) {
+                        summary.innerHTML = '<div style="padding: 20px; text-align: center; color: #666;">No notifications</div>';
+                    }
+                    
+                    showToast('All notifications dismissed');
+                }
+            });
+        }
+        
+        if (openAllNotificationsBtn) {
+            openAllNotificationsBtn.addEventListener('click', function() {
+                if (notificationDropdown) {
+                    notificationDropdown.style.display = 'block';
+                }
+                showToast('Opening all notifications');
+            });
+        }
         
         // Mark individual notification as read when clicked
         document.addEventListener('click', function(event) {
             if (event.target.closest('.notification-item')) {
                 const notificationItem = event.target.closest('.notification-item');
-                if (notificationItem.classList.contains('unread')) {
+                if (notificationItem && notificationItem.classList.contains('unread')) {
                     notificationItem.classList.remove('unread');
                     notificationItem.style.backgroundColor = 'white';
                     
-                    // Update badge count
                     unreadCount = Math.max(0, unreadCount - 1);
                     updateNotificationBadges();
                 }
@@ -405,7 +370,9 @@
         
         // Close dropdown when clicking outside
         document.addEventListener('click', function(event) {
-            if (!notificationBell.contains(event.target) && !notificationDropdown.contains(event.target)) {
+            if (notificationBell && notificationDropdown && 
+                !notificationBell.contains(event.target) && 
+                !notificationDropdown.contains(event.target)) {
                 notificationDropdown.style.display = 'none';
             }
         });
@@ -421,13 +388,14 @@
                 }
             });
             
-            // Update notification summary
             updateNotificationSummary();
         }
         
         // Update notification summary
         function updateNotificationSummary() {
             const summary = document.getElementById('notificationSummary');
+            if (!summary) return;
+            
             if (unreadCount > 0) {
                 summary.innerHTML = `
                     <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
@@ -456,42 +424,15 @@
             }
         }
         
-        // Quick action buttons functionality
-        document.querySelectorAll('.btn').forEach(button => {
-            button.addEventListener('click', function() {
-                const buttonText = this.textContent.trim();
-                let message = '';
-                
-                if (buttonText.includes('Request Collection')) {
-                    message = 'Opening collection request form...';
-                } else if (buttonText.includes('Make Payment')) {
-                    message = 'Redirecting to payment gateway...';
-                } else if (buttonText.includes('Report Issue')) {
-                    message = 'Opening issue report form...';
-                } else if (buttonText.includes('View Reports')) {
-                    message = 'Opening usage reports...';
-                } else if (buttonText.includes('View All Activity')) {
-                    message = 'Opening activity log...';
-                }
-                
-                if (message) {
-                    showToast(message);
-                }
-            });
-        });
-        
         // Toast notification function
         function showToast(message) {
-            // Remove existing toast
             const existingToast = document.querySelector('.toast');
             if (existingToast) existingToast.remove();
             
-            // Create toast
             const toast = document.createElement('div');
             toast.className = 'toast';
             toast.textContent = message;
             
-            // Style toast
             toast.style.position = 'fixed';
             toast.style.bottom = '30px';
             toast.style.right = '30px';
@@ -504,10 +445,8 @@
             toast.style.fontWeight = '500';
             toast.style.animation = 'fadeIn 0.3s ease-out';
             
-            // Add to page
             document.body.appendChild(toast);
             
-            // Remove after 3 seconds
             setTimeout(() => {
                 toast.style.animation = 'fadeOut 0.3s ease-out';
                 setTimeout(() => toast.remove(), 300);
@@ -515,22 +454,142 @@
         }
         
         // Add CSS animations for toast
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes fadeIn {
-                from { opacity: 0; transform: translateY(20px); }
-                to { opacity: 1; transform: translateY(0); }
-            }
-            
-            @keyframes fadeOut {
-                from { opacity: 1; transform: translateY(0); }
-                to { opacity: 0; transform: translateY(20px); }
-            }
-        `;
-        document.head.appendChild(style);
+        if (!document.getElementById('toast-animations')) {
+            const style = document.createElement('style');
+            style.id = 'toast-animations';
+            style.textContent = `
+                @keyframes fadeIn {
+                    from { opacity: 0; transform: translateY(20px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+                
+                @keyframes fadeOut {
+                    from { opacity: 1; transform: translateY(0); }
+                    to { opacity: 0; transform: translateY(20px); }
+                }
+            `;
+            document.head.appendChild(style);
+        }
         
-        // Initialize notification summary
-        updateNotificationSummary();
-    </script>
-</body>
-</html>
+        // Load customer data
+        loadCustomerData();
+    }
+    
+    function loadCustomerData() {
+        // Fetch customer's bin data and stats in parallel
+        Promise.all([
+            fetch('/api/tanks/').then(res => res.json()),
+            fetch('/api/customer/stats/').then(res => res.json())
+        ])
+            .then(([tanksData, statsData]) => {
+                // Find user's bin
+                {% if user.is_authenticated %}
+                const userId = {{ user.id }};
+                const userBin = tanksData.find(bin => bin.owner === userId);
+                {% else %}
+                const userBin = null;
+                {% endif %}
+                
+                if (userBin) {
+                    const fillLevel = userBin.fill_level ? Number(userBin.fill_level) : 0;
+                    
+                    // Update tank ID
+                    const tankIdEl = document.getElementById('customer-tank-id');
+                    if (tankIdEl) tankIdEl.textContent = userBin.WasteBin_id || 'N/A';
+                    
+                    // Update fill level
+                    const fillLevelEl = document.getElementById('customer-fill-level');
+                    if (fillLevelEl) fillLevelEl.textContent = fillLevel.toFixed(0) + '%';
+                    
+                    // Update progress bar
+                    const progressEl = document.getElementById('customer-fill-progress');
+                    if (progressEl) {
+                        progressEl.style.width = fillLevel + '%';
+                        if (fillLevel >= 90) {
+                            progressEl.style.background = 'linear-gradient(to right, #dc3545, #c82333)';
+                        } else if (fillLevel >= 50) {
+                            progressEl.style.background = 'linear-gradient(to right, #ffc107, #e0a800)';
+                        }
+                    }
+                    
+                    // Update last updated
+                    const lastUpdatedEl = document.getElementById('customer-last-updated');
+                    if (lastUpdatedEl && userBin.last_updated) {
+                        const date = new Date(userBin.last_updated);
+                        lastUpdatedEl.textContent = 'Updated: ' + date.toLocaleDateString() + ', ' + date.toLocaleTimeString();
+                    }
+                    
+                    // Update status
+                    const statusEl = document.getElementById('customer-tank-status');
+                    if (statusEl) {
+                        const status = userBin.status || 'active';
+                        statusEl.textContent = status.toUpperCase();
+                        if (status === 'full') {
+                            statusEl.style.backgroundColor = 'rgba(220, 53, 69, 0.1)';
+                            statusEl.style.color = '#dc3545';
+                        } else if (status === 'empty') {
+                            statusEl.style.backgroundColor = 'rgba(0, 199, 74, 0.1)';
+                            statusEl.style.color = '#00C74A';
+                        }
+                    }
+                } else {
+                    // No bin found
+                    const tankIdEl = document.getElementById('customer-tank-id');
+                    if (tankIdEl) tankIdEl.textContent = 'No tank assigned';
+                }
+                
+                // Update next collection
+                const nextCollectionEl = document.getElementById('customer-next-collection');
+                const collectionDateEl = document.getElementById('customer-collection-date');
+                
+                if (statsData.next_collection_date && statsData.days_until_collection !== null) {
+                    if (nextCollectionEl) {
+                        if (statsData.days_until_collection === 0) {
+                            nextCollectionEl.textContent = 'Today';
+                        } else if (statsData.days_until_collection === 1) {
+                            nextCollectionEl.textContent = '1 day';
+                        } else {
+                            nextCollectionEl.textContent = statsData.days_until_collection + ' days';
+                        }
+                    }
+                    if (collectionDateEl) {
+                        collectionDateEl.textContent = 'Scheduled: ' + statsData.next_collection_date;
+                    }
+                } else {
+                    if (nextCollectionEl) nextCollectionEl.textContent = 'Not scheduled';
+                    if (collectionDateEl) collectionDateEl.textContent = 'Scheduled: --';
+                }
+                
+                // Update monthly usage
+                const monthlyUsageEl = document.getElementById('customer-monthly-usage');
+                const usageProgressEl = document.getElementById('customer-usage-progress');
+                const usagePercentEl = document.getElementById('customer-usage-percent');
+                
+                if (statsData.monthly_usage !== undefined) {
+                    if (monthlyUsageEl) {
+                        monthlyUsageEl.textContent = statsData.monthly_usage + 'L';
+                    }
+                    if (usageProgressEl) {
+                        usageProgressEl.style.width = statsData.monthly_usage_percent + '%';
+                    }
+                    if (usagePercentEl) {
+                        usagePercentEl.textContent = statsData.monthly_usage_percent + '% of capacity';
+                    }
+                } else {
+                    if (monthlyUsageEl) monthlyUsageEl.textContent = '--L';
+                    if (usageProgressEl) usageProgressEl.style.width = '0%';
+                    if (usagePercentEl) usagePercentEl.textContent = '--% of capacity';
+                }
+            })
+            .catch(err => {
+                console.error('Error loading customer data:', err);
+            });
+    }
+    
+    // Initialize when page loads
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initCustomerDashboard);
+    } else {
+        initCustomerDashboard();
+    }
+</script>

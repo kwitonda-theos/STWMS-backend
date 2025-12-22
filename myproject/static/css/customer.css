@@ -1,0 +1,373 @@
+/* ============================================
+   RESET & BASE STYLES
+   ============================================ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Jost", sans-serif;
+    display: flex;
+    height: 100vh;
+    background-color: #f5f5f5;
+}
+
+/* ============================================
+   LAYOUT - SIDEBAR & MAIN CONTENT
+   ============================================ */
+
+.sidebar {
+    width: 25%;
+    background-color: #006325;
+    color: white;
+    padding: 30px 50px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.main-content,
+.Content {
+    flex: 1;
+    padding: 40px;
+    overflow-y: auto;
+    background-color: #f5f5f5;
+    width: 100%;
+    min-width: 0;
+}
+
+/* ============================================
+   SIDEBAR COMPONENTS
+   ============================================ */
+
+.menu a {
+    text-decoration: none;
+    color: white;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.platform-text {
+    font-size: 16px;
+    color: #e0e0e0;
+    margin-bottom: 40px;
+}
+
+.menu {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex-grow: 1;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 20px;
+}
+
+.menu-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.menu-item.active {
+    background-color: #00c74a;
+}
+
+.menu-item svg {
+    width: 22px;
+    height: 22px;
+}
+
+.sign-out {
+    margin-top: auto;
+    padding: 15px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-align: center;
+    font-size: 18px;
+    background-color: #018f12;
+    border: none;
+    color: white;
+    font-weight: 500;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.sign-out:hover {
+    background-color: rgba(91, 239, 118, 0.531);
+}
+
+/* ============================================
+   COMMON COMPONENTS - CARDS
+   ============================================ */
+
+.card {
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #e0e0e0;
+    padding: 30px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.stat-card {
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #b0b0b0;
+    padding: 25px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* ============================================
+   COMMON COMPONENTS - BUTTONS
+   ============================================ */
+
+.btn-outline {
+    padding: 12px 24px;
+    background-color: #006325;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, box-shadow 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-outline:hover {
+    background-color: #00531f;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* ============================================
+   HEADERS & CONTENT
+   ============================================ */
+
+.content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.header-text h2 {
+    font-size: 28px;
+    color: #1a1a1a;
+}
+
+.header-text .subtitle {
+    font-size: 16px;
+    color: #666;
+    margin: 0;
+}
+
+.header {
+    margin-bottom: 30px;
+}
+
+.header h1 {
+    font-size: 32px;
+    color: #1a1a1a;
+    margin-bottom: 8px;
+}
+
+.header p {
+    color: #666;
+    font-size: 16px;
+}
+
+/* ============================================
+   FORMS
+   ============================================ */
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 8px;
+}
+
+.form-control,
+.form-select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: #fafafa;
+    color: #1a1a1a;
+}
+
+.form-control:focus,
+.form-select:focus {
+    outline: none;
+    border-color: #006325;
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(0, 99, 37, 0.1);
+}
+
+/* ============================================
+   MOBILE MENU
+   ============================================ */
+
+.mobile-menu-toggle {
+    display: none;
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1001;
+    background-color: #006325;
+    color: white;
+    border: none;
+    padding: 12px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.mobile-menu-toggle:hover {
+    background-color: #00c74a;
+}
+
+.sidebar-close {
+    display: none;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.sidebar-close:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+.sidebar-overlay.active {
+    display: block;
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
+/* Tablet Styles (max-width: 1024px) */
+@media (max-width: 1024px) {
+    .sidebar {
+        width: 30%;
+        padding: 25px 30px;
+    }
+
+    .main-content {
+        padding: 30px;
+    }
+}
+
+/* Mobile Styles (max-width: 768px) */
+@media (max-width: 768px) {
+    body {
+        flex-direction: column;
+    }
+
+    .mobile-menu-toggle {
+        display: block;
+    }
+
+    .sidebar {
+        position: fixed;
+        left: -100%;
+        top: 0;
+        width: 280px;
+        height: 100vh;
+        z-index: 1000;
+        transition: left 0.3s ease;
+        padding: 20px;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .sidebar.mobile-open {
+        left: 0;
+    }
+
+    .sidebar-close {
+        display: block;
+    }
+
+    .main-content,
+    .Content {
+        width: 100%;
+        padding: 20px 15px;
+        margin-top: 60px;
+    }
+
+    .content-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .header-text h2 {
+        font-size: 22px;
+    }
+
+    .card {
+        padding: 20px;
+    }
+}
+
+/* Very Small Mobile (max-width: 480px) */
+@media (max-width: 480px) {
+    .main-content {
+        padding: 15px 10px;
+    }
+
+    .header-text h2 {
+        font-size: 20px;
+    }
+
+    .card {
+        padding: 15px;
+    }
+}
+

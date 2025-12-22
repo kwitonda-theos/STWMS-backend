@@ -31,6 +31,9 @@ urlpatterns = [
     path('api/overview-stats/', views.api_dashboard_stats, name='api_overview_stats'),
     path('api/tanks/', views.api_tank_status, name='api_tank_status'),
     
+    # customer api endpoints
+    path('api/customer/stats/', views.api_customer_stats, name='api_customer_stats'),
+    
     # driver api endpoints
     path('api/driver/stats/', views.api_driver_stats, name='api_driver_stats'),
     path('api/driver/routes/', views.api_driver_routes, name='api_driver_routes'),
@@ -126,6 +129,11 @@ urlpatterns = [
     path('resident/settings/', views.resident_settings, name='resident_settings'),
     path('resident/help/', views.resident_help, name='resident_help'),
     path('resident/mark-bin-full/', views.resident_mark_bin_full, name='resident_mark_bin_full'),
+    
+    # --- Customer Views ---
+    path('customer/dashboard/', views.customer_dashboard, name='customer_dashboard'),
+    path('customer/dashboard-content/', views.customer_dashboard_content, name='customer_dashboard_content'),
+    path('customer/settings/', views.customer_settings, name='customer_settings'),
     
     # Company: Assign tasks
     path('company/assign-task/', views.assign_task, name='assign_task'),
