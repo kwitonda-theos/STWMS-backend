@@ -1,15 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>STWMS - Welcome Dashboard</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/resident/stwms_styles.css' %}">
-    {% load static %}
-    <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
-    <style>
-        /* stws_styles.css - FINAL CODE with Tank Status styles included for the Settings Page */
+/* stws_styles.css - FINAL COMPLETE CODE */
 
 :root {
     --dark-green: #006325;
@@ -70,6 +59,12 @@ body {
     margin: 5px 0 0 0;
 }
 
+/* FIX FOR VERTICAL ALIGNMENT OF NAVIGATION ITEMS */
+.sidebar nav {
+    display: flex;
+    flex-direction: column;
+}
+
 .nav-item {
     display: flex;
     align-items: center;
@@ -126,6 +121,7 @@ body {
 
 /* ** HEADER WITH IMAGE STYLES (Used only on index.html) ** */
 .content-header {
+    /* Assuming 'Untitled.png' is the image file */
     background: url('Untitled.png') no-repeat center center; 
     background-size: cover;
     height: 250px;
@@ -292,7 +288,7 @@ body {
     background-color: #00a83e;
 }
 
-/* --- Settings Specific Styles --- */
+/* --- Settings Specific Styles (Used for both System Prefs & Scheduled Collections) --- */
 .settings-group {
     border-bottom: 1px solid #eee;
     padding-bottom: 20px;
@@ -327,7 +323,7 @@ body {
     cursor: pointer;
 }
 
-/* --- TANK STATUS SPECIFIC STYLES (Moved from inline to CSS file) --- */
+/* --- TANK STATUS SPECIFIC STYLES (Admin Dashboard - if needed) --- */
 .status-header {
     display: flex;
     justify-content: flex-start;
@@ -474,78 +470,34 @@ body {
     background-color: var(--blue-border);
     color: white;
 }
-    </style>
 
-
-
-
-</head>
-<body>
-    <div class="app-container">
-        <aside class="sidebar">
-            <div class="logo-section">
-                <h1>
-                    <i class="fas fa-recycle logo-icon"></i> STWMS
-                </h1>
-                <p>Management platform</p>
-            </div>
-            
-            <nav>
-                <a href="{% url 'stwms:resident_dashboard' %}" class="nav-item active">
-                    <i class="fas fa-home"></i> CUSTOMERS' TAB
-                </a>
-                
-                <a href="{% url 'stwms:resident_mark_bin_full' %}" class="nav-item">
-                    <i class="fas fa-trash"></i> Mark Bin Full
-                </a>
-                
-                <a href="{% url 'stwms:resident_help' %}" class="nav-item">
-                    <i class="fas fa-envelope"></i> Request for help
-                </a>
-
-                <a href="{% url 'stwms:resident_settings' %}" class="nav-item">
-                    <i class="fas fa-cog"></i> SETTINGS
-                </a>
-            </nav>
-
-            <button class="sign-out-btn">Sign out</button>
-        </aside>
-
-        <main class="main-content">
-            <div class="content-header"> 
-                <div class="header-text">
-                    <h2>WELCOME TO STWMS</h2>
-                    <p>Imagine a clean Kigali</p>
-                </div>
-            </div>
-
-            <div class="content-body">
-                <div class="message-box">
-                    <p>Dear customers report waste on time STWMS is here to help you do that easily to keep your home clean and Rwanda as well!</p>
-                    <div style="margin-top: 20px;">
-                        <a href="{% url 'stwms:resident_mark_bin_full' %}" style="display: inline-block; padding: 12px 24px; background: #00C74A; color: white; text-decoration: none; border-radius: 6px; font-weight: 600; transition: background 0.2s;">
-                            🗑️ Mark My Bin as Full
-                        </a>
-                    </div>
-                </div>
-
-                <div class="contact-info">
-                    <h3>Contact information</h3>
-                    <div class="contact-item">
-                        <i class="fas fa-phone"></i>
-                        <span>Phone<br>0712345678</span>
-                    </div>
-                    <div class="contact-item">
-                        <i class="fas fa-envelope"></i>
-                        <span>Email<br>support@swms.com</span>
-                    </div>
-                    <div class="contact-item">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <span>Address<br>Kigali, Rwanda</span>
-                    </div>
-                </div>
-            </div>
-        </main>
-    </div>
-</body>
-</html>
+/* --- TANK STATUS (Single User View) Specific Styles --- */
+.user-status-card {
+    background-color: var(--dark-green);
+    color: white;
+    padding: 30px;
+    border-radius: 8px;
+    max-width: 450px; 
+    margin-top: 20px;
+    margin-bottom: 40px; 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+.user-status-card h3 {
+    margin-top: 0;
+    font-size: 28px;
+    color: var(--customers-tab); 
+}
+.user-status-card p {
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+.level-indicator {
+    font-size: 48px;
+    font-weight: bold;
+    margin: 15px 0;
+    color: white;
+}
+.level-full { color: #dc3545; } 
+.level-normal { color: #28a745; } 
+.level-almost { color: #ffc107; }

@@ -1,0 +1,156 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STWMS - Login</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background: #006325;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .login-container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 20px;
+            width: 400px;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+        .login-title {
+            color: #006325;
+            margin: 0 0 30px 0;
+            font-size: 32px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #00C74A;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        button:hover {
+            background-color: #00b542;
+        }
+        .error {
+            color: red;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #ffe6e6;
+            border-radius: 5px;
+        }
+        .success {
+            color: green;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #e6ffe6;
+            border-radius: 5px;
+        }
+        .demo-credentials {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: rgba(0, 99, 37, 0.1);
+            border-radius: 8px;
+            color: #666;
+        }
+        .register-link {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .register-link a {
+            color: #00C74A;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h1 class="login-title">STWMS Login</h1>
+        
+        {% if messages %}
+            {% for message in messages %}
+                <div class="{% if message.tags == 'error' %}error{% else %}success{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        
+        <form method="POST" action="{% url 'login' %}">
+            {% csrf_token %}
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit">Login</button>
+        </form>
+        
+        <!-- REGISTER LINK ADDED HERE -->
+        <div class="register-link">
+            <p style="color: #666; margin: 0;">
+                Don't have an account? 
+                <a href="{% url 'register' %}">Create one here</a>
+            </p>
+        </div>
+        
+        <div class="demo-credentials">
+            <p style="margin: 0; font-weight: bold; color: #006325;">Try these credentials:</p>
+            <p style="margin: 5px 0 0 0;">Username: <strong>john_doe</strong></p>
+            <p style="margin: 5px 0 0 0;">Password: <strong>testpass123</strong></p>
+        </div>
+        
+        <p style="color: #666; margin-top: 20px;">
+            <a href="{% url 'home' %}" style="color: #00C74A; text-decoration: none; font-weight: bold;">← Back to Home</a>
+        </p>
+        
+        <!-- Create demo user link (optional) -->
+        <p style="color: #666; margin-top: 10px; font-size: 14px;">
+            No account? 
+            <a href="/create-demo-user/" style="color: #00C74A; text-decoration: none; font-weight: bold;" 
+               onclick="createDemoUser(event)">Click here to create demo account</a>
+        </p>
+    </div>
+    
+    <script>
+        function createDemoUser(e) {
+            e.preventDefault();
+            fetch('/create-demo-user/')
+                .then(response => response.json())
+                .then(data => {
+                    if(data.success) {
+                        alert(data.message);
+                        // Auto-fill the form
+                        document.querySelector('input[name="username"]').value = 'demo';
+                        document.querySelector('input[name="password"]').value = 'demo123';
+                    } else {
+                        alert('Error: ' + data.error);
+                    }
+                })
+                .catch(error => alert('Network error: ' + error));
+        }
+    </script>
+</body>
+</html>

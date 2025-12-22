@@ -1,0 +1,319 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STWMS - Register</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background: #006325;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .register-container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 20px;
+            width: 500px;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .register-title {
+            color: #006325;
+            margin: 0 0 30px 0;
+            font-size: 32px;
+            font-weight: bold;
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+        .form-group label {
+            display: block;
+            color: #333;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #00C74A;
+            outline: none;
+        }
+        .register-btn {
+            width: 100%;
+            padding: 15px;
+            background-color: #00C74A;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+        .register-btn:hover {
+            background-color: #00b542;
+            transform: translateY(-2px);
+        }
+        .error {
+            color: #dc3545;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #ffe6e6;
+            border-radius: 5px;
+            text-align: left;
+            font-size: 14px;
+        }
+        .success {
+            color: #28a745;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #e6ffe6;
+            border-radius: 5px;
+            text-align: left;
+            font-size: 14px;
+        }
+        .login-link {
+            margin-top: 20px;
+            color: #666;
+            font-size: 15px;
+        }
+        .login-link a {
+            color: #00C74A;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+        .password-requirements {
+            text-align: left;
+            color: #666;
+            font-size: 13px;
+            margin-top: 5px;
+            padding-left: 10px;
+        }
+        .password-requirements ul {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+        .role-description {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <h1 class="register-title">Create STWMS Account</h1>
+        
+        <!-- Display messages -->
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="{% if message.tags == 'error' %}error{% else %}success{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        <form method="POST" action="{% url 'register' %}">
+            {% csrf_token %}
+            
+            <div class="form-grid">
+                <!-- First Name -->
+                <div class="form-group">
+                    <label for="first_name">First Name</label>
+                    <input type="text" id="first_name" name="first_name" placeholder="John" required>
+                </div>
+                
+                <!-- Last Name -->
+                <div class="form-group">
+                    <label for="last_name">Last Name</label>
+                    <input type="text" id="last_name" name="last_name" placeholder="Doe" required>
+                </div>
+            </div>
+            
+            <!-- Username -->
+            <div class="form-group">
+                <label for="username">Username *</label>
+                <input type="text" id="username" name="username" placeholder="Choose a username" required>
+            </div>
+            
+            <!-- Email -->
+            <div class="form-group">
+                <label for="email">Email Address *</label>
+                <input type="email" id="email" name="email" placeholder="your@email.com" required>
+            </div>
+            
+            <!-- Phone -->
+            <div class="form-group">
+                <label for="phone">Phone Number *</label>
+                <input type="tel" id="phone" name="phone" placeholder="0781234567" required>
+            </div>
+            
+            <!-- Address -->
+            <div class="form-group">
+                <label for="address">Address *</label>
+                <input type="text" id="address" name="address" placeholder="Kigali, Rwanda" required>
+            </div>
+            
+            <!-- Role Selection -->
+            <div class="form-group">
+                <label for="role">Account Type *</label>
+                <select id="role" name="role" required>
+                    <option value="citizen" selected>Citizen (Residential)</option>
+                    <option value="company">Company/Business</option>
+                    <option value="driver">Collection Driver</option>
+                </select>
+                <div class="role-description" id="roleDescription">
+                    Residential waste management for citizens
+                </div>
+            </div>
+            
+            <!-- Password -->
+            <div class="form-group">
+                <label for="password1">Password *</label>
+                <input type="password" id="password1" name="password1" placeholder="Create a password" required>
+                <div class="password-requirements">
+                    <strong>Password must:</strong>
+                    <ul>
+                        <li>Be at least 8 characters long</li>
+                        <li>Contain letters and numbers</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Confirm Password -->
+            <div class="form-group">
+                <label for="password2">Confirm Password *</label>
+                <input type="password" id="password2" name="password2" placeholder="Confirm your password" required>
+            </div>
+            
+            <!-- Terms Agreement -->
+            <div class="form-group">
+                <div style="display: flex; align-items: start; gap: 10px;">
+                    <input type="checkbox" id="terms" name="terms" required style="width: auto; margin-top: 5px;">
+                    <label for="terms" style="color: #666; font-size: 14px; font-weight: normal;">
+                        I agree to the <a href="#" style="color: #00C74A;">Terms of Service</a> and 
+                        <a href="#" style="color: #00C74A;">Privacy Policy</a>
+                    </label>
+                </div>
+            </div>
+            
+            <button type="submit" class="register-btn">Create Account</button>
+        </form>
+        
+        <div class="login-link">
+            Already have an account? <a href="{% url 'login' %}">Login here</a>
+        </div>
+    </div>
+
+    <script>
+        // Role description updates
+        document.getElementById('role').addEventListener('change', function() {
+            const descriptions = {
+                'citizen': 'Residential waste management for citizens',
+                'company': 'Business/commercial waste management',
+                'driver': 'Waste collection and transportation'
+            };
+            document.getElementById('roleDescription').textContent = descriptions[this.value];
+        });
+        
+        // Password strength indicator
+        document.getElementById('password1').addEventListener('input', function() {
+            const password = this.value;
+            const requirements = document.querySelector('.password-requirements');
+            
+            // Update requirements styling
+            const items = requirements.querySelectorAll('li');
+            
+            // Check length
+            if (password.length >= 8) {
+                items[0].style.color = '#28a745';
+                items[0].innerHTML = '✓ Be at least 8 characters long';
+            } else {
+                items[0].style.color = '#dc3545';
+                items[0].innerHTML = '✗ Be at least 8 characters long';
+            }
+            
+            // Check for letters and numbers
+            const hasLetter = /[a-zA-Z]/.test(password);
+            const hasNumber = /\d/.test(password);
+            if (hasLetter && hasNumber) {
+                items[1].style.color = '#28a745';
+                items[1].innerHTML = '✓ Contain letters and numbers';
+            } else {
+                items[1].style.color = '#dc3545';
+                items[1].innerHTML = '✗ Contain letters and numbers';
+            }
+        });
+        
+        // Confirm password match
+        document.getElementById('password2').addEventListener('input', function() {
+            const password1 = document.getElementById('password1').value;
+            const password2 = this.value;
+            
+            if (password2 && password1 !== password2) {
+                this.style.borderColor = '#dc3545';
+                this.style.backgroundColor = '#ffe6e6';
+            } else {
+                this.style.borderColor = '#ddd';
+                this.style.backgroundColor = 'white';
+            }
+        });
+        
+        // Form validation before submit
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const password1 = document.getElementById('password1').value;
+            const password2 = document.getElementById('password2').value;
+            const terms = document.getElementById('terms').checked;
+            
+            if (password1 !== password2) {
+                e.preventDefault();
+                alert('Passwords do not match!');
+                return false;
+            }
+            
+            if (!terms) {
+                e.preventDefault();
+                alert('You must agree to the Terms of Service');
+                return false;
+            }
+            
+            return true;
+        });
+    </script>
+</body>
+</html>

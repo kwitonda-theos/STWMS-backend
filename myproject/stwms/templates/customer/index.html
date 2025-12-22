@@ -1,0 +1,322 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STWMS - Home</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), 
+                        url("{% static 'images/untitled.png' %}") no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+            min-height: 100vh;
+        }
+        * {
+            box-sizing: border-box;
+        }
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidebar {
+            width: 300px;
+            background-color: #006325;
+            color: white;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+        }
+        .main-content {
+            flex: 1;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .welcome-card {
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            margin-bottom: 40px;
+        }
+        .contact-card {
+            background-color: rgba(0, 99, 37, 0.9);
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Updated Navigation Styles */
+        .nav-section {
+            margin-bottom: 40px;
+        }
+        
+        .nav-title {
+            color: white;
+            margin: 0 0 20px 0;
+            font-size: 24px;
+            font-weight: normal;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            background-color: #00C74A;
+            border-radius: 8px;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: white;
+        }
+        
+        .nav-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            background-color: #00d855;
+        }
+        
+        .nav-item.sign-out {
+            background-color: #018F12;
+        }
+        
+        .nav-item.sign-out:hover {
+            background-color: #02a814;
+        }
+        
+        .nav-icon {
+            font-size: 18px;
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+            color: white;
+        }
+        
+        .nav-text {
+            font-size: 16px;
+            color: white;
+            font-weight: bold;
+        }
+        
+        /* New Registration Button Styles */
+        .register-container {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .register-btn {
+            display: inline-block;
+            padding: 15px 30px;
+            background-color: #00C74A;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        
+        .register-btn:hover {
+            background-color: #00b542;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 199, 74, 0.3);
+        }
+        
+        .login-small-link {
+            color: #b2ffcc;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        
+        .login-small-link a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .login-small-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Left Sidebar with Icons -->
+        <div class="sidebar">
+            <!-- Logo Section -->
+            <div style="margin-bottom: 50px;">
+                <h1 style="color: white; margin: 0 0 5px 0; font-size: 36px; font-weight: bold;">STWMS</h1>
+                <p style="color: #d1ffd1; margin: 0; font-size: 14px;">Management platform</p>
+            </div>
+            
+            <!-- CUSTOMERS' TAB Section with Icons -->
+            <div class="nav-section">
+                <h2 class="nav-title">CUSTOMERS' TAB</h2>
+                
+                <!-- My Dashboard -->
+                <a href="{% url 'dashboard' %}" class="nav-item">
+                    <div class="nav-icon"><i class="fas fa-th-large"></i></div>
+                    <div class="nav-text">My Dashboard</div>
+                </a>
+                
+                <!-- Settings -->
+                <a href="{% url 'settings' %}" class="nav-item">
+                    <div class="nav-icon"><i class="fas fa-cog"></i></div>
+                    <div class="nav-text">Settings</div>
+                </a>
+                
+                <!-- Sign out -->
+                <div class="nav-item sign-out" id="signOutBtn">
+                    <div class="nav-icon"><i class="fas fa-sign-out-alt"></i></div>
+                    <div class="nav-text">Sign out</div>
+                </div>
+            </div>
+            
+           
+    <div class="Content">
+        
+    </div>
+
+    <script>
+        // Sidebar menu interaction with hover effects
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('mouseenter', function() {
+                if(!this.classList.contains('sign-out')) {
+                    this.style.backgroundColor = '#00d855';
+                } else {
+                    this.style.backgroundColor = '#02a814';
+                }
+                this.style.transform = 'translateX(5px)';
+                this.style.boxShadow = '0 5px 15px rgba(0,0,0,0.2)';
+            });
+            
+            item.addEventListener('mouseleave', function() {
+                if(!this.classList.contains('sign-out')) {
+                    this.style.backgroundColor = '#00C74A';
+                } else {
+                    this.style.backgroundColor = '#018F12';
+                }
+                this.style.transform = 'translateX(0)';
+                this.style.boxShadow = 'none';
+            });
+        });
+        
+        // Sign out functionality - FIXED to use Django logout
+        document.getElementById('signOutBtn').addEventListener('click', function() {
+            if(confirm('Are you sure you want to sign out?')) {
+                // Redirect to Django logout URL
+                window.location.href = "{% url 'logout' %}";
+            }
+        });
+        
+        // Submit button for contact form
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent default form submission
+            
+            const submitBtn = document.getElementById('submitContactBtn');
+            const originalText = submitBtn.innerHTML;
+            
+            // Show loading effect
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+            submitBtn.style.backgroundColor = '#018F12';
+            submitBtn.disabled = true;
+            
+            // Get form data
+            const formData = new FormData(this);
+            
+            // Send to Django backend
+            fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Show success message
+                    document.getElementById('successMessage').style.display = 'block';
+                    // Reset form
+                    document.getElementById('contactForm').reset();
+                    
+                    // Hide success message after 5 seconds
+                    setTimeout(() => {
+                        document.getElementById('successMessage').style.display = 'none';
+                    }, 5000);
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            })
+            .catch(error => {
+                alert('Network error. Please try again.');
+            })
+            .finally(() => {
+                // Reset button state
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+                submitBtn.style.backgroundColor = '#00C74A';
+            });
+        });
+        
+        // Button interactions in main content
+        document.querySelectorAll('.nav-btn').forEach(button => {
+            button.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+                this.style.boxShadow = '0 10px 25px rgba(0,0,0,0.3)';
+            });
+            
+            button.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = 'none';
+            });
+        });
+        
+        // Add page loading animation
+        document.addEventListener('DOMContentLoaded', function() {
+            const welcomeCard = document.querySelector('.welcome-card');
+            const contactCard = document.querySelector('.contact-card');
+            
+            welcomeCard.style.opacity = '0';
+            welcomeCard.style.transform = 'translateY(30px)';
+            
+            contactCard.style.opacity = '0';
+            contactCard.style.transform = 'translateY(30px)';
+            
+            setTimeout(() => {
+                welcomeCard.style.transition = 'all 0.8s ease-out';
+                welcomeCard.style.opacity = '1';
+                welcomeCard.style.transform = 'translateY(0)';
+                
+                setTimeout(() => {
+                    contactCard.style.transition = 'all 0.8s ease-out';
+                    contactCard.style.opacity = '1';
+                    contactCard.style.transform = 'translateY(0)';
+                }, 300);
+            }, 300);
+        });
+    </script>
+</body>
+</html>
