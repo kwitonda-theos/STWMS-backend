@@ -41,7 +41,7 @@ class WasteBin(models.Model):
     WasteBin_id = models.CharField(max_length=10, primary_key=True)
     location = models.OneToOneField(Location, on_delete=models.SET_NULL, null=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owned_bins')
-    fill_level = models.PositiveIntegerField(default=0, max_digits=5 )      
+    fill_level = models.PositiveIntegerField(default=0)
     status = models.CharField(max_length=50, choices=status_choices)
     last_updated = models.DateTimeField(auto_now=True)
 
@@ -88,7 +88,7 @@ class Resident(models.Model):
     
 class Vehicle(models.Model):
     plate_number = models.CharField(max_length=20)
-    capacity = models.PositiveIntegerField(max_digits=7 )
+    capacity = models.PositiveIntegerField()
     current_location = models.ForeignKey(Location, on_delete=models.SET_NULL, null=True)
     assigned_collector = models.ForeignKey(Collector, on_delete=models.SET_NULL, null=True, blank=True)
     
