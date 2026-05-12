@@ -1,0 +1,743 @@
+/* ======================================= */
+/* 1. GLOBAL & RESET STYLES */
+/* ======================================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Jost', sans-serif;
+}
+
+:root {
+    --deep-green: #006325;
+    --bright-green: #00c74a;
+    --dark-green: #00531f;
+    --bg-grey: #f6f6f6;
+    --text-dark: #1a1a1a;
+    --text-grey: #666;
+    --border-color: #e4e4e4;
+}
+
+body {
+    background: var(--bg-grey);
+    color: var(--text-dark);
+    display: flex;
+    height: 100vh;
+    overflow: hidden; /* Prevent body scroll */
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+ul {
+    list-style: none;
+}
+
+/* ======================================= */
+/* 2. SIDEBAR STYLES (The Shell) */
+/* ======================================= */
+.sidebar {
+    width: 25%;
+    min-width: 250px;
+    background-color: var(--deep-green);
+    color: white;
+    padding: 30px 40px;
+    display: flex;
+    flex-direction: column;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.platform-text {
+    font-size: 16px;
+    color: #e0e0e0;
+    margin-bottom: 40px;
+}
+
+.menu {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    flex-grow: 1;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 12px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 18px;
+    color: white;
+}
+
+.menu-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.menu-item.active {
+    background-color: var(--bright-green);
+    font-weight: 500;
+}
+
+.menu-item .icon {
+    font-size: 20px;
+    width: 25px;
+    text-align: center;
+}
+
+.menu-item a {
+    color: white;
+    width: 100%;
+}
+
+.sign-out {
+    margin-top: auto;
+    padding: 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-align: center;
+    font-size: 16px;
+    background-color: #018f12;
+    border: none;
+    color: white;
+    font-weight: 500;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.sign-out:hover {
+    background-color: #00a14a;
+}
+
+/* ======================================= */
+/* 3. MAIN CONTENT AREA */
+/* ======================================= */
+.main-content {
+    flex: 1;
+    padding: 40px;
+    overflow-y: auto;
+}
+
+/* Common Header Styles */
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.welcome-section h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.welcome-section p {
+    margin: 5px 0 0;
+    color: var(--text-grey);
+    font-size: 16px;
+}
+
+.header-icons {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    position: relative;
+}
+
+.notification-badge {
+    background-color: var(--deep-green); 
+    color: #fff;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    position: absolute;
+    top: -5px;
+    right: 55px; /* Adjust based on icon position */
+}
+
+.bell-icon {
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--text-dark);
+}
+
+.avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: #ccc;
+    object-fit: cover;
+}
+
+/* ======================================= */
+/* 4. HOME PAGE STYLES */
+/* ======================================= */
+
+/* Stats Grid */
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+    margin-bottom: 30px;
+}
+
+.box {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.box h3 {
+    font-size: 14px;
+    color: var(--text-grey);
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+.box .num {
+    font-size: 36px;
+    color: var(--deep-green);
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.box span {
+    font-size: 13px;
+    color: #888;
+}
+
+/* Content Split (Route + Notification) */
+.content {
+    display: flex;
+    gap: 30px;
+}
+
+.route, .notifications {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    flex: 1;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.route h2, .notifications h2 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 20px;
+}
+
+/* Map */
+.map {
+    width: 100%;
+    border-radius: 10px;
+    border: none;
+    margin-bottom: 20px;
+    background-color: #eee;
+}
+
+/* Stops List */
+.stop {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.stop:last-of-type {
+    border-bottom: none;
+}
+
+.stop p {
+    font-size: 14px;
+}
+
+.pending { color: #dc3545; font-weight: 600; font-size: 13px; }
+.completed { color: var(--deep-green); font-weight: 600; font-size: 13px; }
+
+/* Buttons */
+.btn-green {
+    background: var(--deep-green);
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 20px;
+    width: 100%;
+    font-weight: 500;
+    font-size: 15px;
+    transition: background-color 0.2s;
+}
+
+.btn-green:hover {
+    background-color: var(--dark-green);
+}
+
+/* Notifications List */
+.note-title {
+    margin-bottom: 15px;
+    color: var(--text-grey);
+    font-size: 14px;
+}
+
+.note {
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.note:last-of-type {
+    border-bottom: none;
+}
+
+.note .badge {
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    color: white;
+    float: right;
+    font-weight: 500;
+}
+
+.high { background: #dc3545; }
+.medium { background: #F59E0B; }
+.low { background: var(--deep-green); }
+
+.note p {
+    font-size: 14px;
+    color: var(--text-dark);
+    line-height: 1.4;
+}
+
+.note small {
+    display: block;
+    color: #999;
+    margin-top: 5px;
+    font-size: 12px;
+}
+
+/* ======================================= */
+/* 5. ROUTES PAGE STYLES */
+/* ======================================= */
+.route-section {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    border: 1px solid var(--border-color);
+    margin-bottom: 30px;
+}
+
+.route-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.route-status {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.map-pin-icon {
+    font-size: 24px;
+    background: #e6f7d5;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.optimize-btn {
+    padding: 10px 25px;
+    background-color: var(--deep-green);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.data-summary {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 30px;
+}
+
+.collection-stops-card, .stats-card {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    border: 1px solid var(--border-color);
+}
+
+.collection-stops-card h3 {
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.collection-stops-card p {
+    color: var(--text-grey);
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.stop-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.stop-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.stop-item .status {
+    font-size: 13px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 20px;
+}
+
+.stop-item.pending .status { background: #fff3cd; color: #856404; }
+.stop-item.completed .status { background: #d4edda; color: #155724; }
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.stat-item:last-child { border-bottom: none; }
+
+.stat-item .icon {
+    font-size: 20px;
+    margin-right: 15px;
+    width: 30px;
+    text-align: center;
+}
+
+.stat-label { flex: 1; color: var(--text-grey); }
+.stat-value { font-weight: bold; font-size: 16px; }
+.stat-value.progress { color: var(--deep-green); }
+
+/* ======================================= */
+/* 6. HISTORY PAGE STYLES */
+/* ======================================= */
+.tab-navigation {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.tab-btn {
+    padding: 10px 20px;
+    border: 1px solid var(--border-color);
+    background: white;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--text-grey);
+    transition: all 0.2s;
+}
+
+.tab-btn.active {
+    background: var(--deep-green) !important;
+    color: white !important;
+    border-color: var(--deep-green) !important;
+}
+
+.today-collections-section, .performance-summary-section {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    border: 1px solid var(--border-color);
+    margin-bottom: 30px;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.collection-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background: #fafafa;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #eee;
+}
+
+.item-main {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--deep-green);
+    margin-right: 10px;
+}
+
+.status-dot.completed-dot {
+    background: var(--deep-green);
+}
+
+.location { font-weight: 600; font-size: 15px; display: block; }
+.details { font-size: 13px; color: var(--text-grey); margin-right: 10px; }
+
+.item-stats {
+    text-align: right;
+}
+
+.stat-value { display: block; font-size: 14px; }
+.stat-value.quality { font-size: 12px; font-weight: bold; text-transform: uppercase; }
+.quality.good { color: var(--deep-green); }
+
+.progress-bar-container {
+    height: 8px;
+    background: #eee;
+    border-radius: 4px;
+    margin: 10px 0;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background: var(--deep-green);
+    border-radius: 4px;
+}
+
+.progress-bar.green-progress {
+    background: var(--deep-green);
+}
+
+.metric-item {
+    margin-bottom: 20px;
+}
+
+.metric-label { font-size: 14px; color: var(--text-grey); }
+.metric-value { float: right; font-weight: bold; }
+
+/* ======================================= */
+/* 7. NOTIFICATIONS PAGE STYLES */
+/* ======================================= */
+.notification-page {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    border: 1px solid var(--border-color);
+}
+
+.notification-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 20px;
+}
+
+.action-btn-link {
+    background: none;
+    border: none;
+    color: var(--deep-green);
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.notification-card {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #eee;
+    position: relative;
+    overflow: hidden;
+}
+
+.notification-card.urgent {
+    background: #fff5f5;
+    border-left: 4px solid #dc3545;
+}
+
+.notification-card.medium {
+    background: #f0fdf4;
+    border-left: 4px solid var(--deep-green);
+}
+
+.icon-section {
+    display: flex;
+    align-items: center;
+}
+
+.icon-section .icon { 
+    font-size: 24px; 
+}
+
+.content-section {
+    flex: 1;
+}
+
+.notification-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.notification-status h2 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin: 0 0 5px 0;
+}
+
+.notification-status p {
+    font-size: 14px;
+    color: var(--text-grey);
+    margin: 0;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.history-page {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    border: 1px solid var(--border-color);
+}
+
+.collection-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.stat-value.quality.average {
+    color: #F59E0B;
+}
+
+.stat-value.quality.low {
+    color: #999;
+}
+
+.loading-message, .no-collections {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-grey);
+}
+
+.loading-message p, .no-collections p {
+    font-size: 16px;
+}
+
+.notification-title {
+    font-weight: 600;
+    font-size: 16px;
+    margin-bottom: 5px;
+    color: var(--text-dark);
+}
+
+.notification-body {
+    color: var(--text-grey);
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.time {
+    font-size: 12px;
+    color: #999;
+}
+
+.priority {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.priority.high { background: #ffebeb; color: #dc3545; }
+.priority.medium-p { background: #e6fffa; color: var(--deep-green); }
+.priority.low { background: #f0f0f0; color: var(--text-grey); }
+
+.mark-read-btn {
+    background: var(--deep-green);
+    color: white;
+    border: none;
+    padding: 5px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    margin-left: 10px;
+    transition: background-color 0.2s;
+}
+
+.mark-read-btn:hover {
+    background: var(--dark-green);
+}
+
+.no-notifications {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-grey);
+}
+
+.no-notifications p {
+    font-size: 16px;
+}
+
+.notification-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 10px;
+}

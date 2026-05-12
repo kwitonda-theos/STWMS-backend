@@ -1,0 +1,341 @@
+/* --- Global Reset --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #006325; /* Light gray background */
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* --- Login Wrapper & Card --- */
+.login-wrapper {
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.login-card {
+    background: white;
+    width: 100%;
+    max-width: 420px;
+    padding: 40px 70px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05); /* Soft shadow */
+    text-align: center;
+}
+
+/* --- Header --- */
+.login-header {
+    margin-bottom: 30px;
+}
+
+.logo-circle {
+    width: 60px;
+    height: 60px;
+    background-color: #e6f4ea; /* Light green bg */
+    color: #006325; /* STWMS Brand Green */
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    margin: 0 auto 15px auto;
+}
+
+.login-header h2 {
+    color: #1f2937;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.login-header p {
+    color: #6b7280;
+    font-size: 14px;
+}
+
+/* --- Form Elements --- */
+.input-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.input-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 8px;
+}
+
+.input-wrapper {
+    position: relative;
+}
+
+.input-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
+    font-size: 14px;
+}
+
+.input-wrapper input {
+    width: 100%;
+    padding: 12px 15px 12px 40px; /* Space for icon */
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: #f9fafb;
+    transition: all 0.3s ease;
+    color: #1f2937;
+}
+
+.input-wrapper input:focus {
+    outline: none;
+    border-color: #006325; /* Brand Green Focus */
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(0, 99, 37, 0.1);
+}
+
+/* --- Options (Remember Me / Forgot Password) --- */
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    font-size: 13px;
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    color: #4b5563;
+    cursor: pointer;
+}
+
+.remember-me input {
+    margin-right: 8px;
+    accent-color: #006325;
+}
+
+.forgot-link {
+    color: #006325;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.forgot-link:hover {
+    text-decoration: underline;
+}
+
+/* --- Button --- */
+.login-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #006325; /* Brand Green */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.login-btn:hover {
+    background-color: #004d1c; /* Darker green */
+}
+
+/* --- Footer --- */
+.login-footer {
+    margin-top: 25px;
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.login-footer a {
+    color: #006325;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.login-footer a:hover {
+    text-decoration: underline;
+}
+
+/* --- Alerts --- */
+.messages {
+    margin-bottom: 20px;
+}
+
+.alert {
+    padding: 10px 15px;
+    border-radius: 6px;
+    font-size: 14px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-align: left;
+}
+
+.alert.error {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+
+.alert.success {
+    background-color: #d1fae5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
+/* Tablet Styles (max-width: 768px) */
+@media (max-width: 768px) {
+    .login-card {
+        max-width: 100%;
+        padding: 35px 50px;
+    }
+
+    .login-header h2 {
+        font-size: 22px;
+    }
+
+    .logo-circle {
+        width: 55px;
+        height: 55px;
+        font-size: 26px;
+    }
+}
+
+/* Mobile Styles (max-width: 480px) */
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+
+    .login-wrapper {
+        padding: 10px;
+    }
+
+    .login-card {
+        padding: 30px 25px;
+        border-radius: 12px;
+    }
+
+    .login-header {
+        margin-bottom: 25px;
+    }
+
+    .logo-circle {
+        width: 50px;
+        height: 50px;
+        font-size: 24px;
+        margin-bottom: 12px;
+    }
+
+    .login-header h2 {
+        font-size: 20px;
+        margin-bottom: 4px;
+    }
+
+    .login-header p {
+        font-size: 13px;
+    }
+
+    .input-group {
+        margin-bottom: 18px;
+    }
+
+    .input-group label {
+        font-size: 13px;
+        margin-bottom: 6px;
+    }
+
+    .input-wrapper input {
+        padding: 11px 12px 11px 38px;
+        font-size: 14px;
+    }
+
+    .input-icon {
+        left: 12px;
+        font-size: 13px;
+    }
+
+    .form-options {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .remember-me {
+        font-size: 13px;
+    }
+
+    .forgot-link {
+        font-size: 13px;
+        width: 100%;
+        text-align: left;
+    }
+
+    .login-btn {
+        padding: 13px;
+        font-size: 15px;
+    }
+
+    .login-footer {
+        margin-top: 20px;
+        font-size: 13px;
+    }
+
+    .alert {
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+}
+
+/* Very Small Mobile (max-width: 360px) */
+@media (max-width: 360px) {
+    .login-card {
+        padding: 25px 20px;
+    }
+
+    .login-header h2 {
+        font-size: 18px;
+    }
+
+    .logo-circle {
+        width: 45px;
+        height: 45px;
+        font-size: 22px;
+    }
+
+    .input-wrapper input {
+        padding: 10px 10px 10px 35px;
+    }
+
+    .login-btn {
+        padding: 12px;
+        font-size: 14px;
+    }
+}
