@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Log In - STWMS</title>
+    <title>Log In - SWMS</title>
 
     {% load static %}
     <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
@@ -19,7 +19,7 @@
                 <div class="logo-circle">
                     <i class="fas fa-recycle"></i>
                 </div>
-                <h2>STWMS</h2>
+                <h2>SWMS</h2>
                 <p>Welcome back! Please sign in to continue.</p>
             </div>
 
@@ -64,6 +64,13 @@
                     Log In <i class="fas fa-arrow-right"></i>
                 </button>
             </form>
+
+            <div class="auth-divider">or</div>
+
+            <a class="google-btn" href="{% url 'stwms:google_login' %}">
+                <i class="fab fa-google"></i>
+                Continue with Google
+            </a>
 
             <div class="login-footer">
                 <p>Don't have an account? <a href="{% url 'stwms:register' %}">Sign Up</a></p>

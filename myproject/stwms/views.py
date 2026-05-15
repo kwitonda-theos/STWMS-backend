@@ -3,6 +3,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login as auth_login
 from django.conf import settings
+from urllib.parse import urlencode
+from django.utils import timezone
 
 from django.contrib import messages
 from django.db import IntegrityError
@@ -31,6 +33,10 @@ from .serializers import (
     VehicleSerializer, CollectionRouteSerializer, AlertSerializer,
     ReportSerializer
 )
+import os
+import requests
+import uuid
+from django.urls import reverse
 # users views
 def users_list(request):
     users = Users.objects.all()
@@ -518,6 +524,143 @@ def log_in(request):
 
 def forgot_password(request):
     return render(request, "authentication/forgot_password.html")
+
+
+def google_login(request):
+    google_client_id = os.getenv('GOOGLE_CLIENT_ID')
+    google_redirect_uri = os.getenv('GOOGLE_REDIRECT_URI')
+
+    if google_client_id and google_redirect_uri:
+        # Generate a random state and save to session to prevent CSRF
+        state = uuid.uuid4().hex
+        request.session['google_oauth_state'] = state
+        # Optional: preserve next target
+        if request.GET.get('next'):
+            request.session['google_oauth_next'] = request.GET.get('next')
+
+        params = {
+            'client_id': google_client_id,
+            'redirect_uri': google_redirect_uri,
+            'response_type': 'code',
+            'scope': 'openid email profile',
+            'access_type': 'offline',
+            'prompt': 'select_account',
+            'state': state,
+        }
+        return redirect(f"https://accounts.google.com/o/oauth2/v2/auth?{urlencode(params)}")
+
+    messages.info(request, "Google sign-in is not configured yet. Please check GOOGLE_CLIENT_ID and GOOGLE_REDIRECT_URI in .env")
+    return redirect(request.GET.get('next') or 'stwms:log_in')
+
+def google_callback(request):
+    """Handle Google's OAuth2 callback: verify state, exchange code, fetch userinfo, login/create user."""
+    error = request.GET.get('error')
+    if error:
+        messages.error(request, f"Google sign-in error: {error}")
+        return redirect('stwms:log_in')
+
+    state = request.GET.get('state')
+    saved_state = request.session.pop('google_oauth_state', None)
+    if not state or not saved_state or state != saved_state:
+        messages.error(request, "Invalid or missing OAuth state. Please try again.")
+        return redirect('stwms:log_in')
+
+    code = request.GET.get('code')
+    if not code:
+        messages.error(request, "No authorization code returned from Google.")
+        return redirect('stwms:log_in')
+
+    token_url = 'https://oauth2.googleapis.com/token'
+    client_id = os.getenv('GOOGLE_CLIENT_ID')
+    client_secret = os.getenv('GOOGLE_CLIENT_SECRET')
+    redirect_uri = os.getenv('GOOGLE_REDIRECT_URI')
+
+    if not all([client_id, client_secret, redirect_uri]):
+        messages.error(request, "Google OAuth is not fully configured on the server.")
+        return redirect('stwms:log_in')
+
+    # Exchange code for tokens
+    try:
+        resp = requests.post(token_url, data={
+            'code': code,
+            'client_id': client_id,
+            'client_secret': client_secret,
+            'redirect_uri': redirect_uri,
+            'grant_type': 'authorization_code'
+        }, headers={'Accept': 'application/json'}, timeout=10)
+        token_data = resp.json()
+    except Exception as e:
+        messages.error(request, "Failed to exchange code for token.")
+        return redirect('stwms:log_in')
+
+    access_token = token_data.get('access_token')
+    if not access_token:
+        messages.error(request, "Failed to obtain access token from Google.")
+        return redirect('stwms:log_in')
+
+    # Fetch user info
+    try:
+        userinfo_resp = requests.get('https://openidconnect.googleapis.com/v1/userinfo',
+                                     headers={'Authorization': f'Bearer {access_token}'}, timeout=10)
+        userinfo = userinfo_resp.json()
+    except Exception:
+        messages.error(request, "Failed to fetch user info from Google.")
+        return redirect('stwms:log_in')
+
+    email = userinfo.get('email')
+    name = userinfo.get('name') or ''
+    email_verified = userinfo.get('email_verified', False)
+
+    if not email or not email_verified:
+        messages.error(request, "Google account email not available or not verified.")
+        return redirect('stwms:log_in')
+
+    # Create or get Django user
+    try:
+        user = User.objects.filter(email__iexact=email).first()
+        if not user:
+            base_username = email.split('@')[0]
+            username = base_username
+            counter = 1
+            while User.objects.filter(username=username).exists():
+                username = f"{base_username}{counter}"
+                counter += 1
+            user = User.objects.create_user(username=username, email=email)
+            user.set_unusable_password()
+            user.save()
+
+            # Create extended profile if model exists
+            try:
+                Users.objects.create(user=user, username=username, email=email, role='resident')
+            except Exception:
+                pass
+
+        # Log the user in
+        auth_login(request, user)
+
+        # Redirect to saved next or appropriate dashboard
+        next_url = request.session.pop('google_oauth_next', None)
+        if next_url:
+            return redirect(next_url)
+
+        # Determine role and redirect like `log_in`
+        try:
+            profile = Users.objects.get(user=user)
+            role = profile.role.lower().strip()
+            if role in ['admin', 'company']:
+                return redirect('stwms:company_dashboard')
+            elif role in ['collector', 'driver']:
+                return redirect('stwms:driver_dashboard')
+            else:
+                return redirect('stwms:customer_dashboard')
+        except Users.DoesNotExist:
+            if user.is_superuser:
+                return redirect('/admin/')
+            return redirect('stwms:home')
+
+    except Exception as e:
+        messages.error(request, "An error occurred during Google sign-in. Please try again.")
+        return redirect('stwms:log_in')
 
 # company info view
 def company_dashboard(request):

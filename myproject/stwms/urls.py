@@ -26,6 +26,8 @@ urlpatterns = [
     path('log_in/', views.log_in, name='log_in'),
     path('register/', views.register, name='register'),
     path('forgot_password/', views.forgot_password, name='forgot_password'),
+    path('google-login/', views.google_login, name='google_login'),
+    path('log_in/google/callback', views.google_callback, name='google_callback'),
 
     # api endpoints
     path('api/overview-stats/', views.api_dashboard_stats, name='api_overview_stats'),
