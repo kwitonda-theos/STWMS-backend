@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
         'dashboard': document.querySelector('.menu-item-dashboard'),
         'settings': document.querySelector('.menu-item-settings')
     };
-    const mainContent = document.querySelector('.Content');
+    const mainContent = document.querySelector('.main-content');
     const signOutBtn = document.querySelector('.sign-out');
 
     // Mobile Menu Toggle
@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         if (activeKey) {
             // Remove active from all nav items
-            document.querySelectorAll('.nav-item').forEach(el => {
+            document.querySelectorAll('.menu-item').forEach(el => {
                 if (el) el.classList.remove('active');
             });
             // Add active to the selected menu item
@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', function () {
             menuItems[key].addEventListener('click', (e) => {
                 e.preventDefault();
                 // Update active state
-                document.querySelectorAll('.nav-item').forEach(item => {
+                document.querySelectorAll('.menu-item').forEach(item => {
                     item.classList.remove('active');
                 });
                 if (menuItems[key]) {

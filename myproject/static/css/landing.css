@@ -16,23 +16,19 @@ section { padding: 60px 20px; }
 .container { max-width: 1200px; margin: auto; }
 
 /* ============================
-   MODERN NAVBAR
+   UBER-STYLE NAVBAR (Green)
    ============================ */
 header {
   position: fixed;
   top: 0;
   width: 100%;
   z-index: 1000;
-  background: rgba(255, 255, 255, 0.82);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(0, 99, 37, 0.06);
-  transition: box-shadow 0.3s ease, background 0.3s ease;
+  background: #006325;
+  transition: box-shadow 0.3s ease;
 }
 
 header.scrolled {
-  background: rgba(255, 255, 255, 0.95);
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
 header .nav {
@@ -40,8 +36,8 @@ header .nav {
   justify-content: space-between;
   align-items: center;
   padding: 0 40px;
-  height: 68px;
-  max-width: 1280px;
+  height: 64px;
+  max-width: 1400px;
   margin: 0 auto;
 }
 
@@ -49,68 +45,72 @@ header .nav {
 .logo-link {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 0;
   text-decoration: none;
 }
 
 .logo-icon {
-  width: 36px;
-  height: 36px;
-  background: linear-gradient(135deg, #006325, #00a14a);
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 16px;
-  box-shadow: 0 2px 8px rgba(0, 99, 37, 0.2);
+  display: none;
 }
 
 .logo-text {
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 800;
-  color: #006325;
+  color: #ffffff;
   letter-spacing: -0.5px;
 }
 
-/* Nav links */
+/* Nav links — left-aligned near logo */
 header nav {
   display: flex;
-  gap: 8px;
+  gap: 4px;
   align-items: center;
+  margin-left: 40px;
+  margin-right: auto;
 }
 
 header nav a {
   position: relative;
-  padding: 8px 18px;
+  padding: 8px 16px;
   font-size: 14px;
   font-weight: 500;
-  color: #4a5568;
-  border-radius: 8px;
-  transition: color 0.25s, background 0.25s;
+  color: rgba(255, 255, 255, 0.85);
+  border-radius: 50px;
+  transition: color 0.2s, background 0.2s;
   letter-spacing: 0.2px;
 }
 
 header nav a:hover {
-  color: #006325;
-  background: rgba(0, 99, 37, 0.06);
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
 }
 
 header nav a::after {
-  content: "";
-  position: absolute;
-  bottom: 2px;
-  left: 50%;
-  transform: translateX(-50%) scaleX(0);
-  width: 24px;
-  height: 2px;
-  background: #006325;
-  border-radius: 2px;
-  transition: transform 0.3s ease;
+  display: none;
 }
 
-header nav a:hover::after {
-  transform: translateX(-50%) scaleX(1);
+/* Right-side items */
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.nav-lang {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: rgba(255,255,255,0.85);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 50px;
+  transition: background 0.2s;
+}
+
+.nav-lang:hover {
+  background: rgba(255,255,255,0.1);
 }
 
 /* CTA Buttons */
@@ -121,41 +121,37 @@ header nav a:hover::after {
 }
 
 .btn-nav-login {
-  padding: 9px 28px;
+  padding: 8px 20px;
   font-size: 14px;
-  font-weight: 600;
-  color: #006325;
+  font-weight: 500;
+  color: #ffffff;
   background: transparent;
-  border: 1.5px solid rgba(0, 99, 37, 0.25);
+  border: none;
   border-radius: 50px;
-  transition: all 0.25s;
+  transition: all 0.2s;
   display: inline-block;
   letter-spacing: 0.2px;
 }
 
 .btn-nav-login:hover {
-  border-color: #006325;
-  background: rgba(0, 99, 37, 0.04);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .btn-nav-signup {
-  padding: 9px 28px;
+  padding: 8px 20px;
   font-size: 14px;
-  font-weight: 600;
-  color: white;
-  background: linear-gradient(135deg, #006325, #00852f);
+  font-weight: 500;
+  color: #006325;
+  background: #ffffff;
   border: none;
   border-radius: 50px;
-  transition: all 0.25s;
+  transition: all 0.2s;
   display: inline-block;
-  box-shadow: 0 2px 10px rgba(0, 99, 37, 0.25);
   letter-spacing: 0.2px;
 }
 
 .btn-nav-signup:hover {
-  background: linear-gradient(135deg, #004d1c, #006d27);
-  box-shadow: 0 4px 16px rgba(0, 99, 37, 0.35);
-  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.9);
 }
 
 /* Hamburger (mobile) */
@@ -171,9 +167,9 @@ header nav a:hover::after {
 }
 
 .hamburger span {
-  width: 24px;
-  height: 2.5px;
-  background: #333;
+  width: 22px;
+  height: 2px;
+  background: #fff;
   border-radius: 4px;
   transition: all 0.3s ease;
 }
@@ -188,25 +184,22 @@ header nav a:hover::after {
   transform: rotate(-45deg) translate(6px, -6px);
 }
 
-/* Mobile nav */
+/* Mobile nav overlay */
 .mobile-nav-overlay {
   display: none;
   position: fixed;
-  top: 68px;
+  top: 64px;
   left: 0;
   width: 100%;
-  background: rgba(255, 255, 255, 0.97);
-  backdrop-filter: blur(20px);
-  padding: 20px 24px 28px;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+  background: #006325;
+  padding: 16px 24px 24px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.2);
   z-index: 999;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
   transform: translateY(-10px);
   opacity: 0;
   transition: transform 0.3s ease, opacity 0.3s ease;
-  border-bottom-left-radius: 16px;
-  border-bottom-right-radius: 16px;
 }
 
 .mobile-nav-overlay.open {
@@ -219,14 +212,14 @@ header nav a:hover::after {
   padding: 12px 16px;
   font-size: 15px;
   font-weight: 500;
-  color: #333;
-  border-radius: 10px;
+  color: rgba(255,255,255,0.9);
+  border-radius: 8px;
   transition: background 0.2s;
 }
 
 .mobile-nav-overlay a:hover {
-  background: rgba(0,99,37,0.06);
-  color: #006325;
+  background: rgba(255,255,255,0.1);
+  color: #fff;
 }
 
 .mobile-nav-btns {
@@ -234,7 +227,7 @@ header nav a:hover::after {
   gap: 10px;
   margin-top: 12px;
   padding-top: 16px;
-  border-top: 1px solid #f0f0f0;
+  border-top: 1px solid rgba(255,255,255,0.15);
 }
 
 .mobile-nav-btns a {

@@ -24,23 +24,20 @@
     <div class="nav">
       <!-- Logo -->
       <a href="{% url 'stwms:home' %}" class="logo-link">
-        <div class="logo-icon">
-          <i class="fas fa-recycle"></i>
-        </div>
         <span class="logo-text">SWMS</span>
       </a>
 
-      <!-- Desktop nav links -->
+      <!-- Desktop nav links (left of center, near logo) -->
       <nav>
-        <a href="#about">About</a>
         <a href="#features">Features</a>
         <a href="#community">Community</a>
+        <a href="#about">About ▾</a>
         <a href="#contact">Contact</a>
       </nav>
 
-      <!-- Desktop CTA buttons -->
+      <!-- Right-side items -->
       <div class="head-btns">
-        <a class="btn-nav-login" href="{% url 'stwms:log_in' %}">Login</a>
+        <a class="btn-nav-login" href="{% url 'stwms:log_in' %}">Log in</a>
         <a class="btn-nav-signup" href="{% url 'stwms:register' %}">Sign up</a>
       </div>
 
