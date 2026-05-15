@@ -6,35 +6,65 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Jost:ital,wght@0,100..900;1,100..900&family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
   
   {% load static %}
   <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
-  <title>SWMS Landing Page</title>
+  <title>SWMS — Smart Waste Management</title>
+  <meta name="description" content="Smart Waste Management System for a Cleaner Rwanda — driving efficiency through IoT, AI, and community engagement.">
 
-  {% load static %}
   <link rel="stylesheet" href="{% static 'css/landing.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 </head>
 <body>
 
-  <!-- Header -->
-  <header>
+  <!-- ===== MODERN NAVBAR ===== -->
+  <header id="site-header">
     <div class="nav">
-      <div class="logos">
-        <h1 class="text-green">SWMS</h1>
-      </div>
+      <!-- Logo -->
+      <a href="{% url 'stwms:home' %}" class="logo-link">
+        <div class="logo-icon">
+          <i class="fas fa-recycle"></i>
+        </div>
+        <span class="logo-text">SWMS</span>
+      </a>
+
+      <!-- Desktop nav links -->
       <nav>
+        <a href="#about">About</a>
         <a href="#features">Features</a>
-        <a href="#contact">Contact us</a>
+        <a href="#community">Community</a>
+        <a href="#contact">Contact</a>
       </nav>
+
+      <!-- Desktop CTA buttons -->
       <div class="head-btns">
-        <a class="btn" href="{% url 'stwms:log_in' %}">Login</a>
-        <a class="btn1" href="{% url 'stwms:register' %}">Sign up</a>
+        <a class="btn-nav-login" href="{% url 'stwms:log_in' %}">Login</a>
+        <a class="btn-nav-signup" href="{% url 'stwms:register' %}">Sign up</a>
       </div>
+
+      <!-- Mobile hamburger -->
+      <button class="hamburger" id="hamburger-btn" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
     </div>
   </header>
-  
+
+  <!-- Mobile nav overlay -->
+  <div class="mobile-nav-overlay" id="mobile-nav">
+    <a href="#about" onclick="closeMobileNav()">About</a>
+    <a href="#features" onclick="closeMobileNav()">Features</a>
+    <a href="#community" onclick="closeMobileNav()">Community</a>
+    <a href="#contact" onclick="closeMobileNav()">Contact</a>
+    <div class="mobile-nav-btns">
+      <a class="btn-nav-login" href="{% url 'stwms:log_in' %}">Login</a>
+      <a class="btn-nav-signup" href="{% url 'stwms:register' %}">Sign up</a>
+    </div>
+  </div>
+
   
     <!-- HERO -->
     <section class="hero">
@@ -253,6 +283,44 @@
   <footer>
     <p>© 2025 SWMS. All Rights Reserved.</p>
   </footer>
+
+  <!-- Navbar JS: Hamburger toggle + scroll shadow -->
+  <script>
+    // Hamburger menu toggle
+    const hamburger = document.getElementById('hamburger-btn');
+    const mobileNav = document.getElementById('mobile-nav');
+
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('active');
+      mobileNav.classList.toggle('open');
+    });
+
+    function closeMobileNav() {
+      hamburger.classList.remove('active');
+      mobileNav.classList.remove('open');
+    }
+
+    // Scroll shadow effect
+    const header = document.getElementById('site-header');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 20) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+    });
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  </script>
 
 </body>
 </html>

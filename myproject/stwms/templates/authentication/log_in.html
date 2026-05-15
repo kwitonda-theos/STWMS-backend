@@ -3,80 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Log In - SWMS</title>
+    <title>Log In | SWMS</title>
+    <meta name="description" content="Sign in to your SWMS account — Smart Waste Management for a Cleaner Rwanda.">
 
     {% load static %}
     <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
-    {% load static %}
     <link rel="stylesheet" href="{% static 'css/log_in.css' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
-    
-    <div class="login-wrapper">
-        <div class="login-card">
-            <div class="login-header">
-                <div class="logo-circle">
-                    <i class="fas fa-recycle"></i>
-                </div>
-                <h2>SWMS</h2>
-                <p>Welcome back! Please sign in to continue.</p>
+
+<div class="auth-page">
+
+    <!-- ===== LEFT — BRAND PANEL ===== -->
+    <div class="auth-brand-panel">
+
+        <!-- Decorative wavy lines -->
+        <div class="brand-decor">
+            <svg viewBox="0 0 600 900" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Main wave -->
+                <path d="M-20 200 C80 160, 180 350, 200 500 S280 720, 180 900"
+                      stroke="rgba(0,210,90,0.35)" stroke-width="4" fill="none"/>
+                <!-- Secondary wave -->
+                <path d="M-10 180 C90 140, 190 340, 210 490 S290 710, 190 890"
+                      stroke="rgba(0,225,255,0.3)" stroke-width="3" fill="none"/>
+                <!-- Accent wave -->
+                <path d="M30 220 C120 190, 200 360, 220 510 S300 730, 200 910"
+                      stroke="rgba(255,64,129,0.25)" stroke-width="2.5" fill="none"/>
+            </svg>
+        </div>
+
+        <!-- Floating shapes -->
+        <div class="brand-shape brand-shape--1"></div>
+        <div class="brand-shape brand-shape--2"></div>
+        <div class="brand-shape brand-shape--3"></div>
+        <div class="brand-shape brand-shape--4"></div>
+        <div class="brand-shape brand-shape--5"></div>
+
+        <!-- Text content -->
+        <div class="brand-content">
+            <div class="brand-label">SWMS</div>
+            <div class="brand-name">Smart Waste Management</div>
+            <h2 class="brand-headline">
+                Smarter Waste,<br>
+                <span class="hl">Cleaner Communities</span>
+            </h2>
+            <p class="brand-desc">
+                Driving efficiency through smart technology, ensuring proper waste collection and sustainable communities across Rwanda.
+            </p>
+        </div>
+    </div>
+
+    <!-- ===== RIGHT — FORM PANEL ===== -->
+    <div class="auth-form-panel">
+        <div class="auth-form-inner">
+
+            <a href="{% url 'stwms:home' %}" class="back-link" id="back-to-home">
+                <i class="fas fa-arrow-left"></i> Go back
+            </a>
+
+            <div class="auth-heading">
+                <h1>Welcome!</h1>
+                <p>Please login to your account.</p>
             </div>
 
             {% if messages %}
-                <div class="messages">
+                <div class="alert-container">
                     {% for message in messages %}
                         <div class="alert {{ message.tags }}">
-                            <i class="fas fa-exclamation-circle"></i> {{ message }}
+                            <i class="fas {% if message.tags == 'error' %}fa-circle-xmark{% else %}fa-circle-check{% endif %}"></i>
+                            <span>{{ message }}</span>
                         </div>
                     {% endfor %}
                 </div>
             {% endif %}
 
-            <form class="login-form" method="POST" action="{% url 'stwms:log_in' %}">
+            <form class="auth-form" method="POST" action="{% url 'stwms:log_in' %}">
                 {% csrf_token %}
-                
-                <div class="input-group">
+
+                <div class="form-group">
                     <label for="username">Username</label>
-                    <div class="input-wrapper">
-                        <i class="fas fa-user input-icon"></i>
+                    <div class="input-container">
                         <input type="text" id="username" name="username" placeholder="Enter your username" required>
                     </div>
                 </div>
-                
-                <div class="input-group">
+
+                <div class="form-group">
                     <label for="password">Password</label>
-                    <div class="input-wrapper">
-                        <i class="fas fa-lock input-icon"></i>
+                    <div class="input-container">
                         <input type="password" id="password" name="password" placeholder="Enter your password" required>
                     </div>
                 </div>
-                
-                <div class="form-options">
-                    <label class="remember-me">
-                        <input type="checkbox" name="remember"> 
-                        <span>Remember me</span>
+
+                <div class="form-actions">
+                    <label class="checkbox-container">
+                        <input type="checkbox" name="remember">
+                        <span class="label-text">Remember me</span>
                     </label>
-                    <a href="{% url 'stwms:forgot_password' %}" class="forgot-link">Forgot Password?</a>
+                    <a href="{% url 'stwms:forgot_password' %}" class="link">Forgot Password?</a>
                 </div>
-                
-                <button type="submit" class="login-btn">
-                    Log In <i class="fas fa-arrow-right"></i>
+
+                <button type="submit" class="primary-btn" id="login-submit-btn">
+                    Login
                 </button>
             </form>
 
-            <div class="auth-divider">or</div>
+            <div class="divider">
+                <span>Or continue with</span>
+            </div>
 
-            <a class="google-btn" href="{% url 'stwms:google_login' %}">
+            <a class="google-btn" href="{% url 'stwms:google_login' %}" id="google-login-btn">
                 <i class="fab fa-google"></i>
-                Continue with Google
+                Google
             </a>
 
-            <div class="login-footer">
-                <p>Don't have an account? <a href="{% url 'stwms:register' %}">Sign Up</a></p>
+            <div class="auth-footer">
+                <p>Don't have an account? <a href="{% url 'stwms:register' %}">Create one</a></p>
             </div>
+
         </div>
     </div>
+</div>
 
 </body>
 </html>
