@@ -885,7 +885,7 @@ def api_dashboard_stats(request):
 @api_view(['GET'])
 def api_tank_status(request):
     """
-    Returns list of all bins for the Tank Status page.
+    Returns list of all bins for the waste bin status page.
     Supports filtering via ?status=full query param.
     """
     status_filter = request.GET.get('status')

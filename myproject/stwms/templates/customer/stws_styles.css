@@ -323,7 +323,7 @@ body {
     cursor: pointer;
 }
 
-/* --- TANK STATUS SPECIFIC STYLES (Admin Dashboard - if needed) --- */
+/* --- WASTE BIN STATUS SPECIFIC STYLES (Admin Dashboard - if needed) --- */
 .status-header {
     display: flex;
     justify-content: flex-start;
@@ -471,7 +471,7 @@ body {
     color: white;
 }
 
-/* --- TANK STATUS (Single User View) Specific Styles --- */
+/* --- WASTE BIN STATUS (Single User View) Specific Styles --- */
 .user-status-card {
     background-color: var(--dark-green);
     color: white;

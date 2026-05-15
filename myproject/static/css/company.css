@@ -605,7 +605,7 @@ tbody tr:hover {
 }
 
 /* ============================================
-   TANK STATUS PAGE
+    WASTE BIN STATUS PAGE
    ============================================ */
 
 .header {
@@ -1568,10 +1568,10 @@ select {
 }
 
 /* ============================================
-   DARK THEME - TANK STATUS PAGE
+    DARK THEME - WASTE BIN STATUS PAGE
    ============================================ */
 
-/* Tank Stats Dashboard */
+/* Waste Bin Stats Dashboard */
 .theme-dark .tank-stat-card {
     background-color: #2d2d2d !important;
     border-color: #404040 !important;
@@ -2271,7 +2271,7 @@ select {
         gap: 15px;
     }
 
-    /* Tank Status Specific */
+    /* Waste Bin Status Specific */
     .tank-header {
         flex-direction: column;
         align-items: flex-start;

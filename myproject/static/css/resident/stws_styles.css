@@ -1,4 +1,4 @@
-/* stws_styles.css - FINAL CODE with Tank Status styles included for the Settings Page */
+/* stws_styles.css - FINAL CODE with Waste Bin Status styles included for the Settings Page */
 
 :root {
     --dark-green: #006325;
@@ -316,7 +316,7 @@ body {
     cursor: pointer;
 }
 
-/* --- TANK STATUS SPECIFIC STYLES (Moved from inline to CSS file) --- */
+/* --- WASTE BIN STATUS SPECIFIC STYLES (Moved from inline to CSS file) --- */
 .status-header {
     display: flex;
     justify-content: flex-start;

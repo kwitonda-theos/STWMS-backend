@@ -135,7 +135,7 @@
             <div id="notificationList">
                 <div class="notification-item unread" data-id="1">
                     <div class="notification-title">Collection Scheduled</div>
-                    <div class="notification-content">Your tank collection is scheduled for Dec 23, 2025 at 10:00 AM</div>
+                    <div class="notification-content">Your waste bin collection is scheduled for Dec 23, 2025 at 10:00 AM</div>
                     <div class="notification-timestamp">10 minutes ago</div>
                 </div>
                 
@@ -153,7 +153,7 @@
                 
                 <div class="notification-item" data-id="4">
                     <div class="notification-title">Maintenance Completed</div>
-                    <div class="notification-content">Routine maintenance on your tank has been completed successfully.</div>
+                    <div class="notification-content">Routine maintenance on your waste bin has been completed successfully.</div>
                     <div class="notification-timestamp">2 days ago</div>
                 </div>
                 
@@ -187,7 +187,7 @@
 <!-- Quick Stats -->
 <div class="stats-grid">
     <div class="card">
-        <div style="color: #666; font-size: 14px; margin-bottom: 10px;">My Tank ID</div>
+        <div style="color: #666; font-size: 14px; margin-bottom: 10px;">My Waste Bin ID</div>
         <div style="font-size: 28px; font-weight: 700; color: #006325; margin-bottom: 15px;" id="customer-tank-id">--</div>
         <div style="display: flex; align-items: center;">
             <div style="padding: 5px 12px; background-color: rgba(0, 199, 74, 0.1); color: #00C74A; border-radius: 20px; font-size: 13px; font-weight: 600;" id="customer-tank-status">ACTIVE</div>
@@ -535,7 +535,7 @@
                 } else {
                     // No bin found
                     const tankIdEl = document.getElementById('customer-tank-id');
-                    if (tankIdEl) tankIdEl.textContent = 'No tank assigned';
+                    if (tankIdEl) tankIdEl.textContent = 'No waste bin assigned';
                 }
                 
                 // Update next collection

@@ -7,7 +7,7 @@ window.filterTanks = function () {
     }
     const filter = input.value.toLowerCase();
     const cards = document.querySelectorAll('.tank-card');
-    console.log(`Filtering ${cards.length} tank cards with filter: "${filter}"`);
+    console.log(`Filtering ${cards.length} waste bin cards with filter: "${filter}"`);
     cards.forEach(card => {
         const cardText = card.textContent.toLowerCase();
         const shouldShow = filter === '' || cardText.includes(filter);
@@ -21,7 +21,7 @@ window.filterTanks = function () {
 
 window.filterStatus = function (selectedStatus) {
     const cards = document.querySelectorAll('.tank-card');
-    console.log(`Filtering ${cards.length} tank cards by status: "${selectedStatus}"`);
+    console.log(`Filtering ${cards.length} waste bin cards by status: "${selectedStatus}"`);
     cards.forEach(card => {
         const cardStatus = card.getAttribute('data-status');
         if (selectedStatus === 'all' || cardStatus === selectedStatus) {
@@ -206,7 +206,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const deleteBtn = link.classList.contains('delete-tank-btn') ? link : link.closest('.delete-tank-btn');
                 const binId = deleteBtn.getAttribute('data-bin-id');
 
-                if (binId && confirm('Are you sure you want to delete this tank? This action cannot be undone.')) {
+                if (binId && confirm('Are you sure you want to delete this waste bin? This action cannot be undone.')) {
                     deleteBtn.disabled = true;
                     deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Deleting...';
 
@@ -219,15 +219,15 @@ document.addEventListener('DOMContentLoaded', function () {
                     })
                         .then(response => {
                             if (response.ok) {
-                                // Reload tank status page
+                                // Reload waste bin status page
                                 loadContent('/tank_status/');
                             } else {
                                 throw new Error('Delete failed');
                             }
                         })
                         .catch(error => {
-                            console.error('Error deleting tank:', error);
-                            alert('Error deleting tank. Please try again.');
+                            console.error('Error deleting waste bin:', error);
+                            alert('Error deleting waste bin. Please try again.');
                             deleteBtn.disabled = false;
                             deleteBtn.innerHTML = '<i class="fas fa-trash"></i> Delete';
                         });
@@ -390,7 +390,7 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .then(data => {
                 if (data.success) {
-                    // On success, redirect to tank status
+                    // On success, redirect to waste bin status
                     if (data.redirect) {
                         loadContent(data.redirect);
                     } else {
@@ -401,16 +401,16 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (data.html) {
                         mainContent.innerHTML = data.html;
                     } else {
-                        alert('Error creating tank. Please check the form fields.');
+                        alert('Error creating waste bin. Please check the form fields.');
                     }
                 }
             })
             .catch(err => {
                 console.error('Bin form submission error:', err);
-                alert('An error occurred while creating the tank.');
+                alert('An error occurred while creating the waste bin.');
                 if (submitBtn) {
                     submitBtn.disabled = false;
-                    submitBtn.innerHTML = '<i class="fas fa-save"></i> Create Tank';
+                    submitBtn.innerHTML = '<i class="fas fa-save"></i> Create Waste Bin';
                 }
             });
     };
@@ -618,11 +618,11 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function initTankStatus() {
-        console.log("Initializing Tanks...");
+        console.log("Initializing waste bins...");
         const grid = document.getElementById('tankGrid');
         if (!grid) return;
 
-        grid.innerHTML = '<p style="text-align:center; width:100%; color:#888;">Loading tanks...</p>';
+        grid.innerHTML = '<p style="text-align:center; width:100%; color:#888;">Loading waste bins...</p>';
 
         fetch('/api/tanks/')
             .then(res => res.json())
@@ -928,7 +928,7 @@ function setupAutoRefresh() {
 
         if (mainContent) {
             // Check what page we're on and refresh accordingly
-            if (currentUrl.includes('tank_status') || mainContent.innerHTML.includes('Tank Status')) {
+            if (currentUrl.includes('tank_status') || mainContent.innerHTML.includes('Waste Bin Status')) {
                 if (typeof initTankStatus === 'function') {
                     initTankStatus();
                 }
