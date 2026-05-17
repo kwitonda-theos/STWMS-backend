@@ -1,0 +1,417 @@
+<style>
+    /* ── Notifications Page Styles ───────────────────────────── */
+    .notif-page-wrapper {
+        font-family: 'Jost', 'Noto Sans', sans-serif;
+    }
+
+    /* Header */
+    .notif-page-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 28px;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+    .notif-page-title {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+    .notif-page-title h2 {
+        margin: 0;
+        font-size: 26px;
+        font-weight: 700;
+        color: #006325;
+    }
+    .notif-count-pill {
+        background: linear-gradient(135deg, #ff4757, #ff6b81);
+        color: #fff;
+        font-size: 13px;
+        font-weight: 700;
+        padding: 3px 11px;
+        border-radius: 20px;
+        min-width: 28px;
+        text-align: center;
+        display: inline-block;
+        box-shadow: 0 2px 8px rgba(255, 71, 87, 0.35);
+        transition: transform 0.2s;
+    }
+    .notif-count-pill.zero { background: #aaa; box-shadow: none; }
+
+    /* Mark all read button */
+    .btn-mark-all {
+        padding: 10px 22px;
+        background: linear-gradient(135deg, #00C74A, #018F12);
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.25s;
+        box-shadow: 0 3px 10px rgba(0, 199, 74, 0.25);
+    }
+    .btn-mark-all:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(0, 199, 74, 0.35);
+    }
+
+    /* Filter tabs */
+    .notif-filters {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 26px;
+        flex-wrap: wrap;
+    }
+    .notif-filter-btn {
+        padding: 8px 18px;
+        border: 2px solid #e0e0e0;
+        border-radius: 30px;
+        background: #fff;
+        color: #666;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    .notif-filter-btn:hover {
+        border-color: #00C74A;
+        color: #00C74A;
+    }
+    .notif-filter-btn.active {
+        background: #00C74A;
+        border-color: #00C74A;
+        color: #fff;
+        box-shadow: 0 2px 8px rgba(0,199,74,0.25);
+    }
+
+    /* Notification list */
+    .notif-list {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    /* Notification card */
+    .notif-card {
+        background: #fff;
+        border-radius: 14px;
+        padding: 18px 22px;
+        display: flex;
+        align-items: flex-start;
+        gap: 18px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+        border: 1px solid #f0f0f0;
+        border-left: 5px solid #e0e0e0;
+        transition: all 0.25s;
+        position: relative;
+    }
+    .notif-card.unread {
+        border-left-color: #00C74A;
+        background: linear-gradient(to right, #f0fff6, #fff);
+    }
+    .notif-card.type-bin_full.unread  { border-left-color: #ff4757; background: linear-gradient(to right, #fff5f6, #fff); }
+    .notif-card.type-faulty_bin.unread { border-left-color: #ff9800; background: linear-gradient(to right, #fffbf0, #fff); }
+    .notif-card.type-pickup_done.unread { border-left-color: #00C74A; background: linear-gradient(to right, #f0fff6, #fff); }
+    .notif-card:hover { transform: translateY(-2px); box-shadow: 0 6px 22px rgba(0,0,0,0.10); }
+
+    /* Icon circle */
+    .notif-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        flex-shrink: 0;
+    }
+    .notif-icon.bin_full   { background: rgba(255,71,87,0.12);  color: #ff4757; }
+    .notif-icon.faulty_bin { background: rgba(255,152,0,0.12);  color: #ff9800; }
+    .notif-icon.pickup_done { background: rgba(0,199,74,0.12); color: #00C74A; }
+
+    /* Content */
+    .notif-body { flex: 1; min-width: 0; }
+    .notif-type-label {
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        margin-bottom: 4px;
+    }
+    .notif-type-label.bin_full   { color: #ff4757; }
+    .notif-type-label.faulty_bin { color: #ff9800; }
+    .notif-type-label.pickup_done { color: #00C74A; }
+
+    .notif-message {
+        font-size: 14px;
+        color: #333;
+        line-height: 1.55;
+        margin-bottom: 8px;
+    }
+    .notif-meta {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+    .notif-time { font-size: 12px; color: #999; }
+    .notif-bin-tag {
+        font-size: 12px;
+        padding: 3px 10px;
+        border-radius: 20px;
+        background: rgba(0,99,37,0.08);
+        color: #006325;
+        font-weight: 600;
+    }
+    .unread-dot {
+        width: 10px; height: 10px;
+        background: #ff4757;
+        border-radius: 50%;
+        flex-shrink: 0;
+        margin-top: 4px;
+        animation: pulse-dot 1.8s infinite;
+    }
+    @keyframes pulse-dot {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50%       { transform: scale(1.4); opacity: 0.7; }
+    }
+
+    /* Mark as read button */
+    .btn-mark-read {
+        padding: 7px 16px;
+        background: #f0f9ff;
+        border: 1.5px solid #00C74A;
+        color: #006325;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        white-space: nowrap;
+        flex-shrink: 0;
+        transition: all 0.2s;
+        align-self: flex-start;
+    }
+    .btn-mark-read:hover {
+        background: #00C74A;
+        color: #fff;
+        transform: scale(1.04);
+    }
+    .notif-read-label {
+        font-size: 12px;
+        color: #aaa;
+        align-self: flex-start;
+        margin-top: 2px;
+        white-space: nowrap;
+    }
+
+    /* Empty state */
+    .notif-empty {
+        text-align: center;
+        padding: 60px 20px;
+        color: #999;
+    }
+    .notif-empty .empty-icon { font-size: 64px; margin-bottom: 14px; }
+    .notif-empty h3 { color: #555; font-size: 20px; margin-bottom: 6px; }
+    .notif-empty p  { font-size: 14px; }
+</style>
+
+<div class="notif-page-wrapper" id="notifPageWrapper">
+    <!-- Header -->
+    <div class="notif-page-header">
+        <div class="notif-page-title">
+            <h2>Notifications</h2>
+            <span class="notif-count-pill {% if unread_count == 0 %}zero{% endif %}" id="notifPageBadge">
+                {{ unread_count }}
+            </span>
+        </div>
+        <button class="btn-mark-all" id="markAllReadPageBtn">
+            <i class="fas fa-check-double"></i> Mark All as Read
+        </button>
+    </div>
+
+    <hr style="border: none; border-top: 2px solid #e0e0e0; margin-bottom: 26px;">
+
+    <!-- Filter tabs -->
+    <div class="notif-filters">
+        <button class="notif-filter-btn active" data-filter="all">All</button>
+        <button class="notif-filter-btn" data-filter="unread">Unread</button>
+        <button class="notif-filter-btn" data-filter="bin_full">
+            <i class="fas fa-dumpster-fire"></i> Bin Full
+        </button>
+        <button class="notif-filter-btn" data-filter="faulty_bin">
+            <i class="fas fa-exclamation-triangle"></i> Faulty Bin
+        </button>
+        <button class="notif-filter-btn" data-filter="pickup_done">
+            <i class="fas fa-truck"></i> Pickups
+        </button>
+    </div>
+
+    <!-- Notification list -->
+    <div class="notif-list" id="notifList">
+
+        {% if not notifications %}
+        <div class="notif-empty">
+            <div class="empty-icon">📭</div>
+            <h3>You're all caught up!</h3>
+            <p>No notifications yet. We'll alert you when something happens to your bin.</p>
+        </div>
+        {% else %}
+            {% for notif in notifications %}
+            <div class="notif-card {% if not notif.is_read %}unread{% endif %} type-{{ notif.notif_type }}"
+                 data-id="{{ notif.id }}"
+                 data-type="{{ notif.notif_type }}"
+                 data-read="{{ notif.is_read|yesno:'true,false' }}">
+
+                <!-- Type icon -->
+                <div class="notif-icon {{ notif.notif_type }}">
+                    {% if notif.notif_type == 'bin_full' %}
+                        <i class="fas fa-dumpster"></i>
+                    {% elif notif.notif_type == 'faulty_bin' %}
+                        <i class="fas fa-exclamation-triangle"></i>
+                    {% else %}
+                        <i class="fas fa-truck"></i>
+                    {% endif %}
+                </div>
+
+                <!-- Body -->
+                <div class="notif-body">
+                    <div class="notif-type-label {{ notif.notif_type }}">
+                        {{ notif.get_notif_type_display }}
+                    </div>
+                    <div class="notif-message">{{ notif.message }}</div>
+                    <div class="notif-meta">
+                        <span class="notif-time">{{ notif.created_at|date:"M d, Y H:i" }}</span>
+                        {% if notif.waste_bin %}
+                            <span class="notif-bin-tag">Bin: {{ notif.waste_bin.WasteBin_id }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Unread indicator / Mark read button -->
+                {% if not notif.is_read %}
+                    <div class="unread-dot" style="margin-top:6px;"></div>
+                    <button class="btn-mark-read" data-notif-id="{{ notif.id }}">
+                        <i class="fas fa-check"></i> Mark as Read
+                    </button>
+                {% else %}
+                    <span class="notif-read-label">✓ Read</span>
+                {% endif %}
+            </div>
+            {% endfor %}
+        {% endif %}
+
+    </div>
+</div>
+
+<script>
+(function() {
+    const csrfToken = '{{ csrf_token }}';
+
+    /* ── Filter tabs ───────────────────────── */
+    document.querySelectorAll('.notif-filter-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+            document.querySelectorAll('.notif-filter-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+
+            const filter = this.dataset.filter;
+            document.querySelectorAll('.notif-card').forEach(card => {
+                if (filter === 'all') {
+                    card.style.display = '';
+                } else if (filter === 'unread') {
+                    card.style.display = card.dataset.read === 'false' ? '' : 'none';
+                } else {
+                    card.style.display = card.dataset.type === filter ? '' : 'none';
+                }
+            });
+        });
+    });
+
+    /* ── Mark single notification as read ──── */
+    document.addEventListener('click', function (e) {
+        const btn = e.target.closest('.btn-mark-read');
+        if (!btn) return;
+
+        const notifId = btn.dataset.notifId;
+        const card = btn.closest('.notif-card');
+
+        fetch(`/api/customer/notifications/${notifId}/read/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrfToken,
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                // Visual update — remove unread styling
+                card.classList.remove('unread');
+                card.dataset.read = 'true';
+                card.querySelector('.unread-dot')?.remove();
+                btn.replaceWith(Object.assign(document.createElement('span'), {
+                    className: 'notif-read-label',
+                    textContent: '✓ Read'
+                }));
+
+                // Update page badge
+                updatePageBadge(data.unread_count);
+
+                // Update sidebar badge (global function from customer.js)
+                if (window.updateSidebarNotifBadge) {
+                    window.updateSidebarNotifBadge(data.unread_count);
+                }
+            }
+        })
+        .catch(() => {});
+    });
+
+    /* ── Mark ALL as read ───────────────────── */
+    const markAllBtn = document.getElementById('markAllReadPageBtn');
+    if (markAllBtn) {
+        markAllBtn.addEventListener('click', function () {
+            fetch('/api/customer/notifications/read-all/', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    // Update all cards visually
+                    document.querySelectorAll('.notif-card.unread').forEach(card => {
+                        card.classList.remove('unread');
+                        card.dataset.read = 'true';
+                        card.querySelector('.unread-dot')?.remove();
+                        const readBtn = card.querySelector('.btn-mark-read');
+                        if (readBtn) {
+                            readBtn.replaceWith(Object.assign(document.createElement('span'), {
+                                className: 'notif-read-label',
+                                textContent: '✓ Read'
+                            }));
+                        }
+                    });
+                    updatePageBadge(0);
+                    if (window.updateSidebarNotifBadge) {
+                        window.updateSidebarNotifBadge(0);
+                    }
+                }
+            })
+            .catch(() => {});
+        });
+    }
+
+    function updatePageBadge(count) {
+        const badge = document.getElementById('notifPageBadge');
+        if (!badge) return;
+        badge.textContent = count;
+        badge.classList.toggle('zero', count === 0);
+    }
+})();
+</script>

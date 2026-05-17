@@ -1,8 +1,9 @@
 document.addEventListener('DOMContentLoaded', function () {
     // --- 1. Configuration & Elements ---
     const menuItems = {
-        'dashboard': document.querySelector('.menu-item-dashboard'),
-        'settings': document.querySelector('.menu-item-settings')
+        'dashboard':      document.querySelector('.menu-item-dashboard'),
+        'notifications':  document.querySelector('.menu-item-notifications'),
+        'settings':       document.querySelector('.menu-item-settings')
     };
     const mainContent = document.querySelector('.main-content');
     const signOutBtn = document.querySelector('.sign-out');
@@ -58,8 +59,9 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     const contentRoutes = {
-        'dashboard': '/customer/dashboard-content/',
-        'settings': '/customer/settings/'
+        'dashboard':     '/customer/dashboard-content/',
+        'notifications': '/customer/notifications/',
+        'settings':      '/customer/settings/'
     };
 
     // 2. Content Loading Logic 
@@ -114,6 +116,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         window.initSettings();
                     }
                 }
+                // Notifications page needs no extra init — its own inline script handles it
             })
             .catch(error => {
                 console.error('Error loading content:', error);
@@ -125,7 +128,10 @@ document.addEventListener('DOMContentLoaded', function () {
     Object.keys(menuItems).forEach(key => {
         if (menuItems[key]) {
             menuItems[key].addEventListener('click', (e) => {
+                // Prevent any <a href="#"> inside the menu item from navigating
                 e.preventDefault();
+                e.stopPropagation();
+
                 // Update active state
                 document.querySelectorAll('.menu-item').forEach(item => {
                     item.classList.remove('active');
@@ -135,6 +141,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
                 loadContent(contentRoutes[key]);
             });
+
+            // Also prevent default on the inner <a> link so href="#" doesn't jump
+            const innerLink = menuItems[key].querySelector('a');
+            if (innerLink) {
+                innerLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                });
+            }
         }
     });
     
@@ -263,5 +278,54 @@ document.addEventListener('DOMContentLoaded', function () {
             loadContent(contentRoutes['dashboard']);
         }
     }
-});
 
+    // ─────────────────────────────────────────────────────────
+    //  NOTIFICATION BADGE POLLING  (live unread count)
+    // ─────────────────────────────────────────────────────────
+
+    const sidebarBadge = document.getElementById('sidebarNotifBadge');
+
+    /**
+     * Update the sidebar notification badge.
+     * Exposed globally so notifications.html can call it after mark-read.
+     */
+    window.updateSidebarNotifBadge = function (count) {
+        if (!sidebarBadge) return;
+        if (count > 0) {
+            sidebarBadge.textContent = count > 99 ? '99+' : count;
+            sidebarBadge.style.display = 'flex';
+        } else {
+            sidebarBadge.style.display = 'none';
+        }
+    };
+
+    function pollNotificationBadge() {
+        fetch('/api/customer/notifications/', {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(r => r.ok ? r.json() : null)
+        .then(data => {
+            if (data && typeof data.unread_count === 'number') {
+                window.updateSidebarNotifBadge(data.unread_count);
+            }
+        })
+        .catch(() => {}); // silently ignore network errors
+    }
+
+    // Initial badge fetch then poll every 30 seconds
+    pollNotificationBadge();
+    setInterval(pollNotificationBadge, 30000);
+
+    // Add badgePop keyframe if not already present
+    if (!document.getElementById('badge-pop-style')) {
+        const s = document.createElement('style');
+        s.id = 'badge-pop-style';
+        s.textContent = `
+            @keyframes badgePop {
+                from { transform: scale(0); opacity: 0; }
+                to   { transform: scale(1); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(s);
+    }
+});

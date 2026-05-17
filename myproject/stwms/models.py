@@ -1,4 +1,6 @@
+# pyrefly: ignore [missing-import]
 from django.db import models
+# pyrefly: ignore [missing-import]
 from django.contrib.auth.models import User
 
 
@@ -112,6 +114,26 @@ class Alert(models.Model):
     bin = models.ForeignKey(WasteBin, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
     resolved = models.BooleanField(default=False)
+
+class CustomerNotification(models.Model):
+    NOTIFICATION_TYPES = [
+        ('bin_full',    'Bin Full'),
+        ('faulty_bin',  'Faulty Bin'),
+        ('pickup_done', 'Pickup Completed'),
+    ]
+    recipient  = models.ForeignKey(User, on_delete=models.CASCADE, related_name='customer_notifications')
+    notif_type = models.CharField(max_length=20, choices=NOTIFICATION_TYPES)
+    waste_bin  = models.ForeignKey('WasteBin', on_delete=models.CASCADE, null=True, blank=True)
+    message    = models.TextField()
+    is_read    = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.get_notif_type_display()} for {self.recipient.username}"
+
 
 class Report(models.Model):
     REPORT_TYPES = [

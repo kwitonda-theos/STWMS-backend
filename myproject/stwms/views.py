@@ -12,7 +12,7 @@ from django.http import JsonResponse, HttpResponse
 from .models import (
     Users, Location, WasteBin, Sensor,
     Collector, Vehicle, CollectionRoute,
-    Alert, Report,Admin,Resident
+    Alert, Report, Admin, Resident, CustomerNotification
 )
 
 from django.db.models import Count
@@ -1305,9 +1305,15 @@ def api_mark_collection_complete(request):
         waste_bin.status = 'empty'
         waste_bin.fill_level = 0
         waste_bin.save()
-        
-        # Check if all bins in route are collected (simplified - you might want to track individual bin completion)
-        
+
+        # Notify the bin owner that pickup is done
+        CustomerNotification.objects.create(
+            recipient=waste_bin.owner,
+            notif_type='pickup_done',
+            waste_bin=waste_bin,
+            message=f'Your waste bin {waste_bin.WasteBin_id} has been successfully collected and emptied.'
+        )
+
         return Response({'success': True, 'message': 'Collection marked as complete'})
     except (Collector.DoesNotExist, CollectionRoute.DoesNotExist, WasteBin.DoesNotExist) as e:
         return Response({'error': str(e)}, status=404)
@@ -1696,7 +1702,7 @@ def api_mark_bin_full(request):
         waste_bin.status = 'full'
         waste_bin.fill_level = 95  # Set to 95% when marked as full
         waste_bin.save()
-        
+
         # Create an alert for the bin being full
         alert, created = Alert.objects.get_or_create(
             bin=waste_bin,
@@ -1706,12 +1712,20 @@ def api_mark_bin_full(request):
                 'timestamp': timezone.now()
             }
         )
-        
+
         if not created:
             # Update timestamp if alert already exists
             alert.timestamp = timezone.now()
             alert.save()
-        
+
+        # Notify the bin owner
+        CustomerNotification.objects.create(
+            recipient=waste_bin.owner,
+            notif_type='bin_full',
+            waste_bin=waste_bin,
+            message=f'Your waste bin {waste_bin.WasteBin_id} is full (95%). A collection team has been notified.'
+        )
+
         return Response({
             'success': True,
             'message': 'Bin marked as full. Collection team has been notified.',
@@ -1719,7 +1733,7 @@ def api_mark_bin_full(request):
             'status': waste_bin.status,
             'fill_level': float(waste_bin.fill_level)
         })
-        
+
     except WasteBin.DoesNotExist:
         return Response({'error': 'Bin not found'}, status=404)
     except Exception as e:
@@ -1762,3 +1776,88 @@ def resident_mark_bin_full(request):
         'user_bins': user_bins
     }
     return render(request, "resident/mark_bin_full.html", context)
+
+
+# ─────────────────────────────────────────────
+#  CUSTOMER NOTIFICATION VIEWS
+# ─────────────────────────────────────────────
+
+def customer_notifications(request):
+    """Customer notifications page (full page or AJAX partial)."""
+    notifications_qs = []
+    unread_count = 0
+
+    if request.user.is_authenticated:
+        notifications_qs = CustomerNotification.objects.filter(
+            recipient=request.user
+        ).select_related('waste_bin').order_by('-created_at')
+        unread_count = notifications_qs.filter(is_read=False).count()
+
+    context = {
+        'notifications': notifications_qs,
+        'unread_count': unread_count,
+    }
+
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        from django.template.loader import render_to_string
+        html = render_to_string('customer/notifications.html', context, request=request)
+        return HttpResponse(html)
+
+    return render(request, 'customer/notifications.html', context)
+
+
+@api_view(['GET'])
+def api_customer_notifications(request):
+    """Returns all notifications for the logged-in customer."""
+    if not request.user.is_authenticated:
+        return Response({'error': 'Not authenticated'}, status=401)
+
+    qs = CustomerNotification.objects.filter(
+        recipient=request.user
+    ).select_related('waste_bin').order_by('-created_at')
+
+    data = []
+    for n in qs:
+        data.append({
+            'id': n.id,
+            'type': n.notif_type,
+            'type_display': n.get_notif_type_display(),
+            'message': n.message,
+            'is_read': n.is_read,
+            'bin_id': n.waste_bin.WasteBin_id if n.waste_bin else None,
+            'created_at': n.created_at.isoformat(),
+            'time_ago': get_time_ago(n.created_at),
+        })
+
+    return Response({
+        'notifications': data,
+        'unread_count': qs.filter(is_read=False).count(),
+        'total_count': qs.count(),
+    })
+
+
+@api_view(['POST'])
+def api_customer_notification_read(request, pk):
+    """Mark a single notification as read."""
+    if not request.user.is_authenticated:
+        return Response({'error': 'Not authenticated'}, status=401)
+    try:
+        notif = CustomerNotification.objects.get(pk=pk, recipient=request.user)
+        notif.is_read = True
+        notif.save()
+        return Response({'success': True, 'unread_count': CustomerNotification.objects.filter(
+            recipient=request.user, is_read=False
+        ).count()})
+    except CustomerNotification.DoesNotExist:
+        return Response({'error': 'Notification not found'}, status=404)
+
+
+@api_view(['POST'])
+def api_customer_notifications_read_all(request):
+    """Mark all notifications as read for the logged-in customer."""
+    if not request.user.is_authenticated:
+        return Response({'error': 'Not authenticated'}, status=401)
+    CustomerNotification.objects.filter(
+        recipient=request.user, is_read=False
+    ).update(is_read=True)
+    return Response({'success': True, 'unread_count': 0})

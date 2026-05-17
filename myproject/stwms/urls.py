@@ -140,7 +140,14 @@ urlpatterns = [
     # Company: Assign tasks
     path('company/assign-task/', views.assign_task, name='assign_task'),
     
+    path('customer/notifications/', views.customer_notifications, name='customer_notifications'),
+
     # API endpoints
     path('api/resident/mark-bin-full/', views.api_mark_bin_full, name='api_mark_bin_full'),
+
+    # Customer notification API
+    path('api/customer/notifications/', views.api_customer_notifications, name='api_customer_notifications'),
+    path('api/customer/notifications/<int:pk>/read/', views.api_customer_notification_read, name='api_customer_notification_read'),
+    path('api/customer/notifications/read-all/', views.api_customer_notifications_read_all, name='api_customer_notifications_read_all'),
 ]
 
