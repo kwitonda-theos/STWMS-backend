@@ -186,7 +186,10 @@ header nav a::after {
 
 /* Mobile nav overlay */
 .mobile-nav-overlay {
-  display: none;
+  display: flex;
+  visibility: hidden;
+  pointer-events: none;
+  box-sizing: border-box;
   position: fixed;
   top: 64px;
   left: 0;
@@ -199,11 +202,12 @@ header nav a::after {
   gap: 4px;
   transform: translateY(-10px);
   opacity: 0;
-  transition: transform 0.3s ease, opacity 0.3s ease;
+  transition: transform 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
 }
 
 .mobile-nav-overlay.open {
-  display: flex;
+  visibility: visible;
+  pointer-events: auto;
   transform: translateY(0);
   opacity: 1;
 }
@@ -453,6 +457,10 @@ footer { background: #006325; color: white; text-align: center; padding: 15px; m
     display: flex;
   }
 
+  .mobile-nav-overlay {
+    top: 60px;
+  }
+
   /* Hero */
   .hero {
     min-height: 450px;
@@ -575,6 +583,10 @@ footer { background: #006325; color: white; text-align: center; padding: 15px; m
     height: 32px;
     font-size: 14px;
     border-radius: 8px;
+  }
+
+  .mobile-nav-overlay {
+    top: 56px;
   }
 
   /* Hero */
