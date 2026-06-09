@@ -85,7 +85,7 @@ if database_url:
         'default': dj_database_url.parse(database_url, conn_max_age=600, ssl_require=True)
     }
 else:
-    raise RuntimeError('DATABASE_URL is required. Configure your Supabase connection string in .env or the deployment environment.')
+    raise RuntimeError('DATABASE_URL is required. Configure your neon supabase connection string in .env or the deployment environment.')
 
 
 # Password validation
